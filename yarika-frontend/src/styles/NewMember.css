@@ -1,0 +1,327 @@
+/* === Member Modal === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 18px;
+    padding: 38px 36px 32px 36px;
+    width: 100%;
+    max-width: 410px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+    font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+}
+
+.modal-content h3 {
+    margin-bottom: 2px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #181818;
+    letter-spacing: 0.01em;
+}
+
+.modal-content p {
+    font-size: 1.08rem;
+    color: #b0b0b0;
+    margin-bottom: 22px;
+    margin-top: 0;
+    font-weight: 400;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1.2px solid #222;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    margin-bottom: 18px;
+    font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+    background: #fff;
+    color: #222;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: #caa75d;
+}
+
+.modal-content .flex.gap-2 {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.yarika-button-primary {
+    background-color: #c6aa62;
+    color: #fff;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: 1.08rem;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.yarika-button-primary:hover {
+    background-color: #b99b54;
+}
+
+button[variant="outline"], .modal-content button[variant="outline"] {
+    background: #f7f7f7;
+    color: #b0b0b0;
+    border: 1.2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    padding: 12px 0;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+button[variant="outline"]:hover, .modal-content button[variant="outline"]:hover {
+    background: #ececec;
+    color: #888;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        padding: 18px 8px 18px 8px;
+        max-width: 98vw;
+    }
+}
+
+/* === Yarika Card === */
+.yarika-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 0 0 1px #e5e7eb;
+    margin-top: 20px;
+}
+
+/* === Table Overrides === */
+.yarika-card table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.yarika-card th,
+.yarika-card td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.yarika-card th {
+    font-weight: 600;
+    color: #444;
+}
+
+.yarika-card tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.members-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.members-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #181818;
+  letter-spacing: -0.5px;
+}
+
+.members-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.members-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1.2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0 10px;
+  height: 38px;
+  min-width: 220px;
+}
+
+.members-search-input {
+  border: none;
+  outline: none;
+  font-size: 1.08rem;
+  background: transparent;
+  margin-left: 6px;
+  width: 160px;
+}
+
+.search-icon {
+  color: #b0b0b0;
+}
+
+.profile-btn {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.profile-btn:hover {
+  box-shadow: 0 2px 8px rgba(202,167,93,0.10);
+}
+
+.admin-members-section-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.admin-members-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #181818;
+  margin-bottom: 0.1rem;
+  letter-spacing: -0.2px;
+}
+
+.admin-members-subtitle {
+  font-size: 1.04rem;
+  color: #888;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.add-member-btn {
+  background: #caa75d !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 1.04rem;
+  padding: 9px 22px;
+  box-shadow: 0 1px 4px rgba(202,167,93,0.06);
+  transition: background 0.2s;
+  margin-left: 18px;
+}
+.add-member-btn:hover {
+  background: #b99b54 !important;
+}
+
+.members-table-card {
+  margin-top: 0.5rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.03);
+}
+
+.members-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.08rem;
+  background: #fff;
+}
+.members-table th {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #222;
+  padding: 14px 10px;
+  background: #fff;
+  border-bottom: 2px solid #ececec;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+.members-table td {
+  font-size: 1.08rem;
+  color: #222;
+  padding: 14px 10px;
+  border-bottom: 1px solid #f3f3f3;
+  vertical-align: middle;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 16px;
+  font-size: 1.01rem;
+  font-weight: 500;
+  background: #f3f3f3;
+  color: #888;
+}
+.role-superadmin {
+  background: #f9e7b2;
+  color: #b99b54;
+}
+.role-admin {
+  background: #e5e7eb;
+  color: #888;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 16px;
+  font-size: 1.01rem;
+  font-weight: 500;
+}
+.status-active {
+  background: #e6faea;
+  color: #2ecc71;
+}
+.status-removed {
+  background: #fde6e6;
+  color: #e74c3c;
+}
+
+.remove-badge {
+  background: #fde6e6;
+  color: #e74c3c;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 14px;
+  font-size: 1.01rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.remove-badge:hover {
+  background: #f9caca;
+}
+
+.ellipsis {
+  color: #bbb;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0 8px;
+}
+  

@@ -1,0 +1,157 @@
+.auth-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .auth-form {
+    flex: 1;
+    padding: 40px 60px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .brand {
+    text-align: center;
+    font-size: 36px;
+    color: #caa75d;
+    letter-spacing: 6px;
+    margin-bottom: 4px;
+  }
+  
+  .tagline {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+  }
+  
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .row {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 6px;
+    padding: 10px 14px;
+    width: 100%;
+    background-color: white;
+  }
+  
+  .input-group .icon {
+    margin-right: 10px;
+    color: gray;
+  }
+  
+  .input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    background: transparent;
+  }
+  
+  .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+    color: #999;
+    font-size: 14px;
+  }
+  
+  .divider span {
+    height: 1px;
+    background: #ccc;
+    width: 80px;
+  }
+  
+  .btn {
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .black-btn {
+    background-color: black!important;
+    color: white!important;
+    border: none;
+  }
+  
+  .black-btn:hover {
+    background-color: #333;
+  }
+  
+  .google-btn {
+    background-color: #eaeaea !important;
+    color: #000 !important;
+    border: none;
+  }
+  
+  .google-btn:hover {
+    background-color: #d5d5d5;
+  }
+  
+  .auth-image {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    display: none;
+  }
+  
+  @media screen and (min-width: 768px) {
+    .auth-image {
+      display: block;
+    }
+  }
+
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    justify-content: center;
+  }
+  .product-card {
+    width: 95vw;
+    max-width: 340px;
+    height: 400px;
+    margin: 0 auto 16px auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    justify-content: center;
+  }
+  .product-card {
+    width: 98vw;
+    max-width: 360px;
+    height: 400px;
+    margin: 0 auto 12px auto;
+  }
+}
+  
