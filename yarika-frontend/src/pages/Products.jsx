@@ -136,12 +136,12 @@ export default function Products() {
             <h2>Products</h2>
             <div className="analytics-header-right">
               <div className="search-container">
-                <input
-                  type="text"
+              <input
+                type="text"
                   className="search-input"
-                  placeholder="Search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <span className="search-icon">
                   <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="7"/><line x1="16" y1="16" x2="12.5" y2="12.5"/></svg>

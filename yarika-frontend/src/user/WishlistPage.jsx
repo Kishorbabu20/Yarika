@@ -37,7 +37,7 @@ const WishlistPage = () => {
                     navigate('/login');
                 } else {
                     toast.error("Failed to load wishlist");
-                }
+            }
             } finally {
                 setLoading(false);
             }
@@ -61,7 +61,7 @@ const WishlistPage = () => {
         console.log('Removing wishlist item with _id:', itemId);
         await api.delete(`/api/wishlist/remove-item/${itemId}`);
         setWishlistItems(prev => prev.filter(item => item._id !== itemId));
-        toast.success("Item removed from wishlist");
+            toast.success("Item removed from wishlist");
     };
 
     const handleLogout = () => {
@@ -115,48 +115,48 @@ const WishlistPage = () => {
                             const product = item.productId || item;
                             return (
                                 <div key={item._id} className="wishlist-item">
-                                    <div className="item-details">
-                                        <div className="item-image">
-                                            <img
+                                <div className="item-details">
+                                    <div className="item-image">
+                                        <img 
                                                 src={product.image || `https://placehold.co/200x200/f5f5f5/cccccc?text=Product`}
                                                 alt={product.name}
-                                                onError={(e) => {
-                                                    e.target.onerror = null;
-                                                    e.target.src = `https://placehold.co/200x200/f5f5f5/cccccc?text=Product`;
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="item-info">
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = `https://placehold.co/200x200/f5f5f5/cccccc?text=Product`;
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="item-info">
                                             <div className="item-name">{product.name}</div>
                                             <div className="item-sku">{product.sku}</div>
-                                            <div className="item-price">
+                                        <div className="item-price">
                                                 <span className="current-price">₹{product.currentPrice || product.price}</span>
                                                 {product.originalPrice && (
                                                     <span className="original-price">₹{product.originalPrice}</span>
-                                                )}
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
-                                    <div className="item-status">
-                                        {product.status || "Available"}
-                                    </div>
-                                    <div className="item-actions">
-                                        <button
-                                            className="buy-now-button"
-                                            onClick={() => handleBuyNow(item)}
-                                        >
-                                            Buy Now
-                                        </button>
-                                        <button className="remove-button" onClick={() => handleRemove(item._id)}>
-                                            remove
-                                        </button>
-                                    </div>
                                 </div>
+                                <div className="item-status">
+                                        {product.status || "Available"}
+                                </div>
+                                <div className="item-actions">
+                                    <button 
+                                        className="buy-now-button" 
+                                        onClick={() => handleBuyNow(item)}
+                                    >
+                                        Buy Now
+                                    </button>
+                                        <button className="remove-button" onClick={() => handleRemove(item._id)}>
+                                        remove
+                                    </button>
+                                </div>
+                            </div>
                             );
                         })
                     ) : (
                         <div className="empty-wishlist">
-                            <p className="no-items-message">Your wishlist is empty.</p>
+                        <p className="no-items-message">Your wishlist is empty.</p>
                             <button className="continue-shopping" onClick={() => navigate('/')}>
                                 Continue Shopping
                             </button>
