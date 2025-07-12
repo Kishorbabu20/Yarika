@@ -18,7 +18,7 @@ const ChangePasswordModal = ({ isOpen, onRequestClose }) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5001/api/auth/change-password",
+        "https://yarika.in/api/auth/change-password",
         { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );

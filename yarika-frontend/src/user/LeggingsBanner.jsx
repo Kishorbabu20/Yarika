@@ -1,5 +1,5 @@
 import React from "react";
-import leggingsModel from "../Img/Leggings-banner.png";
+import leggingsModel from "../assets/Leggings-banner.png";
 
 const LeggingsBanner = () => (
   <div style={{

@@ -4,7 +4,7 @@ import NavigationBarSection from "./NavigationBarSection";
 import { Mail, Phone, MessageSquare } from "lucide-react";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
-import YarikaLogo from "../Img/Yarika Logo (1).png";
+import YarikaLogo from "../assets/YarikaLogo1.png";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 

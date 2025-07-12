@@ -1,5 +1,5 @@
 import React from "react";
-import blouseModel from "../Img/Blouse-banner.png";
+import blouseModel from "../assets/Blouse-banner.png";
 
 const BlouseBanner = () => (
   <div style={{

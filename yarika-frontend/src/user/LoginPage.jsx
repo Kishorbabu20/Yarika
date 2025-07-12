@@ -3,7 +3,7 @@ import "../styles/signup.css";
 import { FcGoogle } from "react-icons/fc";
 import { FaKey } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import heroImage from "../Img/signup.png";
+import heroImage from "../assets/signup.png";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
 import { toast } from "react-toastify";
@@ -60,7 +60,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5001/api/auth/google";
+    window.location.href = "https://yarika.in/api/auth/google";
   };
 
   return (

@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import Footer from "../components/Footer";
 import api from "../config/axios";
-import YarikaLogo from "../Img/Yarika Logo (1).png";
+import YarikaLogo from "../assets/YarikaLogo1.png";
 import { useCart } from "../context/CartContext";
 import { Heart, Check } from 'lucide-react';
 import SizeChartModal from './SizeChartModal';

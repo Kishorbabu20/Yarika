@@ -3,7 +3,7 @@ import "../styles/signup.css";
 import { FcGoogle } from "react-icons/fc";
 import { FaUser, FaPhone, FaKey } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import heroImage from "../Img/signup.png";
+import heroImage from "../assets/signup.png";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
 import { toast } from "react-toastify";
@@ -148,7 +148,7 @@ export default function SignupLoginPage() {
           <button
             type="button"
             className="btn google-btn"
-            onClick={() => window.location.href = "http://localhost:5001/api/auth/google"}
+            onClick={() => window.location.href = "https://yarika.in/api/auth/google"}
           >
             <FcGoogle size={20} />
             Login with Google

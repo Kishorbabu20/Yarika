@@ -1,5 +1,5 @@
 import React from "react";
-import churidarModel from "../Img/Chudidar-banner.png";
+import churidarModel from "../assets/Chudidar-banner.png";
 
 const ChuridarBanner = () => (
   <div style={{

@@ -1,8 +1,8 @@
 import React from "react";
-import YarikaLogo2 from "../Img/Yarika Logo (2).png";
-import MailIcon from "../Img/mail-gold.png";
-import PhoneIcon from "../Img/phone-gold.png";
-import WhatsappIcon from "../Img/whatsapp-gold.png";
+import YarikaLogo2 from "../assets/YarikaLogo2.png";
+import MailIcon from "../assets/mail-gold.png";
+import PhoneIcon from "../assets/phone-gold.png";
+import WhatsappIcon from "../assets/whatsapp-gold.png";
 
 const Footer = () => (
   <footer style={{
@@ -12,7 +12,7 @@ const Footer = () => (
     fontFamily: "Inter, Helvetica, Arial, sans-serif"
   }}>
     <div style={{ textAlign: "center", padding: "32px 0 24px 0" }}>
-      <img src={YarikaLogo2} alt="Yarika Logo" style={{ height: 70, margin: "0 auto" }} />
+      <img src="/YarikaLogo2.png" alt="Yarika Logo" style={{ height: 70, margin: "0 auto" }} />
     </div>
     <div
       className="footer-flex"

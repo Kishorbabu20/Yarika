@@ -1,5 +1,5 @@
 import React from "react";
-import MarqueeImg from '../Img/Yarika Logo (3).png';
+import MarqueeImg from '../assets/YarikaLogo3.png';
 
 const logoCount = 8;
 

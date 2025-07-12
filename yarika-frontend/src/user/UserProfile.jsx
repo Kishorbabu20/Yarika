@@ -30,7 +30,7 @@ const UserProfile = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const res = await axios.get("http://localhost:5001/api/client/me", {
+                const res = await axios.get("https://yarika.in/api/client/me", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -65,7 +65,7 @@ const UserProfile = () => {
             setLoading(true);
             setError(null);
             const res = await axios.put(
-                "http://localhost:5001/api/client/me",
+                "https://yarika.in/api/client/me",
                 profile,
                 {
                     headers: { Authorization: `Bearer ${token}` },

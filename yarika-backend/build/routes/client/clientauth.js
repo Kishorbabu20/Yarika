@@ -6,7 +6,7 @@ const protect = require("../../middleware/auth");
 // @desc    Test route
 // @route   GET /api/client/test
 router.get("/test", (req, res) => {
-  res.send("Client route is active ✅");
+  res.send("Client route is active ");
 });
 
 // @desc    Register client

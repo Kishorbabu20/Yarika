@@ -10,7 +10,7 @@ const router = express.Router();
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_SECRET_CODE,
-    callbackURL: "http://localhost:5001/api/auth/google/callback", // must match Google Console
+    callbackURL: "https://yarika.in/api/auth/google/callback", // must match Google Console
     scope: ['profile', 'email'] // Request access to user's profile and email
 },
 async (accessToken, refreshToken, profile, done) => {
@@ -88,7 +88,7 @@ router.get(
     
     // Encode user data as base64 to pass through URL
     const encodedUserData = Buffer.from(JSON.stringify(userData)).toString('base64');
-    res.redirect(`http://localhost:5000/?token=${token}&user=${encodedUserData}`);
+    res.redirect(`https://yarika.in/?token=${token}&user=${encodedUserData}`);
   }
 );
 

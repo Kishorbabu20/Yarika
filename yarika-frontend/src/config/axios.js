@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5001", // <-- MUST be 5001
+  baseURL: "https://yarika.in", // <-- MUST be 5001
   headers: {
     "Content-Type": "application/json",
   },

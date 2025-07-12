@@ -1,7 +1,7 @@
 import React from 'react';
-import SignatureBlouse1 from '../Img/SignatureBlouse1.png';
-import SignatureBlouse2 from '../Img/SignatureBlouse2.png';
-import SignatureBlouse3 from '../Img/SignatureBlouse3.png';
+import SignatureBlouse1 from '../assets/SignatureBlouse1.png';
+import SignatureBlouse2 from '../assets/SignatureBlouse2.png';
+import SignatureBlouse3 from '../assets/SignatureBlouse3.png';
 
 const SignatureCollection = () => {
   const signatureBlouses = [
