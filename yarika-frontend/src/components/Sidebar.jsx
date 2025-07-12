@@ -11,7 +11,7 @@ import {
   UserCircle
 } from "lucide-react";
 import "../styles/AdminDashboard.css";
-import YarikaLogo from "../Img/Yarika Logo (1).png";
+import YarikaLogo from "../assets/YarikaLogo1.png";
 
 const menuItems = [
   { title: "Dashboard", href: "/admin/dashboard", icon: Grid2X2 },
@@ -29,7 +29,7 @@ const Sidebar = () => {
       <div className="sidebar-header">
         {!collapsed && (
           <img
-            src={YarikaLogo}
+                            src="/YarikaLogo1.png"
             alt="Yarika Logo"
             className="sidebar-logo"
             style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain' }}

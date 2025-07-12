@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/SizeChartModal.css';
-import SizeChart from '../Img/Size Chart.jpg';
+import SizeChart from '../assets/Size Chart.jpg';
 
 const SizeChartModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;

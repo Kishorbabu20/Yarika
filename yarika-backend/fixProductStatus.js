@@ -4,7 +4,7 @@ const Product = require("./models/Product");
 async function fixProductStatus() {
   try {
     // Connect to MongoDB
-    await mongoose.connect("mongodb://localhost:27017/yarika", {
+    await mongoose.connect(process.env.MONGO_URI || "mongodb+srv://Yarika:qw12w2e3q1r4QWER_@cluster0.8ehwkwy.mongodb.net/yarika?retryWrites=true&w=majority&appName=Cluster0", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

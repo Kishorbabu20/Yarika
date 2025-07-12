@@ -27,14 +27,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5000", "http://localhost:5001"],
+    origin: ["https://yarika.in", "https://yarika.in"],
     methods: ["GET", "POST"],
     credentials: true,
   },
   path: "/ws",
 });
 
-const allowedOrigins = ["http://localhost:5000", "http://localhost:5001"];
+const allowedOrigins = ["https://yarika.in", "https://yarika.in"];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -117,7 +117,7 @@ const connectDB = async () => {
     }
 
     console.log('Connecting to MongoDB...');
-    const MONGO_URI = "mongodb+srv://Yarika:qw12w2e3q1r4QWER_@cluster0.8ehwkwy.mongodb.net/yarika?retryWrites=true&w=majority&appName=Cluster0";
+    const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://Yarika:qw12w2e3q1r4QWER_@cluster0.8ehwkwy.mongodb.net/yarika?retryWrites=true&w=majority&appName=Cluster0";
     
     await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
@@ -324,7 +324,7 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at https://yarika.in`);
   console.log(`WebSocket server also running at ws://localhost:${PORT}/ws`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

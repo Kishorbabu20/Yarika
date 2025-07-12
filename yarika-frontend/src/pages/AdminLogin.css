@@ -9,7 +9,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 .admin-login-bg {
-  background: #111 url('../Img/Yarika Pattern (1).png') no-repeat center;
+  background: #111 url('../assets/Yarika Pattern (1).png') no-repeat center;
   background-size: cover;
   height: 100vh;
   display: flex;

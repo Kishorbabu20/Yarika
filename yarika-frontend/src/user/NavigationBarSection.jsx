@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import YarikaLogo from "../Img/Yarika Logo (1).png";
+import YarikaLogo from "../assets/YarikaLogo1.png";
 import { Search, ChevronDown, MapPin, User, Heart, ShoppingBag } from "lucide-react";
 import "../styles/Navbar.css";
 
@@ -147,7 +147,7 @@ const NavigationBarSection = () => {
       <nav className="navigation-bar">
         <div className="nav-left">
           <Link to="/" className="logo">
-            <img src={YarikaLogo} alt="Yarika Logo" />
+            <img src="/YarikaLogo1.png" alt="Yarika Logo" />
           </Link>
           <div className="nav-categories">
             <div

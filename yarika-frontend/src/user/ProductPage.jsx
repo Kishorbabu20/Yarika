@@ -3,10 +3,10 @@ import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
-import YarikaLogo from "../Img/Yarika Logo (1).png";
-import SignatureBlouse1 from "../Img/SignatureBlouse1.png";
-import SignatureBlouse2 from "../Img/SignatureBlouse2.png";
-import SignatureBlouse3 from "../Img/SignatureBlouse3.png";
+import YarikaLogo from "../assets/YarikaLogo1.png";
+import SignatureBlouse1 from "../assets/SignatureBlouse1.png";
+import SignatureBlouse2 from "../assets/SignatureBlouse2.png";
+import SignatureBlouse3 from "../assets/SignatureBlouse3.png";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 

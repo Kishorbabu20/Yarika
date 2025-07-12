@@ -51,7 +51,7 @@ export default function LoginModal({ onClose }) {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = "http://localhost:5001/api/auth/google";
+        window.location.href = "https://yarika.in/api/auth/google";
     };
 
     return (
