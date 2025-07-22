@@ -60,9 +60,11 @@ const HeroLanding = () => {
     const fetchProducts = async () => {
       try {
         const res = await api.get("/api/products");
-        setProducts(res.data);
+        // Defensive: ensure array
+        setProducts(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error("Failed to fetch products:", err);
+        setProducts([]); // fallback to empty array
       }
     };
     fetchProducts();
@@ -96,7 +98,9 @@ const HeroLanding = () => {
     str.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   const filterByCategory = (category) =>
-    products.filter((p) => p.category?.toLowerCase().includes(category));
+    Array.isArray(products)
+      ? products.filter((p) => p.category?.toLowerCase().includes(category))
+      : [];
 
   const trendingProducts = products.filter(
     (p) =>
