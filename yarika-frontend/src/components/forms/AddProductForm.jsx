@@ -175,6 +175,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   const [metaDescription, setMetaDescription] = useState(product?.metaDescription || "");
   const [metaKeywords, setMetaKeywords] = useState(product?.metaKeywords || "");
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [sizeColorStocks, setSizeColorStocks] = useState(/* initial value, e.g. [] or {} */);
 
   // SEO character limits
   const META_TITLE_LIMIT = 60;
