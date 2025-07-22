@@ -38,13 +38,29 @@ export const CartProvider = ({ children }) => {
     loadOrders();
   }, [token]);
 
+  // const loadCart = async () => {
+  //   try {
+  //     const res = await api.get("/api/cart");
+  //     setCartItems(res.data);
+  //   } catch (err) {
+  //     console.error("Error loading cart:", err.response?.data || err.message);
+  //   }
+  // };
+
   const loadCart = async () => {
     try {
       const res = await api.get("/api/cart");
-      setCartItems(res.data);
+      const data = res.data;
+  
+      if (Array.isArray(data)) {
+        setCartItems(data);
+      } else {
+        console.error("Unexpected cart data format:", data);
+        setCartItems([]); // fallback
+      }
     } catch (err) {
       console.error("Error loading cart:", err.response?.data || err.message);
-    }
+    }
   };
 
   const loadOrders = async () => {
