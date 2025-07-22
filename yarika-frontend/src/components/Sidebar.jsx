@@ -37,7 +37,7 @@ const Sidebar = () => {
           />
         ) : (
           <img
-            src="/YarikaLogo1.png"
+                            src="/YarikaLogo1.png"
             alt="Yarika Logo"
             className="sidebar-logo"
             style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain', background: 'none' }}

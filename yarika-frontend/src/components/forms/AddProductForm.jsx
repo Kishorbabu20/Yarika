@@ -1693,7 +1693,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                       </button>
                   </div>
                 )}
-              </div>
+            </div>
               {/* Main Image Alt Text */}
               <div className="product-images-group">
                 <Label>Main Image Alt Text *</Label>
@@ -1715,7 +1715,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                     marginTop: '4px' 
                   }}>
                     Alt text is required for the main image
-                </div>
+              </div>
                 )}
                 {mainImageAlt && (
                   <div style={{ 
@@ -1727,7 +1727,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                   </div>
                 )}
               </div>
-            </div>
+              </div>
               {/* Additional Images Upload with Alt Text Side by Side */}
               <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>
                 <Label>Additional Images ({additionalImagePreviews.length}/4)*</Label>
