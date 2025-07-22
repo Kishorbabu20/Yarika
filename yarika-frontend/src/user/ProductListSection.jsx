@@ -1,12 +1,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/ProductPage.css";
+import { generateProductUrl } from "../utils/productUrl";
 
-const ProductListSection = ({ product }) => {
+const ProductListSection = ({ product, dropdown }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/product/${product._id}`);
+    // Debug: Log the product data
+    console.log('ProductListSection - Product data:', {
+      name: product?.name,
+      seoUrl: product?.seoUrl,
+      categoryType: product?.categoryType,
+      category: product?.category,
+      dropdown: dropdown,
+      _id: product?._id
+    });
+    
+    const url = generateProductUrl(product, 'dropdown', dropdown);
+    console.log('ProductListSection - Generated URL:', url);
+    navigate(url);
   };
 
   return (

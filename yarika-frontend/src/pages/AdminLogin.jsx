@@ -17,7 +17,7 @@ const AdminLogin = ({ onLogin }) => {
     e.preventDefault();
     try {
       const response = await api.post("/api/admins/login", {
-        email: identifier, // The backend will check this against both email and username
+        username: identifier, // Send as username for backend compatibility
         password
       });
       

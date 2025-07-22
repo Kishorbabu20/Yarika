@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import YarikaLogo from "../assets/YarikaLogo1.png";
-import { Search, ChevronDown, MapPin, User, Heart, ShoppingBag } from "lucide-react";
+import { Search, ChevronDown, MapPin, User, Heart, ShoppingBag, Menu } from "lucide-react";
 import "../styles/Navbar.css";
 
 function isMobile() {
@@ -14,6 +14,9 @@ const NavigationBarSection = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const { totalItems } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileDropdown, setMobileDropdown] = useState(null); // Track which dropdown is open
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const handleMouseEnter = (dropdownName) => {
     setActiveDropdown(dropdownName);
@@ -52,9 +55,30 @@ const NavigationBarSection = () => {
     navigate("/cart");
   };
 
+  const handleMenuClick = () => {
+    // This function is not defined in the original file,
+    // but the edit hint implies its existence.
+    // For now, it will be a placeholder.
+    console.log("Menu clicked");
+  };
+
+  const handleSearchClick = () => {
+    setMobileSearchOpen(true);
+  };
+  const handleMobileSearchClose = () => {
+    setMobileSearchOpen(false);
+  };
+
   // Updated category types to match the backend structure
   const categoryTypes = {
     women: {
+      bridal: {
+        title: "Bridal",
+        items: [
+          { name: "Bridal Lehenga", slug: "bridal-lehenga" },
+          { name: "Bridal Gown", slug: "bridal-gown" }
+        ]
+      },
       trending: {
         title: "Trending",
         items: [
@@ -138,9 +162,158 @@ const NavigationBarSection = () => {
     kids: {}
   };
 
-  const getCategoryLink = (categoryType, item) => {
-    return `/products/${categoryType}/${item.slug}`;
+  const getCategoryLink = (dropdown, categoryType, item) => {
+    return `/${dropdown}/${categoryType}/${item.slug}`;
   };
+
+  const isMobileView = window.innerWidth <= 768;
+
+  if (isMobileView) {
+    return (
+      <>
+      <div className="mobile-navbar">
+          <button className="navbar-icon menu-icon" onClick={() => setMobileMenuOpen(true)}>
+          <Menu size={28} color="#caa75d" />
+        </button>
+        <div className="navbar-logo">
+            <Link to="/">
+          <img src={YarikaLogo} alt="Yarika Logo" className="mobile-navbar-logo" />
+            </Link>
+        </div>
+        <div className="navbar-icons">
+          <button className="navbar-icon" onClick={handleSearchClick}>
+            <Search size={24} color="#111" />
+          </button>
+          <button className="navbar-icon" onClick={handleCartClick}>
+            <ShoppingBag size={24} color="#111" />
+          </button>
+        </div>
+      </div>
+        {mobileSearchOpen && (
+          <div className="mobile-search-overlay" onClick={handleMobileSearchClose}>
+            <div className="mobile-search-bar" onClick={e => e.stopPropagation()}>
+              <input
+                type="text"
+                className="mobile-search-input"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={handleKeyPress}
+                autoFocus
+              />
+              <button className="mobile-search-btn" onClick={handleSearch}>
+                <Search size={20} />
+              </button>
+              <button className="mobile-search-close" onClick={handleMobileSearchClose}>
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+        {mobileMenuOpen && (
+          <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+            <div className="mobile-menu" onClick={e => e.stopPropagation()}>
+              <button className="close-menu" onClick={() => setMobileMenuOpen(false)}>×</button>
+              <div className="mobile-menu-links">
+                <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+                <div>
+                  <button className="mobile-dropdown-btn" onClick={() => setMobileDropdown(mobileDropdown === 'women' ? null : 'women')}>
+                    Women
+                  </button>
+                  {mobileDropdown === 'women' && (
+                    <ul className="mobile-submenu">
+                      {Object.entries(categoryTypes.women).map(([categoryType, category], idx) => (
+                        <li key={idx} style={{marginBottom: '8px'}}>
+                          <span style={{fontWeight: 'bold', fontSize: '1em'}}>{category.title}</span>
+                          <ul style={{marginLeft: '12px', marginTop: '4px'}}>
+                            {category.items.map((item, itemIdx) => (
+                              <li key={itemIdx}>
+                                <Link to={getCategoryLink('women', categoryType, item)} onClick={() => setMobileMenuOpen(false)}>
+                                  {item.name}
+                                  {item.highlight && <span className="highlight"> ({item.highlight})</span>}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div>
+                  <button className="mobile-dropdown-btn" onClick={() => setMobileDropdown(mobileDropdown === 'girls' ? null : 'girls')}>
+                    Girls
+                  </button>
+                  {mobileDropdown === 'girls' && (
+                    <ul className="mobile-submenu">
+                      {Object.entries(categoryTypes.girls).map(([categoryType, category], idx) => (
+                        <li key={idx} style={{marginBottom: '8px'}}>
+                          <span style={{fontWeight: 'bold', fontSize: '1em'}}>{category.title}</span>
+                          <ul style={{marginLeft: '12px', marginTop: '4px'}}>
+                            {category.items.map((item, itemIdx) => (
+                              <li key={itemIdx}>
+                                <Link to={getCategoryLink('girls', categoryType, item)} onClick={() => setMobileMenuOpen(false)}>
+                                  {item.name}
+                                  {item.highlight && <span className="highlight"> ({item.highlight})</span>}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div>
+                  <button className="mobile-dropdown-btn" onClick={() => setMobileDropdown(mobileDropdown === 'kids' ? null : 'kids')}>
+                    Kids
+                  </button>
+                  {mobileDropdown === 'kids' && (
+                    <ul className="mobile-submenu">
+                      {/* Add kids categories/items here if needed */}
+                      <li>No categories available</li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="mobile-menu-icons" style={{marginTop: '18px', alignItems: 'center'}}>
+                <a
+                  className="icon-item"
+                  href="https://www.google.com/maps/search/?api=1&query=SF+No.+29%2F18%2C+Onapalayam%2C+Vadavalli+To+Thondamuthur+Road%2C+Coimbatore-641+109%2C+Tamilnadu%2C+India"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Store Locator"
+                  style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#222', fontSize: '1.1rem', textDecoration: 'none'}}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <MapPin size={22} className="gold-icon" />
+                  <span>Store Locator</span>
+                </a>
+                <Link
+                  to="/profile"
+                  className="icon-item"
+                  style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#222', fontSize: '1.1rem', textDecoration: 'none'}}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <User size={22} />
+                  <span>Profile</span>
+                </Link>
+                <Link
+                  to="/wishlist"
+                  className="icon-item"
+                  style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#222', fontSize: '1.1rem', textDecoration: 'none'}}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Heart size={22} />
+                  <span>Wishlist</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
 
   return (
     <div className="nav-wrapper">
@@ -166,7 +339,7 @@ const NavigationBarSection = () => {
                         <ul>
                           {category.items.map((item, itemIndex) => (
                             <li key={itemIndex}>
-                                <Link to={getCategoryLink(categoryType, item)}>
+                                <Link to={getCategoryLink('women', categoryType, item)}>
                                 {item.name}
                                 {item.highlight && <span className="highlight"> ({item.highlight})</span>}
                                 </Link>
@@ -195,7 +368,7 @@ const NavigationBarSection = () => {
                         <ul>
                           {category.items.map((item, itemIndex) => (
                             <li key={itemIndex}>
-                                <Link to={getCategoryLink(categoryType, item)}>
+                                <Link to={getCategoryLink('girls', categoryType, item)}>
                                 {item.name}
                                 {item.highlight && <span className="highlight"> ({item.highlight})</span>}
                                 </Link>
@@ -243,10 +416,16 @@ const NavigationBarSection = () => {
 
       <div className="navbar-right">
         <div className="icon-group">
-              <button className="icon-item" onClick={handleStoreLocatorClick}>
-            <MapPin size={20} />
+              <a
+                className="icon-item"
+                href="https://www.google.com/maps/search/?api=1&query=SF+No.+29%2F18%2C+Onapalayam%2C+Vadavalli+To+Thondamuthur+Road%2C+Coimbatore-641+109%2C+Tamilnadu%2C+India"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Store Locator"
+              >
+                <MapPin size={20} className="gold-icon" />
                 <span className="icon-label">Store Locator</span>
-          </button>
+              </a>
               <button className="icon-item" onClick={handleLoginClick}>
             <User size={20} />
             <span className="icon-label">Login</span>
@@ -268,6 +447,31 @@ const NavigationBarSection = () => {
         </div>
       </div>
     </nav>
+    {mobileMenuOpen && (
+  <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+    <div className="mobile-menu" onClick={e => e.stopPropagation()}>
+      <button className="close-menu" onClick={() => setMobileMenuOpen(false)}>×</button>
+      <div className="mobile-menu-links">
+        <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+        <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
+        <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
+        <Link to="/orders" onClick={() => setMobileMenuOpen(false)}>My Orders</Link>
+        {/* Add your category dropdowns here as needed */}
+      </div>
+      <div className="mobile-menu-icons">
+        <button onClick={() => { setMobileMenuOpen(false); handleLoginClick(); }}>
+          <User size={24} /> Profile
+        </button>
+        <button onClick={() => { setMobileMenuOpen(false); handleWishlistClick(); }}>
+          <Heart size={24} /> Wishlist
+        </button>
+        <button onClick={() => { setMobileMenuOpen(false); handleCartClick(); }}>
+          <ShoppingBag size={24} /> Cart
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

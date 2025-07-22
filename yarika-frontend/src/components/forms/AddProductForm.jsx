@@ -1,15 +1,25 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
 import { Card, CardHeader, CardTitle } from "../ui/Card";
 import { Badge } from "../ui/Badge";
-import { X, Upload, Image } from "lucide-react";
+import { X, Upload, Image, Trash2, QrCode, Download } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../config/axios";
 import "../../styles/AddNewProduct.css";
+import { useNavigate, useParams } from "react-router-dom";
+import Sidebar from "../Sidebar";
+import Header from "../Header";
+import axios from "../../config/axios";
+import QRCode from "qrcode";
+import { useQueryClient } from '@tanstack/react-query';
 
 const categoryOptions = {
+  bridal: [
+    { label: "Bridal Lehenga", slug: "bridal-lehenga" },
+    { label: "Bridal Gown", slug: "bridal-gown" }
+  ],
   trending: [
     { label: "Best Sellers", slug: "best-sellers" },
     { label: "Signature Styles", slug: "signature-styles" }
@@ -117,6 +127,9 @@ const COLOR_OPTIONS = {
 };
 
 const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = () => {} }) => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const queryClient = useQueryClient();
   const [brand, setBrand] = useState(product?.brand || "");
   const [categoryType, setCategoryType] = useState(product?.categoryType || "");
   const [category, setCategory] = useState(product?.category || "");
@@ -135,7 +148,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     }
     return {};
   });
-  const [selectedColors, setSelectedColors] = useState(product?.colors ? [product.colors[0]] : []);
+  const [selectedColors, setSelectedColors] = useState(product?.colors || []);
   const [mainImage, setMainImage] = useState(null);
   const [mainImagePreview, setMainImagePreview] = useState(product?.mainImage || null);
   const [additionalImages, setAdditionalImages] = useState([]);
@@ -149,15 +162,237 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   const [isCheckingCode, setIsCheckingCode] = useState(false);
   const [removedImages, setRemovedImages] = useState([]);
   const [manualTotalStock, setManualTotalStock] = useState(product?.totalStock || "");
+  const [imageAlts, setImageAlts] = useState([]); // For additional images
+  const [mainImageAlt, setMainImageAlt] = useState(""); // For main image
+  const [colorGroups, setColorGroups] = useState([]);
+  const [productGroup, setProductGroup] = useState("");
+  const [productGroupOptions, setProductGroupOptions] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
+  const [sizeGroups, setSizeGroups] = useState([]);
+  const [selectedSizeGroup, setSelectedSizeGroup] = useState("");
+  const [seoUrl, setSeoUrl] = useState(product?.seoUrl || "");
+  const [metaTitle, setMetaTitle] = useState(product?.metaTitle || "");
+  const [metaDescription, setMetaDescription] = useState(product?.metaDescription || "");
+  const [metaKeywords, setMetaKeywords] = useState(product?.metaKeywords || "");
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  // SEO character limits
+  const META_TITLE_LIMIT = 60;
+  const META_DESCRIPTION_LIMIT = 200;
+  const META_KEYWORDS_LIMIT = 200;
+
+  // Function to reset form to initial state
+  const resetForm = () => {
+    setBrand("");
+    setCategoryType("");
+    setCategory("");
+    setGroup("");
+    setProductName("");
+    setMrp("");
+    setSellingPrice("");
+    setSelectedSizes([]);
+    setSizeStocks({});
+    setSelectedColors([]);
+    setMainImage(null);
+    setMainImagePreview(null);
+    setAdditionalImages([]);
+    setAdditionalImagePreviews([]);
+    setProductDescriptionWeb("");
+    setProductDescriptionMobile("");
+    setShortDescriptionWeb("");
+    setShortDescriptionMobile("");
+    setProductCode("");
+    setCodeValidation({ isValid: true, message: "" });
+    setRemovedImages([]);
+    setManualTotalStock("");
+    setImageAlts([]);
+    setMainImageAlt("");
+    setSeoUrl("");
+    setMetaTitle("");
+    setMetaDescription("");
+    setMetaKeywords("");
+    setTaxClass("gst-5");
+    setQrSize("small");
+    setNetWeight("");
+    setGrossWeight("");
+    setMaxOrderQuantity("");
+    setQrCodeDataUrl("");
+  };
+
+  // Auto-generate SEO fields from product details
+  const generateSeoFields = () => {
+    if (!productName || !categoryType || !category) {
+      toast.error("Please fill in product name, category type, and category first");
+      return;
+    }
+
+    // Generate Meta Title
+    const generatedTitle = `${productName} - ${category} ${categoryType} | Yarika`;
+    setMetaTitle(generatedTitle);
+
+    // Generate Meta Description
+    const generatedDescription = `Shop our exclusive ${productName.toLowerCase()} in ${category} category. Premium quality ${categoryType} with perfect fit. Available in multiple sizes and colors. Free shipping across India.`;
+    setMetaDescription(generatedDescription);
+
+    // Generate Meta Keywords
+    const generatedKeywords = `${productName.toLowerCase()}, ${category}, ${categoryType}, ethnic wear, Indian fashion, traditional clothing, designer wear, Yarika`;
+    setMetaKeywords(generatedKeywords);
+  };
+  const [taxClass, setTaxClass] = useState(product?.taxClass || "gst-5");
+  const [qrSize, setQrSize] = useState(product?.qrSize || "small");
+  const [netWeight, setNetWeight] = useState(product?.netWeight || "");
+  const [grossWeight, setGrossWeight] = useState(product?.grossWeight || "");
+  const [maxOrderQuantity, setMaxOrderQuantity] = useState(product?.maxOrderQuantity || "");
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
+  const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
+  const qrCanvasRef = useRef(null);
 
   const isEditMode = !!product?._id;
 
+  // Function to generate SEO URL automatically
+  const generateSeoUrl = (productName, categoryType, category) => {
+    if (!productName) return "";
+    
+    // Convert product name to URL-friendly format
+    let seoUrl = productName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+      .trim();
+    
+    // Add category prefix for uniqueness
+    if (categoryType && category) {
+      seoUrl = `${category}-${seoUrl}`;
+    }
+    
+    // Add a unique suffix to avoid conflicts
+    const timestamp = Date.now().toString().slice(-4);
+    seoUrl = `${seoUrl}-${timestamp}`;
+    
+    return seoUrl;
+  };
+
+  // Generate a unique product code based on category and timestamp
+  const generateProductCode = () => {
+    if (!categoryType || !category) {
+      toast.error("Please select category type and category first");
+      return;
+    }
+
+    // Get category abbreviations
+    const categoryAbbr = categoryType === "readymade-blouse" ? "BL" : 
+                        categoryType === "leggings" ? "LG" : 
+                        categoryType === "materials" ? "MT" : "PR";
+    
+    const subCategoryAbbr = category.split('-')[0].toUpperCase().substring(0, 2);
+    
+    // Generate timestamp-based suffix
+    const timestamp = Date.now().toString().slice(-5);
+    
+    const generatedCode = `${categoryAbbr}${subCategoryAbbr}.${timestamp}`;
+    setProductCode(generatedCode);
+    
+    // Trigger validation
+    debouncedCheckCode(generatedCode);
+    
+    toast.success("Product code generated successfully!");
+  };
+
+  // Auto-generate SEO URL when product name or category changes
+  useEffect(() => {
+    if (!isEditMode && productName && categoryType && category) {
+      const generatedSeoUrl = generateSeoUrl(productName, categoryType, category);
+      setSeoUrl(generatedSeoUrl);
+    }
+  }, [productName, categoryType, category, isEditMode]);
+
+  // Auto-generate QR code when all required fields are filled
+  useEffect(() => {
+    if (productName && netWeight && grossWeight && sellingPrice && !qrCodeGenerated) {
+      // Auto-generate QR code after a short delay to avoid too frequent generation
+      const timer = setTimeout(() => {
+        generateQRCode();
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [productName, netWeight, grossWeight, sellingPrice, qrCodeGenerated]);
+
+  // Generate QR code with product details
+  const generateQRCode = async () => {
+    if (!productName || !netWeight || !grossWeight || !sellingPrice) {
+      toast.error("Please fill in product name, weights, and price first");
+      return;
+    }
+
+    // Don't regenerate if already generated
+    if (qrCodeGenerated && qrCodeDataUrl) {
+      return;
+    }
+
+    try {
+      // Create QR code data with product details
+      const qrData = {
+        productName: productName,
+        netWeight: `${netWeight}g`,
+        grossWeight: `${grossWeight}g`,
+        price: `₹${sellingPrice}`,
+        code: productCode || "N/A",
+        category: category || "N/A",
+        timestamp: new Date().toISOString()
+      };
+
+      const qrText = JSON.stringify(qrData, null, 2);
+      
+      // Generate QR code
+      const dataUrl = await QRCode.toDataURL(qrText, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+
+      setQrCodeDataUrl(dataUrl);
+      setQrCodeGenerated(true);
+      toast.success("QR Code generated successfully!");
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+      toast.error("Failed to generate QR code");
+    }
+  };
+
+  // Download QR code
+  const downloadQRCode = () => {
+    if (!qrCodeDataUrl) {
+      toast.error("No QR code to download");
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.download = `qr-${productName || 'product'}-${Date.now()}.png`;
+    link.href = qrCodeDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("QR Code downloaded!");
+  };
+
   // Get available sizes based on category type
   const getAvailableSizes = () => {
-    if (categoryType === "leggings") {
-      return LEGGINGS_SIZES;
+    // Map categoryType to group name
+    let groupName = categoryType;
+    if (categoryType === "readymade-blouse") groupName = "Blouse";
+    if (categoryType === "leggings") groupName = "Leggings";
+    // Add more mappings if needed
+
+    const group = sizeGroups.find(g => g.name.toLowerCase() === groupName.toLowerCase());
+    if (group) {
+      return group.sizes.map(s => s.name);
     }
-    return BLOUSE_SIZES;
+    return [];
   };
 
   // Get available colors based on category and subcategory
@@ -168,24 +403,66 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     return COLOR_OPTIONS.default;
   };
 
+  // Fetch color groups on mount
+  useEffect(() => {
+    axios.get("/api/color-groups")
+      .then(res => setColorGroups(res.data))
+      .catch(() => setColorGroups([]));
+  }, []);
+
+  // Fetch size groups on mount
+  useEffect(() => {
+    axios.get("/api/size-groups")
+      .then(res => setSizeGroups(res.data))
+      .catch(() => setSizeGroups([]));
+  }, []);
+
+  // Update product group options when category type changes
+  useEffect(() => {
+    if (categoryType === "readymade-blouse") {
+      setProductGroupOptions([
+        { label: "Dailywear", value: "dailywear" },
+        { label: "Partywear", value: "partywear" },
+        { label: "Officewear", value: "officewear" }
+      ]);
+    } else {
+      setProductGroupOptions([]);
+    }
+    setProductGroup(""); // Reset group when category changes
+  }, [categoryType]);
+
+  // Update available colors when group changes
+  useEffect(() => {
+    const groupObj = colorGroups.find(g => g.name === group);
+    if (groupObj && groupObj.colors) {
+      setAvailableColors(groupObj.colors);
+    } else {
+      setAvailableColors([]);
+    }
+    // Only reset selected colors if not editing or not loaded
+    if (!id || !dataLoaded) {
+      setSelectedColors([]);
+    }
+  }, [group, colorGroups, id, dataLoaded]);
+
   // Reset stocks when category type or category changes
   useEffect(() => {
-    if (!product) { // Only reset if not in edit mode
+    if (!id || !dataLoaded) {
       setSizeStocks({});
       setSelectedSizes([]);
       setManualTotalStock("");
     }
-  }, [categoryType, category, product]);
+  }, [categoryType, category, id, dataLoaded]);
 
   // Update sizes when category type changes
   useEffect(() => {
-    setSelectedSizes([]); // Clear selected sizes when category type changes
-  }, [categoryType]);
+    if (!id || !dataLoaded) setSelectedSizes([]); // Clear selected sizes when not editing or not loaded
+  }, [categoryType, id, dataLoaded]);
 
   // Update colors when category changes
   useEffect(() => {
-    setSelectedColors([]); // Clear selected colors when category changes
-  }, [category]);
+    if (!id || !dataLoaded) setSelectedColors([]); // Clear selected colors when not editing or not loaded
+  }, [category, id, dataLoaded]);
 
   // Update manual total stock when individual size stocks change
   useEffect(() => {
@@ -257,7 +534,6 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   // Add validation before form submission
   const validateStocks = () => {
-    // Check for negative values
     const hasNegativeStocks = Object.values(sizeStocks).some(stock => stock < 0);
     if (hasNegativeStocks) {
       toast.error("Stock values cannot be negative");
@@ -280,17 +556,33 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     if (file) {
       setMainImage(file);
       setMainImagePreview(URL.createObjectURL(file));
+      toast.success("Main image uploaded successfully!");
     }
   };
 
   const handleAdditionalImages = (e) => {
     const files = Array.from(e.target.files);
-    const newFiles = files.slice(0, 4 - additionalImagePreviews.length);
+    const remainingSlots = 4 - additionalImagePreviews.length;
+    
+    if (remainingSlots <= 0) {
+      toast.error("Maximum 4 additional images reached. Please delete an image to add more.");
+      return;
+    }
+    
+    const newFiles = files.slice(0, remainingSlots);
+    
+    if (files.length > remainingSlots) {
+      toast.warning(`Only ${remainingSlots} image(s) added. Maximum limit reached.`);
+    }
     
     setAdditionalImages(prev => [...prev, ...newFiles]);
     
     const newPreviews = newFiles.map(file => URL.createObjectURL(file));
     setAdditionalImagePreviews(prev => [...prev, ...newPreviews]);
+    
+    if (newFiles.length > 0) {
+      toast.success(`${newFiles.length} additional image(s) uploaded successfully!`);
+    }
   };
 
   const handleRemoveAdditionalImage = (index) => {
@@ -304,6 +596,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     setAdditionalImages(prev => prev.filter((_, i) => 
       i !== (index - (additionalImagePreviews.length - additionalImages.length))
     ));
+    
+    // Remove the corresponding alt text
+    setImageAlts(prev => prev.filter((_, i) => i !== index));
+    
+    toast.success("Additional image removed successfully!");
   };
 
   const handleRemoveMainImage = () => {
@@ -312,6 +609,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     if (product?.mainImage) {
       setRemovedImages(prev => [...prev, product.mainImage]);
     }
+    toast.success("Main image removed successfully!");
   };
 
   // Debounced function to check product code
@@ -410,24 +708,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       return;
     }
 
-    // Validate stocks
-    const hasNegativeStocks = Object.values(sizeStocks).some(stock => stock < 0);
-    if (hasNegativeStocks) {
-      toast.error("Stock values cannot be negative");
-      return;
-    }
-
-    const totalFromSizes = Object.values(sizeStocks).reduce((sum, stock) => sum + stock, 0);
-    const manualTotal = parseInt(manualTotalStock) || 0;
-    if (totalFromSizes !== manualTotal) {
-      toast.error("Total stock must match sum of size stocks");
-      return;
-    }
-
-    // Validate that all selected sizes have stock values
-    const hasInvalidStock = selectedSizes.some(size => !sizeStocks[size] && sizeStocks[size] !== 0);
-    if (hasInvalidStock) {
-      toast.error("Please enter stock for all selected sizes.");
+    if (!validateStocks()) {
       return;
     }
 
@@ -456,7 +737,34 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       return;
     }
 
-    // Validate product code before submission (skip in edit mode)
+    // Validate required weight and quantity fields
+    if (!netWeight.trim()) {
+      toast.error("Please enter net weight");
+      return;
+    }
+
+    if (!grossWeight.trim()) {
+      toast.error("Please enter gross weight");
+      return;
+    }
+
+    if (!maxOrderQuantity.trim()) {
+      toast.error("Please enter maximum order quantity");
+      return;
+    }
+
+    // Validate product code
+    if (!productCode.trim()) {
+      toast.error("Please enter a product code");
+      return;
+    }
+
+    if (productCode.trim().length < 2) {
+      toast.error("Product code must be at least 2 characters long");
+      return;
+    }
+
+    // Validate product code uniqueness before submission (skip in edit mode)
     if (!isEditMode && (!codeValidation.isValid || isCheckingCode)) {
       toast.error("Please enter a valid and unique product code.");
       return;
@@ -466,6 +774,33 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       toast.error("Please upload a main product image");
       return;
     }
+
+    // Validate main image alt text
+    if (mainImagePreview && !mainImageAlt.trim()) {
+      toast.error("Please enter alt text for the main image");
+      return;
+    }
+
+    // Validate additional images alt text
+    const missingAltTexts = [];
+    additionalImagePreviews.forEach((_, index) => {
+      if (!imageAlts[index] || !imageAlts[index].trim()) {
+        missingAltTexts.push(index + 1);
+      }
+    });
+    
+    if (missingAltTexts.length > 0) {
+      toast.error(`Please enter alt text for additional image(s): ${missingAltTexts.join(', ')}`);
+      return;
+    }
+
+    // QR Code validation commented out
+    /*
+    if (!qrCodeGenerated) {
+      toast.error("Please generate a QR code for the product");
+      return;
+    }
+    */
 
     const formData = new FormData();
     formData.append("brand", brand);
@@ -477,55 +812,67 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     formData.append("sellingPrice", sellingPrice);
     formData.append("sizes", JSON.stringify(selectedSizes));
 
-    // Convert sizeStocks to a proper Map format that Mongoose expects
+    // Handle size stocks for all products
     const sizeStocksMap = new Map();
     selectedSizes.forEach(size => {
-      // Always include the stock value for selected sizes, even if it's 0
       const stockValue = parseInt(sizeStocks[size]) || 0;
       sizeStocksMap.set(size, stockValue);
-      console.log(`Processing size ${size}:`, {
-        rawValue: sizeStocks[size],
-        parsedValue: parseInt(sizeStocks[size]),
-        finalValue: stockValue
-      });
     });
 
-    // Convert Map to an object format that can be properly stringified
     const sizeStocksObj = {};
     sizeStocksMap.forEach((value, key) => {
       sizeStocksObj[key] = value;
     });
 
-    // Debug logs
-    console.log("Size stocks before submission:", {
-      original: sizeStocks,
-      processed: sizeStocksObj,
-      selectedSizes,
-      manualTotal
-    });
-
     formData.append("sizeStocks", JSON.stringify(sizeStocksObj));
-    formData.append("totalStock", manualTotal.toString());
+    formData.append("totalStock", manualTotalStock.toString());
+    formData.append("colors", JSON.stringify(selectedColors));
 
-    // Debug logs
-    console.log("Sending data:", {
-      sizes: selectedSizes,
+    console.log("Product data:", {
       sizeStocks: sizeStocksObj,
-      totalStock: manualTotal
+      totalStock: manualTotalStock,
+      colors: selectedColors
     });
 
-    formData.append("colors", JSON.stringify(selectedColors));
-    formData.append("productDescriptionWeb", productDescriptionWeb.trim());
-    formData.append("productDescriptionMobile", productDescriptionMobile.trim());
-    formData.append("shortDescriptionWeb", shortDescriptionWeb.trim());
-    formData.append("shortDescriptionMobile", shortDescriptionMobile.trim());
-    formData.append("code", productCode.trim());
+    formData.append("productDescriptionWeb", productDescriptionWeb ? productDescriptionWeb.trim() : "");
+    formData.append("productDescriptionMobile", productDescriptionMobile ? productDescriptionMobile.trim() : "");
+    formData.append("shortDescriptionWeb", shortDescriptionWeb ? shortDescriptionWeb.trim() : "");
+    formData.append("shortDescriptionMobile", shortDescriptionMobile ? shortDescriptionMobile.trim() : "");
+    formData.append("code", productCode ? productCode.trim() : "");
+    
+    // Ensure SEO URL is generated if not provided
+    const finalSeoUrl = seoUrl ? seoUrl.trim() : generateSeoUrl(productName, categoryType, category);
+    formData.append("seoUrl", finalSeoUrl);
+    formData.append("metaTitle", metaTitle ? metaTitle.trim() : "");
+    formData.append("metaDescription", metaDescription ? metaDescription.trim() : "");
+    formData.append("metaKeywords", metaKeywords ? metaKeywords.trim() : "");
+    formData.append("taxClass", taxClass);
+    formData.append("qrSize", qrSize);
+    formData.append("netWeight", netWeight ? netWeight.trim() : "");
+    formData.append("grossWeight", grossWeight ? grossWeight.trim() : "");
+    formData.append("maxOrderQuantity", maxOrderQuantity ? maxOrderQuantity.trim() : "");
+    // QR Code data URL commented out
+    // formData.append("qrCodeDataUrl", qrCodeDataUrl);
+
+    // Add alt text for main image (only if it exists and is not empty)
+    if (mainImageAlt && mainImageAlt.trim()) {
+      formData.append("mainImageAlt", mainImageAlt.trim());
+    }
 
     if (mainImage) {
       formData.append("mainImage", mainImage);
     }
+    
+    // Add additional images
     additionalImages.forEach((img) => {
       formData.append("additionalImages", img);
+    });
+    
+    // Add alt text for additional images (only if they exist and are not empty)
+    imageAlts.forEach((alt, index) => {
+      if (alt && alt.trim()) {
+        formData.append("additionalImageAlts", alt.trim());
+      }
     });
     
     // Add list of removed images
@@ -541,12 +888,16 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
     try {
       let res;
-      if (isEditMode) {
+      if (id) {
         // Edit mode: update product
-        res = await api.put(`/api/products/${product._id}`,
+        res = await api.put(`/api/products/${id}`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
+        toast.success("Product updated successfully!");
+        queryClient.invalidateQueries(['products']);
+        navigate('/admin/products');
+        return;
       } else {
         // Add mode: create new product
         res = await api.post("/api/products/add", formData, {
@@ -554,306 +905,1048 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
           "Content-Type": "multipart/form-data",
         },
       });
+        toast.success("Product added successfully! Redirecting to products list...");
+        queryClient.invalidateQueries(['products']);
+        navigate('/admin/products');
+        return;
       }
-      toast.success(isEditMode ? "Product updated successfully!" : "Product added successfully!");
-      onProductAdded();
-      onClose();
+      // ...rest of the code is now unreachable after navigate
     } catch (error) {
       console.error("Upload failed:", error.response?.data || error.message);
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error(isEditMode ? "Failed to update product." : "Failed to upload product.");
+        toast.error(id ? "Failed to update product." : "Failed to upload product.");
       }
       // Do NOT call onProductAdded() or onClose() here!
     }
   };
 
+  // New functions for leggings with multiple colors per size
+  const isLeggingsCategory = () => {
+    return categoryType === "leggings";
+  };
+
+  const addColorToSize = (size, color) => {
+    setSizeColorStocks(prev => {
+      const newStocks = { ...prev };
+      if (!newStocks[size]) {
+        newStocks[size] = {};
+      }
+      if (!newStocks[size][color.code]) {
+        newStocks[size][color.code] = 0;
+      }
+      return newStocks;
+    });
+  };
+
+  const removeColorFromSize = (size, colorCode) => {
+    setSizeColorStocks(prev => {
+      const newStocks = { ...prev };
+      if (newStocks[size] && newStocks[size][colorCode]) {
+        delete newStocks[size][colorCode];
+        if (Object.keys(newStocks[size]).length === 0) {
+          delete newStocks[size];
+        }
+      }
+      return newStocks;
+    });
+  };
+
+  const handleSizeColorStockChange = (size, colorCode, value) => {
+    const newValue = Math.max(parseInt(value) || 0, 0);
+    
+    setSizeColorStocks(prev => {
+      const newStocks = { ...prev };
+      if (!newStocks[size]) {
+        newStocks[size] = {};
+      }
+      newStocks[size][colorCode] = newValue;
+      return newStocks;
+    });
+  };
+
+  const getSizeColors = (size) => {
+    return sizeColorStocks[size] ? Object.keys(sizeColorStocks[size]) : [];
+  };
+
+  const getTotalStockForSize = (size) => {
+    if (!sizeColorStocks[size]) return 0;
+    return Object.values(sizeColorStocks[size]).reduce((sum, stock) => sum + (parseInt(stock) || 0), 0);
+  };
+
+  const getTotalStockForAllSizes = () => {
+    return Object.keys(sizeColorStocks).reduce((total, size) => {
+      return total + getTotalStockForSize(size);
+    }, 0);
+  };
+
+  useEffect(() => {
+    if (id) {
+      api.get(`/api/products/${id}`).then(res => {
+        const data = res.data;
+        setBrand(data.brand || "");
+        setCategoryType(data.categoryType || "");
+        setCategory(data.category || "");
+        setGroup(data.group || "");
+        setProductName(data.name || "");
+        setMrp(data.mrp || "");
+        setSellingPrice(data.sellingPrice || "");
+        setSelectedSizes(data.sizes || []);
+        setSizeStocks(data.sizeStocks || {});
+        setSelectedColors(data.colors || []);
+        setMainImagePreview(data.mainImage || null);
+        setAdditionalImagePreviews(data.additionalImages || []);
+        setProductDescriptionWeb(data.productDescriptionWeb || "");
+        setProductDescriptionMobile(data.productDescriptionMobile || "");
+        setShortDescriptionWeb(data.shortDescriptionWeb || "");
+        setShortDescriptionMobile(data.shortDescriptionMobile || "");
+        setProductCode(data.code || "");
+        setSeoUrl(data.seoUrl || "");
+        setMetaTitle(data.metaTitle || "");
+        setMetaDescription(data.metaDescription || "");
+        setMetaKeywords(data.metaKeywords || "");
+        setTaxClass(data.taxClass || "gst-5");
+        setQrSize(data.qrSize || "small");
+        setNetWeight(data.netWeight || "");
+        setGrossWeight(data.grossWeight || "");
+        setMaxOrderQuantity(data.maxOrderQuantity || "");
+        setManualTotalStock(data.totalStock || "");
+        setMainImageAlt(data.mainImageAlt || "");
+        setImageAlts(data.additionalImageAlts || []);
+        setDataLoaded(true);
+      });
+    }
+  }, [id]);
+
   return (
-    <div className="addproduct-modal">
-      <form className="addproduct-form" onSubmit={handleSubmit}>
-        {/* Modal Header */}
-        <div className="ap-header">
-          <span className="ap-title">{isEditMode ? "Edit Product" : "Create New Product"}</span>
-          <button type="button" className="ap-close" onClick={onClose}>
-            ×
-          </button>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <Sidebar />
+      <div style={{ flex: 1, background: '#fff' }}>
+        <Header title="Add New Product" />
+        <div className="add-product-form-container">
+          {/* Breadcrumb and Back Button */}
+          <div className="add-product-header-row">
+            <div className="breadcrumb">
+              <span style={{ color: '#caa75d', fontWeight: 500 }}>Product</span>
+              <span style={{ margin: '0 6px', color: '#888' }}>/</span>
+              <span style={{ color: '#caa75d', fontWeight: 500 }}>Manage Product</span>
+              <span style={{ margin: '0 6px', color: '#888' }}>/</span>
+              <span style={{ color: '#222', fontWeight: 600 }}>Create Product</span>
         </div>
-
-        {/* Basic Information */}
-        <div className="ap-section">
-          <div className="ap-section-title">Basic Information</div>
-          <div className="ap-divider" />
-          <div className="ap-grid">
-            <div>
-              <label>Brand</label>
-              <select value={brand} onChange={e => setBrand(e.target.value)}>
-                <option value="">Select brand</option>
-                <option value="yarika">Yarika</option>
-                <option value="yarika-premium">Yarika Premium</option>
+            <Button
+              className="gold-btn"
+              onClick={() => navigate(-1)}
+            >
+              Back
+            </Button>
+          </div>
+          <h1 className="add-product-title">Add New Product</h1>
+          <hr style={{ margin: '12px 0 24px 0', border: 'none', borderTop: '1.5px solid #e5e5e5' }} />
+          <div className="section-header">Basic Information</div>
+          <form className="add-product-basic-info-section" onSubmit={handleSubmit}>
+            {/* Row 1: Brand | Product Category */}
+            <div className="basic-info-group">
+              <Label>Brand</Label>
+              <select value={brand} onChange={e => setBrand(e.target.value)} className="add-product-basic-info-select">
+                <option value="">select brand</option>
+                <option value="yarika">yarika</option>
+                <option value="yarika-premium">yarika premium</option>
               </select>
             </div>
-
-            <div>
-              <label>Category Type</label>
-              <select
-                value={categoryType}
-                onChange={e => { 
-                  setCategoryType(e.target.value); 
-                  setCategory(""); 
-                  // Clear group if switching away from readymade-blouse
-                  if (e.target.value !== "readymade-blouse") {
-                    setGroup("");
-                  }
-                }}
-                required
-              >
-                <option value="">Select category type</option>
-                {Object.entries(categoryOptions).map(([slug, cats]) => (
-                  <option key={slug} value={slug}>
-                    {cats[0]?.label.split(" ")[0] === "Best" ? "Trending" : 
-                      cats[0]?.label.split(" ")[1] === "Blouse" ? "Readymade Blouse" : 
-                      slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
-                  </option>
-                ))}
+            <div className="basic-info-group">
+              <Label>Product Category *</Label>
+              <select value={categoryType} onChange={e => setCategoryType(e.target.value)} className="add-product-basic-info-select">
+                <option value="">Select Category</option>
+                <option value="readymade-blouse">Blouse</option>
+                <option value="leggings">Leggings</option>
+                <option value="readymade-blouse-cloth">Blouse Cloth</option>
+                <option value="trending">Trending</option>
               </select>
             </div>
-
-            <div>
-              <label>Category</label>
+            {/* Row 2: Category Type | Product Code */}
+            <div className="basic-info-group">
+              <Label>Category Type *</Label>
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value)}
+                className="add-product-basic-info-select"
                 disabled={!categoryType}
-                required
               >
-                <option value="">Select category</option>
-                {categoryOptions[categoryType]?.map((cat) => (
-                  <option key={cat.slug} value={cat.slug}>{cat.label}</option>
+                <option value="">Category type</option>
+                {categoryType && categoryOptions[categoryType]?.map(opt => (
+                  <option key={opt.slug} value={opt.slug}>{opt.label}</option>
                 ))}
               </select>
             </div>
-
-            {categoryType === "readymade-blouse" && (
-            <div>
-              <label>Group</label>
-                <select value={group} onChange={e => setGroup(e.target.value)} required>
-                <option value="">Select group</option>
-                <option value="dailywear">Dailywear</option>
-                <option value="Officewear">Officewear</option>
-                <option value="partywear">Partywear</option>
-              </select>
-            </div>
-            )}
-
-            <div className="ap-colspan2">
-              <label>Product Code *</label>
-              <div className="ap-code-input-container">
-                <input 
+            <div className="basic-info-group">
+              <Label>Product Code *</Label>
+              <div style={{ position: 'relative' }}>
+              <Input
                   type="text" 
-                  placeholder="Enter Product Code" 
+                placeholder="e.g., BLDW.KK.00075"
                   value={productCode} 
                   onChange={handleProductCodeChange} 
-                  className={!codeValidation.isValid ? "ap-input-error" : ""}
-                  required 
+                  style={{
+                    borderColor: productCode && !codeValidation.isValid ? '#d32f2f' : 
+                                 productCode && codeValidation.isValid ? '#2e7d32' : '#ccc',
+                    paddingRight: '40px'
+                  }}
                 />
                 {isCheckingCode && (
-                  <div className="ap-code-loading">Checking...</div>
+                  <div style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid #f3f3f3',
+                    borderTop: '2px solid #c6aa62',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
                 )}
-                {codeValidation.message && !isCheckingCode && (
-                  <div className={`ap-code-validation ${!codeValidation.isValid ? "ap-code-invalid" : "ap-code-valid"}`}>
-                    {codeValidation.message}
+                {productCode && !isCheckingCode && (
+                  <div style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontSize: '16px'
+                  }}>
+                    {codeValidation.isValid ? '✓' : '✗'}
                   </div>
                 )}
               </div>
-            </div>
-
-            <div className="ap-colspan2">
-              <label>Total Stock *</label>
-              <input 
-                type="number" 
-                min="0"
-                step="1"
-                placeholder="Enter Total Stock" 
-                value={manualTotalStock} 
-                onChange={(e) => handleManualTotalStockChange(e.target.value)}
-                onBlur={(e) => {
-                  const value = parseInt(e.target.value) || 0;
-                  if (value < 0) {
-                    handleManualTotalStockChange("0");
-                  }
-                }}
-                required 
-                className="ap-total-stock-input"
+              {productCode && (
+                <div style={{
+                  fontSize: '12px',
+                  marginTop: '4px',
+                  color: codeValidation.isValid ? '#2e7d32' : '#d32f2f',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  {isCheckingCode ? (
+                    <>
+                      <div style={{
+                        width: '12px',
+                        height: '12px',
+                        border: '2px solid #f3f3f3',
+                        borderTop: '2px solid #c6aa62',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }} />
+                      Checking availability...
+                    </>
+                  ) : (
+                    <>
+                      {codeValidation.isValid ? '✓' : '✗'}
+                      {codeValidation.message}
+                    </>
+                  )}
+                </div>
+              )}
+              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                Product code must be unique. Use format: BL.CT.CL.XXXXX (e.g., BLDW.KK.00075)
+              </small>
+                  </div>
+            {/* Row 3: Product Name (spans both columns) */}
+            <div className="basic-info-group" style={{ gridColumn: '1 / span 2' }}>
+              <Label>Product Name *</Label>
+              <Input
+                type="text"
+                placeholder="Enter Product name"
+                value={productName}
+                onChange={e => setProductName(e.target.value)}
               />
+              </div>
+            {/* Continue with Product Group, Color Group, Select Color, etc. */}
+            {/* Row 2: Product Group | Product Code */}
+            {/**
+            <div className="form-group">
+              <Label>Product Group *</Label>
+              <select
+                value={productGroup}
+                onChange={e => setProductGroup(e.target.value)}
+                className="add-product-basic-info-select"
+                disabled={productGroupOptions.length === 0}
+              >
+                <option value="">Select product group</option>
+                {productGroupOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
-
-            <div className="ap-colspan2">
-              <label>Product Name *</label>
-              <input type="text" placeholder="Enter Product name" value={productName} onChange={e => setProductName(e.target.value)} required />
+            */}
+            {/* Row 4: Color Group | Select Color */}
+            <div className="basic-info-group">
+              <Label>Color Group *</Label>
+              <select
+                value={group}
+                onChange={e => setGroup(e.target.value)}
+                className="add-product-basic-info-select"
+              >
+                <option value="">Select color group</option>
+                {colorGroups.map(g => (
+                  <option key={g._id} value={g.name}>{g.name}</option>
+                ))}
+              </select>
             </div>
-
-            <div className="ap-colspan2">
-              <label>Product Description *</label>
-              <textarea placeholder="Description Web" value={productDescriptionWeb} onChange={(e) => setProductDescriptionWeb(e.target.value)} required />
+            <div className="basic-info-group">
+              <Label>Select Color *</Label>
+              <select
+                value={selectedColors[0] || ''}
+                onChange={e => setSelectedColors([e.target.value])}
+                className="add-product-basic-info-select"
+                disabled={availableColors.length === 0}
+              >
+                <option value="">Select color</option>
+                {availableColors.map(color => (
+                  <option key={color.code} value={color.code}>
+                    {color.name} ({color.code})
+                  </option>
+                ))}
+              </select>
+              {/* Optional: Show color dot next to dropdown */}
+              {availableColors.length > 0 && selectedColors[0] && (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: 18,
+                    height: 18,
+                    borderRadius: '50%',
+                    background: availableColors.find(c => c.code === selectedColors[0])?.code,
+                    border: '1px solid #ccc',
+                    marginLeft: 8,
+                    verticalAlign: 'middle'
+                  }}
+                />
+              )}
             </div>
-            <div className="ap-colspan2">
-              <label>Product Description *</label>
-              <textarea placeholder="Description Mobile" value={productDescriptionMobile} onChange={(e) => setProductDescriptionMobile(e.target.value)} required />
-            </div>
-            <div className="ap-colspan2">
-              <label>Short Description *</label>
-              <textarea placeholder="Short Description Web" value={shortDescriptionWeb} onChange={(e) => setShortDescriptionWeb(e.target.value)} required />
-            </div>
-            <div className="ap-colspan2">
-              <label>Short Description *</label>
-              <textarea placeholder="Short Description Mobile" value={shortDescriptionMobile} onChange={(e) => setShortDescriptionMobile(e.target.value)} required />
-            </div>
-
-            <div className="ap-colspan2">
-              <label>Available Sizes & Stock *</label>
-              <div className="ap-sizes-container">
-              <div className="ap-chips">
-                  {getAvailableSizes().map((size) => (
-                  <button
-                    type="button"
+            {/* Row 6: Available Sizes */}
+            <div className="basic-info-group">
+              <Label>Available Sizes *</Label>
+              <div className="sizes-row">
+                {getAvailableSizes().map(size => (
+                  <span
                     key={size}
-                    className={`ap-chip${selectedSizes.includes(size) ? " ap-chip-selected" : ""}`}
+                    className={`size-pill${selectedSizes.includes(size) ? ' selected' : ''}`}
                     onClick={() => toggleSize(size)}
                   >
                     {size}
-                  </button>
+                  </span>
                 ))}
                 </div>
-                {selectedSizes.length > 0 && (
-                  <div className="ap-size-stocks">
+            </div>
+            
+            {/* Row 7: Stock Quantity by size (grid) */}
+            <div className="basic-info-group">
+              <Label>Stock Quantity by size *</Label>
+              <div className="stock-grid">
                     {selectedSizes.map(size => (
-                      <div key={size} className="ap-size-stock-input">
-                        <label>Size {size} Stock:</label>
-                        <input
+                  <div key={size} className="stock-size-row">
+                    <span className="stock-size-label">{size}</span>
+                    <Input
                           type="number"
-                          min="0"
-                          step="1"
-                          value={sizeStocks[size] || ""}
-                          onChange={(e) => {
-                            console.log('Input change:', e.target.value);
-                            handleSizeStockChange(size, e.target.value);
-                          }}
-                          onBlur={(e) => {
-                            const value = parseInt(e.target.value) || 0;
-                            if (value < 0) {
-                              handleSizeStockChange(size, "0");
-                            }
-                          }}
-                          required
-                          placeholder="Enter stock"
+                      min={0}
+                      value={sizeStocks[size] || ''}
+                      onChange={e => handleSizeStockChange(size, e.target.value)}
+                      style={{ width: 80 }}
                         />
-                      </div>
-                    ))}
-                    <div className="ap-total-stock">
-                      <strong>Total Stock: {Object.values(sizeStocks).reduce((sum, stock) => sum + (parseInt(stock) || 0), 0)}</strong>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="ap-colspan2">
-              <label>Available Colors *</label>
-              <div className="ap-chips">
-                {getAvailableColors().map((color) => (
-                  <button
-                    type="button"
-                    key={color.id}
-                    className={`ap-chip ap-color-chip${selectedColors.includes(color.id) ? " ap-chip-selected" : ""}`}
-                    onClick={() => toggleColor(color)}
-                    style={{
-                      backgroundColor: color.value,
-                      color: ["#ffffff", "#e7e6e3", "#f2d490", "#b3b6ad", "#C0C0C0"].includes(color.value.toLowerCase()) ? '#000000' : '#FFFFFF',
-                      border: '1px solid #e0e0e0',
-                      borderColor: ["#ffffff", "#e7e6e3", "#f2d490", "#b3b6ad", "#C0C0C0"].includes(color.value.toLowerCase()) ? '#e0e0e0' : color.value
-                    }}
-                  >
-                    {color.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Pricing & Information */}
-        <div className="ap-section">
-          <div className="ap-section-title">Pricing & Information</div>
-          <div className="ap-divider" />
-          <div className="ap-grid">
-            <div style={{ marginRight: "24px" }}>
-              <label>MRP Price (₹) *</label>
-              <input type="number" value={mrp} onChange={e => setMrp(e.target.value)} required />
-            </div>
-            <div>
-              <label>Our Price (₹) *</label>
-              <input type="number" value={sellingPrice} onChange={e => setSellingPrice(e.target.value)} required />
-            </div>
-            <div className="ap-colspan2">
-              <label>Main Image (640 × 700)</label>
-              <div className="ap-image-upload">
-                <label className="ap-image-drop">
-                  <input type="file" accept="image/*" style={{ display: "none" }} onChange={handleMainImageChange} />
-                  <div className="ap-image-drop-content">
-                    <span className="ap-image-drop-icon"></span>
-                    <span>Click to upload main image</span>
-                  </div>
-                </label>
-                {mainImagePreview && (
-                  <div className="ap-image-preview">
-                    <img src={mainImagePreview} alt="Main" className="ap-image-thumb" />
-                    <div>
-                      <div className="ap-image-label">Main Image of {productName || "Product"}</div>
-                      {mainImage && <div className="ap-image-size">{(mainImage.size / 1024).toFixed(0)} kb</div>}
-                    </div>
-                    <button type="button" className="ap-image-delete" onClick={handleRemoveMainImage}></button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="ap-colspan2">
-              <label>Additional Images</label>
-              <div className="ap-image-upload">
-                {additionalImagePreviews.length < 4 && (
-                  <label className="ap-image-drop">
-                    <input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handleAdditionalImages} />
-                    <div className="ap-image-drop-content">
-                      <span className="ap-image-drop-icon"></span>
-                      <span>upload additional images</span>
-                    </div>
-                  </label>
-                )}
-                <div className="ap-additional-images">
-                  {additionalImagePreviews.map((img, idx) => (
-                    <div className="ap-image-preview" key={idx}>
-                      <img src={img} alt={`Additional ${idx + 1}`} className="ap-image-thumb" />
-                      <div>
-                        <div className="ap-image-label">{img.name || `Image ${idx + 1}`}</div>
-                        <div className="ap-image-size">{(img.size / 1024).toFixed(0)} kb</div>
-                      </div>
-                      <button type="button" className="ap-image-delete" onClick={() => handleRemoveAdditionalImage(idx)}></button>
                     </div>
                   ))}
                 </div>
-              </div>
             </div>
+
+            {/* Pricing & Information Section */}
+           
+            <div className="pricing-info-group" style={{ gridColumn: '1 / span 2' }}>Pricing & Information</div>
+            <div className="pricing-info-section">
+              {/* Row 1: MRP Price | Our Price */}
+              <div className="pricing-info-group">
+                <Label>MRP Price (₹) *</Label>
+                <Input type="number" placeholder="960.00" value={mrp} onChange={e => setMrp(e.target.value)} />
+              </div>
+              <div className="pricing-info-group">
+                <Label>Our Price (₹) *</Label>
+                <Input type="number" placeholder="640.00" value={sellingPrice} onChange={e => setSellingPrice(e.target.value)} />
+            </div>
+              {/* Row 2: Product Description (web) | Product Description (mobile) */}
+              <div className="pricing-info-group">
+                <Label>Product Description *</Label>
+                <textarea className="form-textarea" placeholder="short Description (web)" value={productDescriptionWeb} onChange={e => setProductDescriptionWeb(e.target.value)} />
+              </div>
+              <div className="pricing-info-group">
+                <Label>Product Description *</Label>
+                <textarea className="form-textarea" placeholder="Product Description (mobile)" value={productDescriptionMobile} onChange={e => setProductDescriptionMobile(e.target.value)} />
+            </div>
+              {/* Row 3: Short Description (web) | Short Description (mobile) */}
+              <div className="pricing-info-group">
+                <Label>Short Description *</Label>
+                <textarea className="form-textarea" placeholder="short Description (web)" value={shortDescriptionWeb} onChange={e => setShortDescriptionWeb(e.target.value)} />
+                </div>
+              <div className="pricing-info-group">
+                <Label>Short Description *</Label>
+                <textarea className="form-textarea" placeholder="Product Description (mobile)" value={shortDescriptionMobile} onChange={e => setShortDescriptionMobile(e.target.value)} />
           </div>
         </div>
+        
 
-        {/* Buttons */}
-        <div className="ap-actions">
-          <button type="submit" className="ap-btn ap-btn-gold">
-            {isEditMode ? "Update Product" : "Add Product"}
-          </button>
-          <button type="button" className="ap-btn ap-btn-white" onClick={onClose}>Cancel</button>
+            {/* More Info Section */}
+            <div className="more-info-group" style={{ gridColumn: '1 / span 2' }}>More Info</div>
+            <div className="more-info-section">
+              {/* Row 1: SEO Url | Tax Class */}
+              <div className="more-info-group">
+                <Label>SEO Url *</Label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                <Input
+                    placeholder="SEO url will be auto-generated"
+                  value={seoUrl}
+                  onChange={e => setSeoUrl(e.target.value)}
+                  required
+                    style={{ flex: 1 }}
+                />
+                  <Button 
+                    type="button" 
+                    onClick={() => {
+                      if (productName && categoryType && category) {
+                        const generatedSeoUrl = generateSeoUrl(productName, categoryType, category);
+                        setSeoUrl(generatedSeoUrl);
+                      } else {
+                        toast.error("Please fill in product name, category type, and category first");
+                      }
+                    }}
+                    style={{ 
+                      padding: '8px 12px', 
+                      fontSize: '12px',
+                      backgroundColor: '#f0f0f0',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Generate
+                  </Button>
+            </div>
+                {seoUrl && (
+                  <small style={{ color: '#666', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                    Preview: /{categoryType}/{category}/{seoUrl}
+                  </small>
+                )}
+            </div>
+              <div className="more-info-group">
+                <Label>Tax Class *</Label>
+                <select 
+                  className="form-select" 
+                  value={taxClass} 
+                  onChange={e => setTaxClass(e.target.value)}
+                  required
+                >
+                  <option value="gst-5">GST @ 5%</option>
+                  <option value="gst-12">GST @ 12%</option>
+                </select>
+            </div>
+              {/* Row 2: Meta Title | QR Size */}
+              <div className="more-info-group">
+                <Label>Meta Title *</Label>
+                <div style={{ position: 'relative' }}>
+                <Input
+                    placeholder="e.g., White Embroidery Blouse - Designer Ethnic Wear | Yarika"
+                  value={metaTitle}
+                  onChange={e => setMetaTitle(e.target.value)}
+                  required
+                    maxLength={META_TITLE_LIMIT}
+                />
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: metaTitle.length > META_TITLE_LIMIT ? '#d32f2f' : '#666',
+                    marginTop: '4px',
+                    textAlign: 'right'
+                  }}>
+                    {metaTitle.length}/{META_TITLE_LIMIT}
+              </div>
+                  <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                    Include product name, category, and brand. Max 60 characters.
+                  </small>
+                </div>
+              </div>
+              <div className="more-info-group">
+                <Label>QR Size *</Label>
+                <select 
+                  className="form-select" 
+                  value={qrSize} 
+                  onChange={e => setQrSize(e.target.value)}
+                  required
+                >
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+              {/* Row 3: Meta Description | Meta Keywords */}
+              <div className="more-info-group" style={{ gridColumn: '1 / span 2' }}>
+                <Label>Meta Description *</Label>
+                <div style={{ position: 'relative' }}>
+                <textarea
+                  className="form-textarea"
+                    placeholder="e.g., Shop our exclusive white embroidery blouse with intricate designs. Perfect for traditional occasions. Available in sizes 32-44. Free shipping across India."
+                  value={metaDescription}
+                  onChange={e => setMetaDescription(e.target.value)}
+                  required
+                    maxLength={META_DESCRIPTION_LIMIT}
+                    rows={3}
+                  />
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: metaDescription.length > META_DESCRIPTION_LIMIT ? '#d32f2f' : '#666',
+                    marginTop: '4px',
+                    textAlign: 'right'
+                  }}>
+                    {metaDescription.length}/{META_DESCRIPTION_LIMIT}
+              </div>
+                  <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                    Describe the product benefits and features. Max 200 characters.
+                  </small>
+                </div>
+              </div>
+              <div className="more-info-group" style={{ gridColumn: '1 / span 2' }}>
+                <Label>Meta Keywords *</Label>
+                <div style={{ position: 'relative' }}>
+                <textarea
+                  className="form-textarea"
+                    placeholder="e.g., embroidery blouse, white blouse, ethnic wear, designer blouse, traditional clothing"
+                  value={metaKeywords}
+                  onChange={e => setMetaKeywords(e.target.value)}
+                  required
+                    maxLength={META_KEYWORDS_LIMIT}
+                    rows={2}
+                  />
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: metaKeywords.length > META_KEYWORDS_LIMIT ? '#d32f2f' : '#666',
+                    marginTop: '4px',
+                    textAlign: 'right'
+                  }}>
+                    {metaKeywords.length}/{META_KEYWORDS_LIMIT}
+                  </div>
+                  <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                    Separate keywords with commas. Include product type, category, and related terms.
+                  </small>
+                </div>
+              </div>
+              {/* Row 4: Auto-Generate SEO Button */}
+              <div className="more-info-group" style={{ gridColumn: '1 / span 2' }}>
+                <Button 
+                  type="button" 
+                  onClick={generateSeoFields}
+                  style={{ 
+                    padding: '8px 16px',
+                    backgroundColor: '#c6aa62',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                >
+                  Auto-Generate SEO Fields
+                </Button>
+                <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '8px' }}>
+                  Click to automatically generate SEO fields based on product details. You can then edit them as needed.
+                </small>
+              </div>
+              {/* Row 4: Net Weight | Gross Weight | Max Order Quantity */}
+              <div className="more-info-group">
+                <Label>Net Weight *</Label>
+                <Input 
+                  placeholder="grams" 
+                  value={netWeight} 
+                  onChange={e => setNetWeight(e.target.value)}
+                  required
+                />
+        </div>
+              <div className="more-info-group">
+                <Label>Gross Weight *</Label>
+                <Input 
+                  placeholder="Grams" 
+                  value={grossWeight} 
+                  onChange={e => setGrossWeight(e.target.value)}
+                  required
+                />
+            </div>
+              <div className="more-info-group">
+                <Label>Max Order Quantity *</Label>
+                <Input 
+                  placeholder="1000" 
+                  value={maxOrderQuantity} 
+                  onChange={e => setMaxOrderQuantity(e.target.value)}
+                  required
+                />
+            </div>
+            </div>
+
+                        {/* QR Code Section - Commented Out */}
+            {/* 
+            <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>QR Code Generation</div>
+            <div className="product-images-section">
+              <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>
+                <Label>Product QR Code *</Label>
+                <div style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '16px',
+                  padding: '20px',
+                  border: '2px dashed #c6aa62',
+                  borderRadius: '8px',
+                  backgroundColor: '#faf9f6'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <QrCode size={24} color="#c6aa62" />
+                    <span style={{ fontWeight: '500', color: '#333' }}>
+                      Generate QR Code with Product Details
+                    </span>
+                    {qrCodeGenerated && (
+                      <Badge style={{ 
+                        backgroundColor: '#28a745', 
+                        color: '#fff', 
+                        fontSize: '12px',
+                        padding: '4px 8px',
+                        borderRadius: '12px'
+                      }}>
+                        ✓ Generated
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div style={{ fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
+                    <strong>QR Code will contain:</strong>
+                    <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
+                      <li>Product Name</li>
+                      <li>Net Weight (g)</li>
+                      <li>Gross Weight (g)</li>
+                      <li>Price (₹)</li>
+                      <li>Product Code</li>
+                      <li>Category</li>
+                      <li>Generation Timestamp</li>
+                    </ul>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button 
+                      type="button" 
+                      onClick={generateQRCode}
+                      style={{ 
+                        padding: '10px 20px',
+                        backgroundColor: '#c6aa62',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                    >
+                      <QrCode size={18} />
+                      Generate QR Code
+                    </Button>
+                    
+                    {qrCodeGenerated && (
+                      <Button 
+                        type="button" 
+                        onClick={downloadQRCode}
+                        style={{ 
+                          padding: '10px 20px',
+                          backgroundColor: '#28a745',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}
+                      >
+                        <Download size={18} />
+                        Download QR Code
+                      </Button>
+                    )}
+                  </div>
+
+                  {qrCodeGenerated && qrCodeDataUrl && (
+                    <div style={{ 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'center', 
+                      gap: '12px',
+                      marginTop: '16px',
+                      padding: '20px',
+                      border: '1px solid #ddd',
+                      borderRadius: '8px',
+                      backgroundColor: '#fff'
+                    }}>
+                      <h4 style={{ margin: '0', color: '#333', fontSize: '16px' }}>Generated QR Code</h4>
+                      <img 
+                        src={qrCodeDataUrl} 
+                        alt="Product QR Code" 
+                        style={{ 
+                          maxWidth: '200px', 
+                          height: 'auto',
+                          border: '1px solid #eee',
+                          borderRadius: '4px'
+                        }} 
+                      />
+                      <small style={{ color: '#666', fontSize: '12px', textAlign: 'center' }}>
+                        Scan this QR code to view product details
+                      </small>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            */}
+
+            {/* Product Images Section */}
+            <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>Product Images</div>
+            <div className="product-images-section" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              {/* Main Image Upload */}
+              <div className="product-images-group">
+                <Label>Main Image (640 × 700) *</Label>
+                <div className="image-upload-area">
+                  {!mainImagePreview && (
+                    <label className="image-dropzone" style={{ 
+                      border: '2px dashed #c6aa62',
+                      borderRadius: '8px',
+                      padding: '40px 20px',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      backgroundColor: '#faf9f6',
+                      transition: 'all 0.3s ease'
+                    }}>
+                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleMainImageChange} />
+                    <div className="image-drop-content">
+                        <span className="image-upload-icon" style={{ fontSize: '32px', color: '#c6aa62', display: 'block', marginBottom: '12px' }}>↑</span>
+                        <span style={{ fontSize: '16px', fontWeight: '500', color: '#333' }}>Click to upload main image</span>
+                        <div style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>Required for product display</div>
+                  </div>
+                </label>
+                  )}
+                {mainImagePreview && (
+                    <div className="image-preview-row" style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '8px',
+                      backgroundColor: '#fafafa'
+                    }}>
+                      <div className="image-preview-thumb" style={{
+                        width: '80px',
+                        height: '80px',
+                        backgroundColor: '#f0f0f0',
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        position: 'relative'
+                      }}>
+                        <img 
+                          src={mainImagePreview} 
+                          alt="Main image"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: '6px'
+                          }}
+                        />
+                    </div>
+                      <div className="image-preview-info" style={{ flex: 1 }}>
+                        <div style={{ fontWeight: '500', fontSize: '14px' }}>{mainImageAlt || 'Main image'}</div>
+                        <div style={{ fontSize: '12px', color: '#666' }}>
+                          {mainImage ? `${(mainImage.size / 1024).toFixed(0)} kb` : ''}
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        className="image-delete-btn" 
+                        onClick={handleRemoveMainImage}
+                        style={{
+                          padding: '6px',
+                          backgroundColor: 'transparent',
+                          color: '#d32f2f',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                  </div>
+                )}
+              </div>
+              {/* Main Image Alt Text */}
+              <div className="product-images-group">
+                <Label>Main Image Alt Text *</Label>
+                <textarea 
+                  className="form-textarea" 
+                  placeholder="Enter alt text for main image (e.g., 'White embroidery blouse main view')" 
+                  value={mainImageAlt} 
+                  onChange={e => setMainImageAlt(e.target.value)}
+                  style={{ 
+                    width: '100%', 
+                    minHeight: '80px',
+                    border: mainImageAlt ? '1px solid #28a745' : '1px solid #ddd'
+                  }}
+                />
+                {!mainImageAlt && mainImagePreview && (
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#d32f2f', 
+                    marginTop: '4px' 
+                  }}>
+                    Alt text is required for the main image
+                </div>
+                )}
+                {mainImageAlt && (
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#28a745', 
+                    marginTop: '4px' 
+                  }}>
+                    ✓ Alt text provided
+                  </div>
+                )}
+              </div>
+            </div>
+              {/* Additional Images Upload with Alt Text Side by Side */}
+              <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>
+                <Label>Additional Images ({additionalImagePreviews.length}/4)*</Label>
+                <div className="image-upload-area">
+                  {additionalImagePreviews.length < 4 && (
+                    <label className="image-dropzone" style={{ 
+                      border: '2px dashed #c6aa62',
+                      borderRadius: '8px',
+                      padding: '30px 20px',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      backgroundColor: '#faf9f6',
+                      transition: 'all 0.3s ease',
+                      marginBottom: '16px'
+                    }}>
+                    <input type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={handleAdditionalImages} />
+                    <div className="image-drop-content">
+                        <span className="image-upload-icon" style={{ fontSize: '24px', color: '#c6aa62', display: 'block', marginBottom: '8px' }}>↑</span>
+                        <span style={{ fontSize: '14px', fontWeight: '500', color: '#333' }}>Click to upload image ({additionalImagePreviews.length}/4)</span>
+                        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>Optional additional images</div>
+                    </div>
+                  </label>
+                  )}
+                  {additionalImagePreviews.length === 4 && (
+                    <div style={{ 
+                      padding: '12px', 
+                      backgroundColor: '#f8f9fa', 
+                      border: '1px solid #dee2e6', 
+                      borderRadius: '6px',
+                      textAlign: 'center',
+                      color: '#6c757d',
+                      fontSize: '14px',
+                      marginBottom: '16px'
+                    }}>
+                      Maximum 4 additional images reached. Delete an image to add more.
+                    </div>
+                  )}
+                  {additionalImagePreviews.map((img, idx) => (
+                    <div key={idx} style={{
+                      display: 'flex',
+                      gap: '16px',
+                      border: !imageAlts[idx] ? '2px solid #d32f2f' : '1px solid #e5e5e5',
+                      borderRadius: '8px',
+                      padding: '20px',
+                      marginBottom: '16px',
+                      backgroundColor: !imageAlts[idx] ? '#fff5f5' : '#fff',
+                      alignItems: 'flex-start',
+                      minHeight: '140px',
+                      boxSizing: 'border-box'
+                    }}>
+                      {/* Left Side - Image Preview */}
+                      <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '8px',
+                        width: '120px',
+                        flexShrink: 0
+                      }}>
+                                                <div className="image-preview-thumb" style={{ 
+                          width: '100px', 
+                          height: '100px', 
+                          backgroundColor: '#f0f0f0',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          color: '#666',
+                          overflow: 'hidden',
+                          position: 'relative'
+                        }}>
+                          {img ? (
+                            <img 
+                              src={img} 
+                              alt={`Image ${idx + 1}`}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                borderRadius: '6px'
+                              }}
+                            />
+                          ) : (
+                            <span>Image {idx + 1}</span>
+                          )}
+                      </div>
+                        <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
+                          {additionalImages[idx] ? `${(additionalImages[idx].size / 1024).toFixed(0)} kb` : ''}
+                        </div>
+                                                <button 
+                          type="button" 
+                          className="image-delete-btn" 
+                          onClick={() => handleRemoveAdditionalImage(idx)}
+                          style={{
+                            padding: '4px',
+                            backgroundColor: 'transparent',
+                            color: '#d32f2f',
+                            border: 'none',
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            alignSelf: 'center',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={16} />
+                      </button>
+                    </div>
+                      
+                      {/* Right Side - Alt Text Field */}
+                      <div style={{ 
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px',
+                        height: '140px',
+                        justifyContent: 'flex-start',
+                        maxWidth: 'calc(100% - 136px)',
+                        boxSizing: 'border-box'
+                      }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '8px',
+                          marginBottom: '8px'
+                        }}>
+                          <div style={{ 
+                            width: '24px', 
+                            height: '24px', 
+                            backgroundColor: '#c6aa62', 
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '12px',
+                            color: '#fff',
+                            fontWeight: 'bold'
+                          }}>
+                            {idx + 1}
+                </div>
+                          <div style={{ fontWeight: '500', fontSize: '14px', color: '#333' }}>
+                            Image {idx + 1} Alt Text *
+              </div>
+                        </div>
+                                                <textarea 
+                          className="form-textarea" 
+                          placeholder={`Enter alt text for image ${idx + 1} (e.g., "White embroidery blouse front view")`}
+                          value={imageAlts[idx] || ''} 
+                          onChange={e => {
+                  const newAlts = [...imageAlts];
+                            newAlts[idx] = e.target.value;
+                  setImageAlts(newAlts);
+                          }}
+                          style={{ 
+                            width: 'calc(100% - 16px)', 
+                            height: '60px',
+                            border: imageAlts[idx] ? '1px solid #28a745' : '1px solid #ddd',
+                            borderRadius: '6px',
+                            padding: '8px',
+                            fontSize: '14px',
+                            resize: 'vertical',
+                            fontFamily: 'inherit',
+                            lineHeight: '1.4',
+                            marginBottom: '4px',
+                            boxSizing: 'border-box'
+                          }}
+                        />
+                        <div>
+                          {!imageAlts[idx] && (
+                            <div style={{ 
+                              fontSize: '12px', 
+                              color: '#d32f2f', 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}>
+                              ⚠️ Alt text is required for this image
+                            </div>
+                          )}
+                          {imageAlts[idx] && (
+                            <div style={{ 
+                              fontSize: '12px', 
+                              color: '#28a745', 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}>
+                              ✓ Alt text provided
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+            </div>
+          </div>
+            {/* Add/Cancel Buttons - moved here to be below the image section */}
+            <div className="form-row-full" style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 36, gridColumn: '1 / span 2' }}>
+              <Button className="gold-btn" type="submit">{id ? "Update Product" : "Add Product"}</Button>
+              <Button 
+                className="gold-outline-btn" 
+                type="button" 
+                onClick={() => {
+                  if (onClose) {
+                    onClose();
+                  } else {
+                    navigate('/admin/products');
+                  }
+                }}
+              >
+                Cancel
+              </Button>
         </div>
       </form>
+        </div>
+      </div>
     </div>
   );
 };

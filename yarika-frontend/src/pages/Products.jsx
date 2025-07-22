@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
 import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import {
@@ -15,6 +16,7 @@ import AddProductForm from "../components/forms/AddProductForm";
 import "../styles/Products.css";
 import { useQuery } from '@tanstack/react-query';
 import ChangePasswordModal from "../components/ChangePasswordModal";
+import { useParams } from "react-router-dom";
 
 // Color mapping object
 const COLOR_MAP = {
@@ -51,7 +53,6 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
-  const [showAddProduct, setShowAddProduct] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -73,12 +74,9 @@ export default function Products() {
       const query = new URLSearchParams();
       if (searchTerm) query.append("search", searchTerm);
       if (status !== "all") query.append("status", status);
-      if (category !== "all") query.append("category", category);
-
+      if (category !== "all") query.append("categoryType", category); // <-- use categoryType
       const res = await api.get(`/api/products?${query.toString()}`);
-      console.log('Fetched products:', res.data);  // Add this line to log the fetched data
       setProducts(res.data);
-      console.log('Products updated:', res.data); // Add this line
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -92,6 +90,10 @@ export default function Products() {
     } catch (error) {
       console.error("Delete failed:", error);
     }
+  };
+
+  const handleEditProduct = (productId) => {
+    navigate(`/admin/products/edit/${productId}`);
   };
 
   const getStatusColor = (status) => {
@@ -121,49 +123,23 @@ export default function Products() {
   }, [searchTerm, status, category]);
 
   return (
+    <>
     <div className="dashboard-container">
       <Sidebar />
       <div className="main-content">
-        <>
-          {/* Remove any extra space above the title */}
-          <style>{`
-            .analytics-header { margin-top: 0 !important; padding-top: 0 !important; }
-            .analytics-header h2 { margin-top: 0 !important; padding-top: 0 !important; }
-            .main-content { margin-top: 0 !important; padding-top: 0 !important; }
-            .main-content > *:first-child { margin-top: 0 !important; padding-top: 0 !important; }
-          `}</style>
-          <div className="analytics-header">
-            <h2>Products</h2>
-            <div className="analytics-header-right">
-              <div className="search-container">
-              <input
-                type="text"
-                  className="search-input"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <span className="search-icon">
-                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="7"/><line x1="16" y1="16" x2="12.5" y2="12.5"/></svg>
-                </span>
-              </div>
-              <span className="notification-icon">🔔</span>
-              <span className="profile-icon" onClick={() => setShowChangePassword(true)}>👤</span>
-            </div>
-          </div>
-        </>
+        <Header title="Products" />
         <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
 
         <div style={{ padding: '0 32px' }}>
-          {/* Product Inventory Header */}
         <div className="products-section-row">
           <div className="products-section-title">Product Inventory</div>
           <Button
-            onClick={() => setShowAddProduct(true)}
+                onClick={() => navigate('/admin/add-product')}
             className="add-product-btn"
           >
             + Add New Product
           </Button>
+            </div>
         </div>
 
           {/* Stat Cards */}
@@ -192,18 +168,18 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Add Product Form */}
-        {(showAddProduct || editProduct) && (
+          {/* Add Product Form (for editing only) */}
+          {editProduct && (
           <div className="mb-10">
             <AddProductForm
               product={editProduct}
-              onClose={() => { setShowAddProduct(false); setEditProduct(null); }}
+                onClose={() => { setEditProduct(null); }}
               onProductAdded={() => {
                 console.log('onProductAdded called');
                 fetchProducts();
                 refetch();
                 setEditProduct(null);
-                setShowAddProduct(false);
+                window.dispatchEvent(new Event('product-added'));
               }}
             />
           </div>
@@ -231,9 +207,10 @@ export default function Products() {
                 className="rounded-2xl border border-input bg-background px-3 py-2 text-sm"
               >
                 <option value="all">All</option>
-                <option value="dailywear">Dailywear</option>
-                <option value="officewear">Officewear</option>
-                <option value="partywear">Partywear</option>
+                  <option value="readymade-blouse">Blouse</option>
+                  <option value="leggings">Leggings</option>
+                  <option value="readymade-blouse-cloth">Blouse Cloth</option>
+                  <option value="trending">Trending</option>
               </select>
           </div>
         </div>
@@ -255,7 +232,7 @@ export default function Products() {
                     <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>DATE</th>
                     <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>CODE</th>
                     <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>NAME</th>
-                    <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>GROUP</th>
+                      <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>CATEGORY</th>
                     <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>SIZE</th>
                     <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>STOCK</th>
                     <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>PRICE</th>
@@ -278,7 +255,7 @@ export default function Products() {
                         <td style={{ padding: '16px', color: '#444', whiteSpace: 'nowrap' }}>{product.createdAt ? new Date(product.createdAt).toLocaleDateString() : "-"}</td>
                         <td style={{ padding: '16px', color: '#444', whiteSpace: 'nowrap' }}>{String(product.code || "-")}</td>
                         <td style={{ padding: '16px', color: '#444' }}>{String(product.name || "-")}</td>
-                        <td style={{ padding: '16px', color: '#444' }}>{String(product.group || "-")}</td>
+                          <td style={{ padding: '16px', color: '#444' }}>{String(product.categoryType || "-")}</td>
                         <td style={{ padding: '16px', color: '#444' }}>{Array.isArray(product.sizes) ? product.sizes.join(", ") : "-"}</td>
                         <td style={{ padding: '16px', color: '#444' }}>
                           <div style={{ 
@@ -314,7 +291,7 @@ export default function Products() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              onClick={() => setEditProduct(product)}
+                              onClick={() => handleEditProduct(product._id)}
                               style={{ color: '#b19049' }}
                             >
                               <Edit size={16} />
@@ -338,6 +315,6 @@ export default function Products() {
         </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

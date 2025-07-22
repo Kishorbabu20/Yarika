@@ -17,6 +17,7 @@ const menuItems = [
   { title: "Dashboard", href: "/admin/dashboard", icon: Grid2X2 },
   { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { title: "Products", href: "/admin/products", icon: FolderOpen },
+  { title: "Manage Master", href: "/admin/manage-master", icon: FolderOpen },
   { title: "Members", href: "/admin/members", icon: Users },
 ];
 
@@ -27,12 +28,19 @@ const Sidebar = () => {
     <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       {/* Header */}
       <div className="sidebar-header">
-        {!collapsed && (
+        {collapsed ? (
           <img
-                            src="/YarikaLogo1.png"
+            src="/logo.png"
+            alt="Yarika Logo Collapsed"
+            className="sidebar-logo"
+            style={{ height: 36, width: 'auto', maxWidth: 48, objectFit: 'contain' }}
+          />
+        ) : (
+          <img
+            src="/YarikaLogo1.png"
             alt="Yarika Logo"
             className="sidebar-logo"
-            style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain' }}
+            style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain', background: 'none' }}
           />
         )}
         <button

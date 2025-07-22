@@ -4,6 +4,7 @@ import { User, LogOut } from 'lucide-react';
 import "../styles/Orders.css";
 import api from '../config/axios';
 import { toast } from 'react-hot-toast';
+import { useScrollFade } from "../hooks/useScrollFade";
 
 const colorMap = {
   "102": "Mustard Yellow",
@@ -27,6 +28,7 @@ const MyOrders = () => {
         lastName: '',
         email: ''
     });
+    const [ref, fadeClass] = useScrollFade({ disable: true });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -115,15 +117,18 @@ const MyOrders = () => {
     }
 
     return (
-        <div className="orders-page-container">
-            <div className="orders-sidebar">
-                <div className="orders-header">
-                    <div className="orders-avatar-placeholder">
+        <div ref={ref} className="profile-page-container">
+            <div className="profile-sidebar">
+                <div className="profile-header">
+                    <div className="profile-avatar-placeholder">
                         <User size={48} color="#fff" />
                     </div>
-                    <div className="orders-name">Hello, <br /> {profile.firstName} {profile.lastName}</div>
+                    <div className="profile-name">
+                        <h2>Hello,</h2>
+                        <h3>{profile.firstName} {profile.lastName}</h3>
+                    </div>
                 </div>
-                <div className="orders-navigation">
+                <div className="profile-navigation">
                     <button className="nav-button" onClick={() => navigate('/profile')}>Profile information</button>
                     <button className="nav-button" onClick={() => navigate('/wishlist')}>Wishlist</button>
                     <button className="nav-button active">My Orders</button>
@@ -132,10 +137,8 @@ const MyOrders = () => {
                     <LogOut size={20} /> Logout
                 </button>
             </div>
-
-            <div className="orders-content">
+            <div className="profile-content">
                 <h2>My Orders</h2>
-                
                 <div className="orders-filter">
                     <span 
                         className={`filter-link ${filter === "All" ? "active" : ""}`}
@@ -172,7 +175,6 @@ const MyOrders = () => {
                         Returned
                     </span>
                 </div>
-
                 {error ? (
                     <div className="error-message">
                         <p>{error}</p>
@@ -187,9 +189,7 @@ const MyOrders = () => {
                                 ? "You haven't placed any orders yet."
                                 : `No ${filter.toLowerCase()} orders found.`}
                         </p>
-                        <button className="continue-shopping" onClick={() => navigate('/')}>
-                            Continue Shopping
-                        </button>
+                        <button className="continue-shopping" onClick={() => navigate('/')}>Continue Shopping</button>
                     </div>
                 ) : (
                     <div className="order-list">

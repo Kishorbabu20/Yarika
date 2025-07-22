@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
-import AdminHeader from "../components/layout/AdminHeader";
+import Header from "../components/Header";
 import axios from "axios";
 import "../styles/AdminDashboard.css";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -19,6 +19,11 @@ export default function AdminAnalytics() {
   const [ordersPerDayData, setOrdersPerDayData] = useState([]);
   const [productPerformance, setProductPerformance] = useState([]);
   const [adminActivity, setAdminActivity] = useState([]);
+  
+  // Debug admin activity state changes
+  useEffect(() => {
+    console.log("Admin activity state updated:", adminActivity);
+  }, [adminActivity]);
   const [stats, setStats] = useState({
     totalRevenue: 0,
     unitSold: 0,
@@ -28,6 +33,8 @@ export default function AdminAnalytics() {
     avgOrderValueChange: 0
   });
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedProductName, setSelectedProductName] = useState("");
 
   useEffect(() => {
     fetchOrderStatus();
@@ -35,6 +42,15 @@ export default function AdminAnalytics() {
     fetchProductPerformance();
     fetchAdminActivity();
     fetchStats();
+
+    // Listen for product-added event to refresh productPerformance
+    const handleProductAdded = () => {
+      fetchProductPerformance();
+    };
+    window.addEventListener('product-added', handleProductAdded);
+    return () => {
+      window.removeEventListener('product-added', handleProductAdded);
+    };
   }, []);
 
   const fetchOrderStatus = async () => {
@@ -66,11 +82,38 @@ export default function AdminAnalytics() {
   };
   const fetchAdminActivity = async () => {
     try {
+      console.log("Fetching admin activity...");
       const res = await api.get("/api/analytics/admin-activity");
-      setAdminActivity(res.data);
+      console.log("Admin activity response:", res.data);
+      setAdminActivity(res.data || []);
     } catch (err) {
       console.error("Error fetching admin activity:", err);
+      console.error("Error details:", {
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data,
+        message: err.message
+      });
       toast.error("Failed to load admin activity data");
+      
+      // Set fallback data for testing
+      const fallbackData = [
+        {
+          name: "Kishor",
+          action: "Logged In Admin Portal",
+          status: "Logged In",
+          time: "2h ago",
+          details: "Admin logged in successfully"
+        },
+        {
+          name: "Kishor", 
+          action: "Created Test Product",
+          status: "Created",
+          time: "4h ago",
+          details: "Created new product"
+        }
+      ];
+      setAdminActivity(fallbackData);
     }
   };
   const fetchStats = async () => {
@@ -95,36 +138,21 @@ export default function AdminAnalytics() {
     return (value || 0).toLocaleString();
   };
 
+  const filteredProductPerformance = selectedCategory === "all"
+    ? productPerformance
+    : productPerformance.filter(p => p.categoryType === selectedCategory);
+
+  const displayedProductPerformance = selectedProductName
+    ? filteredProductPerformance.filter(p => p.name === selectedProductName)
+    : filteredProductPerformance;
+
+  console.log("Product Performance Row Example:", filteredProductPerformance[0]);
+
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="main-content">
-        <>
-          {/* Remove any extra space above the title */}
-          <style>{`
-            .analytics-header { margin-top: 0 !important; padding-top: 0 !important; }
-            .analytics-header h2 { margin-top: 0 !important; padding-top: 0 !important; }
-            .main-content { margin-top: 0 !important; padding-top: 0 !important; }
-            .main-content > *:first-child { margin-top: 0 !important; padding-top: 0 !important; }
-          `}</style>
-          <div className="analytics-header">
-            <h2>Analytics</h2>
-            <div className="analytics-header-right">
-              <div className="search-container">
-              <input
-                type="text"
-                  className="search-input"
-                placeholder="Search"
-                />
-                <span className="search-icon">
-                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="7"/><line x1="16" y1="16" x2="12.5" y2="12.5"/></svg>
-                </span>
-            </div>
-              <span className="notification-icon">🔔</span>
-              <span className="profile-icon" onClick={() => setShowChangePassword(true)}>👤</span>
-            </div>
-          </div>
-        </>
+        <Header title="Analytics" />
         <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
 
         <div style={{ padding: '0 32px' }}>
@@ -140,18 +168,31 @@ export default function AdminAnalytics() {
             </div>
             <div className="filter-group">
               <label className="filter-label">Product Category</label>
-              <select className="filter-select">
-                <option>Dailywear</option>
-                <option>Officewear</option>
-                <option>Partywear</option>
+              <select
+                className="filter-select"
+                value={selectedCategory}
+                onChange={e => setSelectedCategory(e.target.value)}
+              >
+                <option value="all">All</option>
+                <option value="readymade-blouse">Blouse</option>
+                <option value="leggings">Leggings</option>
+                <option value="readymade-blouse-cloth">Blouse Cloth</option>
+                <option value="trending">Trending</option>
               </select>
             </div>
             <div className="filter-group">
               <label className="filter-label">Product Name</label>
-              <select className="filter-select">
-                <option>Blouse</option>
-                <option>Leggings</option>
-                <option>Others</option>
+              <select
+                className="filter-select"
+                value={selectedProductName}
+                onChange={e => setSelectedProductName(e.target.value)}
+              >
+                <option value="">All</option>
+                {filteredProductPerformance.map((product, i) => (
+                  <option key={i} value={product.name}>
+                    {product.name} {product.categoryType ? `(${product.categoryType})` : ''}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="filter-group">
@@ -241,7 +282,7 @@ export default function AdminAnalytics() {
               <h4>Orders Per Day</h4>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={ordersPerDayData}>
-                  <XAxis dataKey="day" />
+                  <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
                   <Bar dataKey="orders" fill="#caa75d" radius={[8, 8, 0, 0]} />
@@ -263,6 +304,7 @@ export default function AdminAnalytics() {
               <thead>
                 <tr>
                   <th>PRODUCT NAME</th>
+                  <th>PRODUCT CATEGORY</th>
                   <th>UNIT SOLD</th>
                   <th>STOCK LEFT</th>
                   <th>REVENUE</th>
@@ -271,9 +313,10 @@ export default function AdminAnalytics() {
                 </tr>
               </thead>
               <tbody>
-                {productPerformance.map((product, i) => (
+                {displayedProductPerformance.map((product, i) => (
                   <tr key={i}>
                     <td>{product.name}</td>
+                    <td>{product.product?.categoryType || product.product?.category || product.categoryType || product.category || '-'}</td>
                     <td>
                       {product.totalSold}
                       {product.totalSold > 0 && (
@@ -299,12 +342,18 @@ export default function AdminAnalytics() {
           {/* Recent Admin Activity */}
           <div className="analytics-activity">
             <h3>Recent Admin Activity</h3>
+            {console.log("Rendering admin activity section, length:", adminActivity.length)}
+            {adminActivity.length > 0 ? (
+              <>
             <ul>
               {adminActivity.map((activity, i) => (
                 <li key={i}>
                   {activity.status === "Updated" && <CheckCircle color="#b19049" />}
                   {activity.status === "Created" && <PlusCircle color="#3b7e3b" />}
                   {activity.status === "Deleted" && <Trash2 color="#dc2626" />}
+                      {activity.status === "Logged In" && <User color="#1e40af" />}
+                      {activity.status === "Password Changed" && <CheckCircle color="#059669" />}
+                      {activity.status === "Order Status Changed" && <CheckCircle color="#7c3aed" />}
                   <span>{activity.name}</span>
                   <span>{activity.action}</span>
                   <span>{activity.status}</span>
@@ -315,6 +364,20 @@ export default function AdminAnalytics() {
             <div className="activity-controls">
               <button>Show More</button>
             </div>
+              </>
+            ) : (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '40px 20px',
+                color: '#666',
+                fontSize: '14px'
+              }}>
+                <p>No recent admin activities found.</p>
+                <p style={{ fontSize: '12px', marginTop: '8px' }}>
+                  Activities will appear here when admins perform actions like logging in, creating products, or updating orders.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

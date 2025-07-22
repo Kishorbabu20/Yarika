@@ -10,7 +10,7 @@ router.get("/", protect({ model: "client" }), async (req, res) => {
     const wishlist = await Wishlist.findOne({ userId })
       .populate({
         path: "items.productId",
-        select: "name code mainImage mrp sellingPrice totalStock status"
+        select: "name code mainImage mrp sellingPrice totalStock status seoUrl categoryType category"
       });
 
     if (!wishlist) {
@@ -29,7 +29,10 @@ router.get("/", protect({ model: "client" }), async (req, res) => {
         originalPrice: item.productId.mrp,
         status: item.productId.totalStock > 0 ? "In stock" : "Out of stock",
         image: item.productId.mainImage,
-        addedAt: item.addedAt
+        addedAt: item.addedAt,
+        seoUrl: item.productId.seoUrl,
+        categoryType: item.productId.categoryType,
+        category: item.productId.category
       }));
 
     res.json({ items: transformedItems });
@@ -73,7 +76,7 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
     const updatedWishlist = await Wishlist.findOne({ userId })
       .populate({
         path: "items.productId",
-        select: "name code mainImage mrp sellingPrice totalStock status"
+        select: "name code mainImage mrp sellingPrice totalStock status seoUrl categoryType category"
       });
 
     const transformedItems = updatedWishlist.items
@@ -87,7 +90,10 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
         originalPrice: item.productId.mrp,
         status: item.productId.totalStock > 0 ? "In stock" : "Out of stock",
         image: item.productId.mainImage,
-        addedAt: item.addedAt
+        addedAt: item.addedAt,
+        seoUrl: item.productId.seoUrl,
+        categoryType: item.productId.categoryType,
+        category: item.productId.category
       }));
 
     res.json({ items: transformedItems });
@@ -123,7 +129,7 @@ router.delete("/remove/:productId", protect({ model: "client" }), async (req, re
     const updatedWishlist = await Wishlist.findOne({ userId })
       .populate({
         path: "items.productId",
-        select: "name code mainImage mrp sellingPrice totalStock status"
+        select: "name code mainImage mrp sellingPrice totalStock status seoUrl categoryType category"
       });
 
     const transformedItems = updatedWishlist.items
@@ -137,7 +143,10 @@ router.delete("/remove/:productId", protect({ model: "client" }), async (req, re
         originalPrice: item.productId.mrp,
         status: item.productId.totalStock > 0 ? "In stock" : "Out of stock",
         image: item.productId.mainImage,
-        addedAt: item.addedAt
+        addedAt: item.addedAt,
+        seoUrl: item.productId.seoUrl,
+        categoryType: item.productId.categoryType,
+        category: item.productId.category
       }));
 
     res.json({ items: transformedItems });
@@ -165,7 +174,7 @@ router.delete("/remove-item/:itemId", protect({ model: "client" }), async (req, 
     const updatedWishlist = await Wishlist.findOne({ userId })
       .populate({
         path: "items.productId",
-        select: "name code mainImage mrp sellingPrice totalStock status"
+        select: "name code mainImage mrp sellingPrice totalStock status seoUrl categoryType category"
       });
 
     const transformedItems = updatedWishlist.items
@@ -179,7 +188,10 @@ router.delete("/remove-item/:itemId", protect({ model: "client" }), async (req, 
         originalPrice: item.productId.mrp,
         status: item.productId.totalStock > 0 ? "In stock" : "Out of stock",
         image: item.productId.mainImage,
-        addedAt: item.addedAt
+        addedAt: item.addedAt,
+        seoUrl: item.productId.seoUrl,
+        categoryType: item.productId.categoryType,
+        category: item.productId.category
       }));
 
     res.json({ items: transformedItems });

@@ -6,7 +6,8 @@ import { MdEmail } from "react-icons/md";
 import heroImage from "../assets/signup.png";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function SignupLoginPage() {
   const navigate = useNavigate();
@@ -20,6 +21,13 @@ export default function SignupLoginPage() {
     confirmPassword: ""
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [awaitingVerification, setAwaitingVerification] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [tempPassword, setTempPassword] = useState("");
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -30,24 +38,79 @@ export default function SignupLoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Client-side validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+
     try {
+      console.log('Attempting registration with:', { 
+        firstName: formData.firstName, 
+        lastName: formData.lastName, 
+        email: formData.email,
+        phoneNumber: formData.phoneNumber 
+      });
+      
       const res = await api.post("/api/client/register", formData);
-      toast.success("Registered successfully!");
+      console.log('Registration response:', res.data);
       
-      // Save token and user data to localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.client));
-      
-      // Navigate to home page and reload to update auth state
-      navigate("/");
-      window.location.reload();
+      if (res.data.requiresVerification) {
+        toast.success("Account created! Please verify your email.");
+        setAwaitingVerification(true);
+        setVerificationEmail(formData.email);
+        setTempPassword(formData.password); // Store password for auto-login
+      } else {
+        toast.success("Registered and logged in successfully!");
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.client));
+        window.dispatchEvent(new CustomEvent('userLoggedIn', { 
+          detail: { user: res.data.client, token: res.data.token } 
+        }));
+        navigate("/");
+      }
     } catch (error) {
+      console.error('Registration error:', error);
       const msg = error.response?.data?.error || "Registration failed";
+      toast.error(msg);
+    }
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    if (!verificationCode) {
+      toast.error("Please enter the verification code");
+      return;
+    }
+    try {
+      const res = await api.post("/api/client/verify-email", {
+        email: verificationEmail,
+        verificationCode
+      });
+      toast.success("Email verified! Logging you in...");
+      // Auto-login after verification
+      const loginRes = await api.post("/api/client/login", {
+        email: verificationEmail,
+        password: tempPassword
+      });
+      localStorage.setItem("token", loginRes.data.token);
+      localStorage.setItem("user", JSON.stringify(loginRes.data.client));
+      window.dispatchEvent(new CustomEvent('userLoggedIn', { 
+        detail: { user: loginRes.data.client, token: loginRes.data.token } 
+      }));
+      navigate("/");
+    } catch (error) {
+      const msg = error.response?.data?.error || "Verification or login failed";
       toast.error(msg);
     }
   };
@@ -55,6 +118,44 @@ export default function SignupLoginPage() {
   const handleGoToLogin = () => {
     navigate("/login");
   };
+
+  if (awaitingVerification) {
+    return (
+      <div className="auth-container">
+        <div className="auth-form">
+          <h1 className="brand">YARIKA</h1>
+          <p className="tagline">EXPRESS YOURSELF</p>
+          <form className="form-section" onSubmit={handleVerify}>
+            <div className="input-group">
+              <MdEmail className="icon" />
+              <input
+                type="email"
+                value={verificationEmail}
+                disabled
+                placeholder="Email"
+              />
+            </div>
+            <div className="input-group">
+              <FaKey className="icon" />
+              <input
+                type="text"
+                value={verificationCode}
+                onChange={e => setVerificationCode(e.target.value)}
+                placeholder="Verification Code"
+                required
+              />
+            </div>
+            <button type="submit" className="btn black-btn">
+              Verify Email
+            </button>
+            <button type="button" className="btn switch-btn" onClick={handleGoToLogin}>
+              Already verified? Login
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container">
@@ -114,25 +215,51 @@ export default function SignupLoginPage() {
           <div className="input-group">
             <FaKey className="icon" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
               required
             />
+            {showPassword ? (
+              <AiOutlineEyeInvisible
+                className="admin-login-eye-icon"
+                onClick={() => setShowPassword(false)}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <AiOutlineEye
+                className="admin-login-eye-icon"
+                onClick={() => setShowPassword(true)}
+                style={{ cursor: "pointer" }}
+              />
+            )}
           </div>
 
           <div className="input-group">
             <FaKey className="icon" />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm Password"
               required
             />
+            {showConfirmPassword ? (
+              <AiOutlineEyeInvisible
+                className="admin-login-eye-icon"
+                onClick={() => setShowConfirmPassword(false)}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <AiOutlineEye
+                className="admin-login-eye-icon"
+                onClick={() => setShowConfirmPassword(true)}
+                style={{ cursor: "pointer" }}
+              />
+            )}
           </div>
 
           <button type="submit" className="btn black-btn">

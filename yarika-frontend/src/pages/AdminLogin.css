@@ -1,8 +1,7 @@
 @font-face {
-  font-family: 'AllrounderMonument';
-  src: url('/public/fonts/AllrounderMonument.otf')
-  format('otf');
-  font-weight:normal;
+  font-family: 'Cormorant';
+  src: url('../assets/fonts/Cormorant.otf') format('opentype');
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -28,7 +27,7 @@
 }
 
 .admin-login-logo {
-  font-family: 'AllrounderMonument', sans-serif;
+  font-family: 'Cormorant', sans-serif;
   color: #c6aa62;
   font-size: 32px;
   letter-spacing: 3px;

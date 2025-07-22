@@ -5,6 +5,8 @@ import "../styles/WishlistPage.css";
 import api from '../config/axios';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-hot-toast';
+import { generateProductUrl } from '../utils/productUrl';
+import { useScrollFade } from "../hooks/useScrollFade";
 
 const WishlistPage = () => {
     const navigate = useNavigate();
@@ -17,6 +19,7 @@ const WishlistPage = () => {
         email: '',
         phoneNumber: ''
     });
+    const [ref, fadeClass] = useScrollFade({ disable: true });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,13 +50,22 @@ const WishlistPage = () => {
     }, [navigate]);
 
     // Use productId for navigation if available, fallback to _id
-    const handleBuyNow = (item) => {
-        const productId = item.productId?._id || item.productId || item._id;
-        if (productId) {
-            navigate(`/product/${productId}`);
-        } else {
-            toast.error("Product not found");
+    const handleBuyNow = async (item) => {
+        let product = item.productId || item;
+        // If SEO fields are missing, fetch full product details
+        if (!product.seoUrl || !product.categoryType || !product.category) {
+            try {
+                const res = await api.get(`/api/products/${product._id}`);
+                product = res.data;
+            } catch (err) {
+                // fallback to ID-based URL if fetch fails
+                navigate(`/product/${product._id}`);
+                return;
+            }
         }
+        // Use generateProductUrl for consistent SEO-friendly navigation
+        const url = generateProductUrl(product, 'home');
+        navigate(url);
     };
 
     // Use _id for removal (wishlist item id)
@@ -80,18 +92,18 @@ const WishlistPage = () => {
     }
 
     return (
-        <div className="wishlist-page-container">
-            <div className="wishlist-sidebar">
-                <div className="wishlist-header">
-                    <div className="wishlist-avatar-placeholder">
+        <div ref={ref} className="profile-page-container">
+            <div className="profile-sidebar">
+                <div className="profile-header">
+                    <div className="profile-avatar-placeholder">
                         <User size={48} color="#fff" />
                     </div>
-                    <div className="wishlist-name">
+                    <div className="profile-name">
                         <h2>Hello,</h2>
                         <h3>{profile.firstName} {profile.lastName}</h3>
                     </div>
                 </div>
-                <div className="wishlist-navigation">
+                <div className="profile-navigation">
                     <button className="nav-button" onClick={() => navigate('/profile')}>Profile information</button>
                     <button className="nav-button active">Wishlist</button>
                     <button className="nav-button" onClick={() => navigate('/orders')}>My Orders</button>
@@ -100,8 +112,7 @@ const WishlistPage = () => {
                     <LogOut size={20} /> Logout
                 </button>
             </div>
-
-            <div className="wishlist-content">
+            <div className="profile-content">
                 <h2>Wishlist</h2>
                 <div className="wishlist-table-header">
                     <div>Product Name</div>
@@ -111,7 +122,6 @@ const WishlistPage = () => {
                 <div className="wishlist-items-list">
                     {wishlistItems.length > 0 ? (
                         wishlistItems.map(item => {
-                            // Support both flat and nested product structure
                             const product = item.productId || item;
                             return (
                                 <div key={item._id} className="wishlist-item">
@@ -157,9 +167,7 @@ const WishlistPage = () => {
                     ) : (
                         <div className="empty-wishlist">
                         <p className="no-items-message">Your wishlist is empty.</p>
-                            <button className="continue-shopping" onClick={() => navigate('/')}>
-                                Continue Shopping
-                            </button>
+                            <button className="continue-shopping" onClick={() => navigate('/')}>Continue Shopping</button>
                         </div>
                     )}
                 </div>

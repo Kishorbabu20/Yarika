@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Client = require("../../models/Client");
 const protect = require("../../middleware/auth");
+const { 
+  validateEmail, 
+  sendVerificationEmail, 
+  generateVerificationCode, 
+  storeVerificationCode, 
+  verifyCode 
+} = require("../../services/emailVerificationService");
 
 // @desc    Test route
 // @route   GET /api/client/test
@@ -14,6 +21,9 @@ router.get("/test", (req, res) => {
 // @access  Public
 router.post("/register", async (req, res, next) => {
   try {
+    console.log('=== REGISTRATION ATTEMPT ===');
+    console.log('Request body:', req.body);
+    
     const {
       firstName,
       lastName,
@@ -24,31 +34,70 @@ router.post("/register", async (req, res, next) => {
     } = req.body;
 
     // Basic field check
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+    if (!firstName || !email || !password || !confirmPassword) {
+      console.log('Registration failed: Missing required fields');
+      console.log('firstName:', !!firstName);
+      console.log('email:', !!email);
+      console.log('password:', !!password);
+      console.log('confirmPassword:', !!confirmPassword);
       return res.status(400).json({
         success: false,
-        error: "Please fill in all required fields",
+        error: "Please fill in all required fields (First Name, Email, Password, Confirm Password)",
       });
     }
 
+    // Validate email format and domain
+    console.log('Validating email:', email);
+    const emailValidation = await validateEmail(email);
+    if (!emailValidation.isValid) {
+      console.log('Email validation failed:', emailValidation.error);
+      return res.status(400).json({
+        success: false,
+        error: emailValidation.error
+      });
+    }
+    console.log('Email validation passed for domain:', emailValidation.domain);
+
     if (password !== confirmPassword) {
+      console.log('Registration failed: Passwords do not match');
       return res.status(400).json({ success: false, error: "Passwords do not match" });
     }
 
+    console.log('Checking if client already exists with email:', email);
     const existingClient = await Client.findOne({ email });
     if (existingClient) {
+      console.log('Registration failed: Client already exists');
       return res.status(400).json({ success: false, error: "Client already exists with this email" });
     }
 
+    console.log('Creating new client...');
     const client = await Client.create({
       firstName,
       lastName,
       email,
       phoneNumber,
       password,
+      emailVerified: false
     });
 
+    // Generate and send verification code
+    const verificationCode = generateVerificationCode();
+    client.emailVerificationCode = verificationCode;
+    client.emailVerificationExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    await client.save();
+
+    // Send verification email
+    console.log('Sending verification email...');
+    const emailResult = await sendVerificationEmail(email, verificationCode);
+    
+    if (!emailResult.success) {
+      console.warn('Failed to send verification email:', emailResult.error);
+      // Continue with registration but warn about email verification
+    }
+
+    console.log('Client created successfully, generating token...');
     const token = client.getSignedJwtToken();
+    console.log('Token generated successfully');
 
     res.status(201).json({
       success: true,
@@ -59,35 +108,65 @@ router.post("/register", async (req, res, next) => {
         lastName: client.lastName,
         email: client.email,
         phoneNumber: client.phoneNumber,
+        emailVerified: client.emailVerified
       },
+      message: "Account created successfully! Please check your email for verification code.",
+      requiresVerification: true
     });
   } catch (err) {
-    console.error("Client registration error:", err);
+    console.error("Client registration error:", {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    });
     next(err);
   }
 });
 
-// OPTIONAL: Add login route if you haven’t already
+// OPTIONAL: Add login route if you haven't already
 // @desc    Login client
 // @route   POST /api/client/login
 router.post("/login", async (req, res, next) => {
   try {
+    console.log('=== LOGIN ATTEMPT ===');
+    console.log('Request body:', req.body);
+    
     const { email, password } = req.body;
     if (!email || !password) {
+      console.log('Login failed: Missing email or password');
       return res.status(400).json({ success: false, error: "Please enter email and password" });
     }
 
+    console.log('Looking for client with email:', email);
     const client = await Client.findOne({ email }).select("+password");
+    
     if (!client) {
+      console.log('Login failed: Client not found');
       return res.status(401).json({ success: false, error: "Invalid credentials" });
     }
 
+    console.log('Client found, checking password...');
     const isMatch = await client.matchPassword(password);
+    
     if (!isMatch) {
+      console.log('Login failed: Password mismatch');
       return res.status(401).json({ success: false, error: "Invalid credentials" });
+    }
+
+    console.log('Password matched, checking email verification...');
+    
+    if (!client.emailVerified) {
+      console.log('Login failed: Email not verified');
+      return res.status(401).json({
+        success: false,
+        error: "Please verify your email address before logging in. Check your inbox for verification code.",
+        requiresVerification: true,
+        email: client.email
+      });
     }
 
     const token = client.getSignedJwtToken();
+    console.log('Token generated successfully');
 
     res.status(200).json({
       success: true,
@@ -98,15 +177,157 @@ router.post("/login", async (req, res, next) => {
         lastName: client.lastName,
         email: client.email,
         phoneNumber: client.phoneNumber,
+        emailVerified: client.emailVerified,
       },
     });
   } catch (err) {
-    console.error("Client login error:", err);
+    console.error("Client login error:", {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    });
     next(err);
   }
 });
 
-// OPTIONAL: Protected route to get client profile
+// @desc    Verify email with code
+// @route   POST /api/client/verify-email
+// @access  Public
+router.post("/verify-email", async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    if (!email || !verificationCode) {
+      return res.status(400).json({
+        success: false,
+        error: "Email and verification code are required"
+      });
+    }
+
+    const client = await Client.findOne({ email });
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
+    }
+
+    if (client.emailVerified) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is already verified"
+      });
+    }
+
+    if (!client.emailVerificationCode || !client.emailVerificationExpires) {
+      return res.status(400).json({
+        success: false,
+        error: "No verification code found. Please request a new one."
+      });
+    }
+
+    if (Date.now() > client.emailVerificationExpires.getTime()) {
+      return res.status(400).json({
+        success: false,
+        error: "Verification code has expired. Please request a new one."
+      });
+    }
+
+    if (client.emailVerificationCode !== verificationCode) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid verification code. Please try again."
+      });
+    }
+
+    // Mark email as verified
+    client.emailVerified = true;
+    client.emailVerificationCode = undefined;
+    client.emailVerificationExpires = undefined;
+    await client.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully!",
+      client: {
+        id: client._id,
+        firstName: client.firstName,
+        lastName: client.lastName,
+        email: client.email,
+        phoneNumber: client.phoneNumber,
+        emailVerified: client.emailVerified
+      }
+    });
+
+  } catch (err) {
+    console.error("Email verification error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Failed to verify email"
+    });
+  }
+});
+
+// @desc    Resend verification email
+// @route   POST /api/client/resend-verification
+// @access  Public
+router.post("/resend-verification", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required"
+      });
+    }
+
+    const client = await Client.findOne({ email });
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
+    }
+
+    if (client.emailVerified) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is already verified"
+      });
+    }
+
+    // Generate new verification code
+    const verificationCode = generateVerificationCode();
+    client.emailVerificationCode = verificationCode;
+    client.emailVerificationExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    await client.save();
+
+    // Send verification email
+    const emailResult = await sendVerificationEmail(email, verificationCode);
+    
+    if (!emailResult.success) {
+      return res.status(500).json({
+        success: false,
+        error: "Failed to send verification email. Please try again."
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Verification email sent successfully! Please check your inbox."
+    });
+
+  } catch (err) {
+    console.error("Resend verification error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Failed to resend verification email"
+    });
+  }
+});
+
+// @desc    Protected route to get client profile
 // @route   GET /api/client/me
 router.get("/me", protect({ model: "client" }), async (req, res) => {
   const client = await Client.findById(req.client._id);
@@ -116,6 +337,7 @@ router.get("/me", protect({ model: "client" }), async (req, res) => {
     lastName: client.lastName,
     email: client.email,
     phoneNumber: client.phoneNumber,
+    emailVerified: client.emailVerified,
     addresses: client.addresses
   });
 });

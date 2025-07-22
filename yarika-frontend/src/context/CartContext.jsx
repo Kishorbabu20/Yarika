@@ -9,6 +9,7 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   // Load cart items from backend on mount and when token changes
   useEffect(() => {
@@ -60,6 +61,11 @@ export const CartProvider = ({ children }) => {
     fetchCart();
 
     // Add event listener for token changes
+    const handleStorageChange = (e) => {
+      if (e.key === "token") {
+        setToken(e.newValue);
+      }
+    };
     window.addEventListener('storage', handleStorageChange);
     // Add event listener for unauthorized events
     window.addEventListener(UNAUTHORIZED_EVENT, handleLogout);
@@ -68,7 +74,7 @@ export const CartProvider = ({ children }) => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener(UNAUTHORIZED_EVENT, handleLogout);
     };
-  }, []);
+  }, [token]);
 
   // Handle storage changes (like token removal)
   const handleStorageChange = (e) => {
@@ -109,6 +115,8 @@ export const CartProvider = ({ children }) => {
       if (error.response?.status === 401) {
         handleLogout();
       }
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import NavigationBarSection from "./NavigationBarSection";
 import { Mail, Phone, MessageSquare } from "lucide-react";
 import "../styles/ProductPage.css";
@@ -90,12 +91,21 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
 
   return (
     <div className="product-page">
+      <Helmet>
+        <title>{title} - Ethnic Wear | Yarika</title>
+        <meta name="description" content={`Shop our exclusive ${title} collection with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`} />
+        <meta name="keywords" content={`${title}, ethnic wear, traditional clothing, designer wear, Yarika`} />
+        <meta property="og:title" content={`${title} - Ethnic Wear | Yarika`} />
+        <meta property="og:description" content={`Shop our exclusive ${title} collection with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
       <NavigationBarSection />
 
-      <main className="page-content pt-[64px]">
+      <main className="page-content pt-0">
         {/* Breadcrumb */}
         <div className="container mx-auto px-4 py-8">
-          <div className="text-sm mb-8 text-gray-600">
+          <div className="text-sm mb-8 text-gray-600 breadcrumb">
             <Link to="/" className="hover:text-gold">Home</Link>
             {" / "}
             <span className="text-gold">{title}</span>
@@ -125,26 +135,30 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
 
         {/* Product Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="product-grid-unified">
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
-              <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-80 w-full flex flex-col justify-end p-4">
-                <div className="bg-gray-300 h-48 w-full rounded mb-4"></div>
-                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+              <div key={i} className="product-card">
+                <div className="product-image"></div>
+                <div className="product-info">
+                  <h3 className="product-name">Loading...</h3>
+                  <p className="product-code">Loading...</p>
+                  <p className="product-price">Loading...</p>
+                </div>
               </div>
             ))}
             </div>
           ) : filteredProducts.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+            <div className="product-grid-unified">
                 {currentItems.map((product) => (
                   <Suspense key={product._id} fallback={
-                    <div className="animate-pulse bg-gray-200 rounded-lg h-80 w-full flex flex-col justify-end p-4">
-                      <div className="bg-gray-300 h-48 w-full rounded mb-4"></div>
-                      <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                  <div className="product-card">
+                    <div className="product-image"></div>
+                    <div className="product-info">
+                      <h3 className="product-name">Loading...</h3>
+                      <p className="product-code">Loading...</p>
+                      <p className="product-price">Loading...</p>
+                    </div>
           </div>
         }>
                   <ProductCard product={product} />

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet";
 import "../styles/signup.css";
 import { FcGoogle } from "react-icons/fc";
 import { FaKey } from "react-icons/fa";
@@ -6,7 +7,7 @@ import { MdEmail } from "react-icons/md";
 import heroImage from "../assets/signup.png";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -34,20 +35,30 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
+      console.log('Attempting login with email:', formData.email);
+      
       const res = await api.post("/api/client/login", formData);
+      console.log('Login response:', res.data);
 
       const { token, client } = res.data;
 
       // Save token and user data to localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(client));
+      localStorage.setItem("userName", `${client.firstName} ${client.lastName}`);
+      localStorage.setItem("userEmail", client.email);
 
       toast.success("Login successful!");
       
-      // Navigate to home page and reload to update auth state
+      // Dispatch custom event to notify App component about login
+      window.dispatchEvent(new CustomEvent('userLoggedIn', { 
+        detail: { user: client, token } 
+      }));
+      
+      // Navigate to home page
       navigate("/");
-      window.location.reload();
     } catch (error) {
+      console.error('Login error:', error);
       const msg = error.response?.data?.error || "Login failed";
       toast.error(msg);
     } finally {
@@ -65,6 +76,15 @@ export default function LoginPage() {
 
   return (
     <div className="auth-container">
+      <Helmet>
+        <title>Login - Yarika | Premium Ethnic Wear</title>
+        <meta name="description" content="Login to your Yarika account to access exclusive ethnic wear collections, track orders, and manage your profile." />
+        <meta name="keywords" content="login, Yarika, ethnic wear, account, authentication" />
+        <meta property="og:title" content="Login - Yarika | Premium Ethnic Wear" />
+        <meta property="og:description" content="Login to your Yarika account to access exclusive ethnic wear collections, track orders, and manage your profile." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
       <div className="auth-form">
         <h1 className="brand">YARIKA</h1>
         <p className="tagline">EXPRESS YOURSELF</p>

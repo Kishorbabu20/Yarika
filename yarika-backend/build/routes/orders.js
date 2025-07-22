@@ -5,11 +5,65 @@ const Product = require("../models/Product");
 const Client = require("../models/Client");
 const protect = require("../middleware/auth");
 const mongoose = require("mongoose");
+const { logAdminActivity } = require("../utils/adminActivityLogger");
+const { sendOrderConfirmationSMS, sendOrderStatusUpdateSMS } = require("../utils/smsService");
+const { sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require("../services/emailService");
+const { createShipment } = require('../services/shipway');
+
+// GET /api/orders/debug - Debug endpoint to check route registration
+router.get("/debug", (req, res) => {
+  console.log('=== DEBUG ENDPOINT HIT ===');
+  console.log('Request details:', {
+    method: req.method,
+    path: req.path,
+    url: req.url,
+    headers: req.headers,
+    timestamp: new Date().toISOString()
+  });
+  
+  res.json({
+    success: true,
+    message: "Orders routes are working",
+    availableRoutes: [
+      "POST /api/orders/add",
+      "GET /api/orders/test-auth", 
+      "GET /api/orders/debug",
+      "GET /api/orders/recent",
+      "GET /api/orders/all"
+    ],
+    timestamp: new Date().toISOString()
+  });
+});
+
+// GET /api/orders/test-auth - Test authentication for debugging
+router.get("/test-auth", protect({ model: "client" }), async (req, res) => {
+  try {
+    console.log('=== AUTH TEST ROUTE ===');
+    console.log('Client info:', {
+      id: req.client?._id,
+      name: req.client ? `${req.client.firstName} ${req.client.lastName}` : 'Unknown',
+      email: req.client?.email
+    });
+    
+    res.json({
+      success: true,
+      message: "Authentication working",
+      client: {
+        id: req.client._id,
+        name: `${req.client.firstName} ${req.client.lastName}`,
+        email: req.client.email
+      }
+    });
+  } catch (err) {
+    console.error("Auth test error:", err);
+    res.status(500).json({ error: "Auth test failed" });
+  }
+});
 
 // GET /api/orders/recent - Get recent orders for admin dashboard
 router.get("/recent", protect({ model: "admin" }), async (req, res) => {
   try {
-    const recentOrders = await Order.find()
+    const recentOrders = await Order.find({ payment_status: { $in: ["Completed", "Paid"] } })
       .sort({ createdAt: -1 })
       .limit(10)
       .populate({
@@ -125,9 +179,9 @@ router.get("/all", protect({ model: "admin" }), async (req, res) => {
 
     console.log('Starting Order.find() operation...');
     
-    // First, get all orders without population to check data integrity
-    const rawOrders = await Order.find().lean();
-    console.log(`Found ${rawOrders.length} raw orders`);
+    // Only get orders with completed payment status
+    const rawOrders = await Order.find({ payment_status: { $in: ["Completed", "Paid"] } }).lean();
+    console.log(`Found ${rawOrders.length} paid orders`);
 
     // Validate order data before population
     const validOrders = rawOrders.filter(order => {
@@ -282,7 +336,7 @@ router.get("/:orderId", protect({ model: "admin" }), async (req, res) => {
     const order = await Order.findById(orderId)
       .populate({
         path: "items.productId",
-        select: "name code mainImage price"
+        select: "name code mainImage price netWeight grossWeight"
       })
       .populate({
         path: "userId",
@@ -320,7 +374,9 @@ router.get("/:orderId", protect({ model: "admin" }), async (req, res) => {
           _id: item.productId?._id,
           name: item.productId?.name || 'Product Removed',
           code: item.productId?.code,
-          mainImage: item.productId?.mainImage
+          mainImage: item.productId?.mainImage,
+          netWeight: item.productId?.netWeight,
+          grossWeight: item.productId?.grossWeight
         },
         quantity: item.quantity,
         price: item.price,
@@ -340,330 +396,6 @@ router.get("/:orderId", protect({ model: "admin" }), async (req, res) => {
       error: "Failed to fetch order details",
       details: "An error occurred while retrieving the order information"
     });
-  }
-});
-
-// ✅ POST /api/orders - Place a new order
-router.post("/", protect({ model: "client" }), async (req, res) => {
-  let session;
-  
-  try {
-    // Log request details
-    console.log('Order creation request:', {
-      userId: req.client?._id,
-      body: req.body,
-      headers: {
-        authorization: req.headers.authorization ? 'Bearer [hidden]' : 'none',
-        contentType: req.headers['content-type']
-      }
-    });
-
-    // Check MongoDB connection - FIXED the condition
-    if (mongoose.connection.readyState !== 1) {
-      console.error('MongoDB connection is not ready:', {
-        state: mongoose.connection.readyState,
-        host: mongoose.connection.host,
-        name: mongoose.connection.name
-      });
-      return res.status(500).json({ 
-        error: "Database connection error",
-        details: "Please try again in a few moments"
-      });
-    }
-
-    if (!req.client || !req.client._id) {
-      console.error('Client not found in request');
-      return res.status(401).json({
-        error: "Authentication error",
-        details: "Client information not found"
-      });
-    }
-
-    session = await mongoose.startSession();
-    const userId = req.client._id;
-    const { items, totalAmount } = req.body;
-
-    console.log('Order creation attempt:', {
-      userId,
-      itemCount: items?.length,
-      totalAmount,
-      body: req.body
-    });
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      console.error('Order validation failed: No items in order');
-      return res.status(400).json({ error: "No items in order" });
-    }
-
-    if (!totalAmount || totalAmount <= 0) {
-      console.error('Order validation failed: Invalid total amount', { totalAmount });
-      return res.status(400).json({ error: "Invalid total amount" });
-    }
-
-    // Calculate expected total from items
-    const calculatedTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    if (Math.abs(calculatedTotal - totalAmount) > 0.01) { // Allow for small floating point differences
-      console.error('Order validation failed: Total amount mismatch', {
-        calculated: calculatedTotal,
-        provided: totalAmount
-      });
-      return res.status(400).json({
-        error: "Total amount mismatch",
-        details: "The sum of item prices does not match the total amount"
-      });
-    }
-
-    // Validate each item has required fields and products exist
-    try {
-    for (const item of items) {
-        console.log('Validating item:', item);
-        if (!item.productId || !item.quantity || !item.price || !item.size || !item.color) {
-          console.error('Order validation failed: Invalid item data', { item });
-        return res.status(400).json({ 
-          error: "Invalid item data", 
-            details: "Each item must have productId, quantity, price, size, and color",
-            receivedItem: item
-          });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(item.productId)) {
-          console.error('Invalid product ID format:', item.productId);
-          return res.status(400).json({
-            error: "Invalid product ID format",
-            productId: item.productId
-          });
-        }
-
-        // Verify product exists before starting transaction
-        const productExists = await Product.findById(item.productId);
-        if (!productExists) {
-          console.error(`Product not found: ${item.productId}`);
-          return res.status(404).json({ 
-            error: "Product not found",
-            productId: item.productId
-          });
-        }
-
-        // Verify product has sufficient stock for the specific size
-        const sizeStock = productExists.sizeStocks.get(item.size) || 0;
-        if (sizeStock < item.quantity) {
-          console.error(`Insufficient stock for product: ${productExists.name} size: ${item.size}`, {
-            requested: item.quantity,
-            available: sizeStock
-          });
-          return res.status(400).json({ 
-            error: "Insufficient stock",
-            product: productExists.name,
-            size: item.size,
-            requested: item.quantity,
-            available: sizeStock
-          });
-        }
-
-        // Verify size and color are valid for the product
-        if (!productExists.sizes.includes(item.size)) {
-          console.error(`Invalid size for product: ${productExists.name}`, {
-            requestedSize: item.size,
-            availableSizes: productExists.sizes
-          });
-          return res.status(400).json({ 
-            error: "Invalid size",
-            product: productExists.name,
-            requestedSize: item.size,
-            availableSizes: productExists.sizes
-          });
-        }
-
-        if (!productExists.colors.includes(item.color)) {
-          console.error(`Invalid color for product: ${productExists.name}`, {
-            requestedColor: item.color,
-            availableColors: productExists.colors
-          });
-          return res.status(400).json({ 
-            error: "Invalid color",
-            product: productExists.name,
-            requestedColor: item.color,
-            availableColors: productExists.colors
-          });
-        }
-
-        // Verify price matches product's current price
-        if (Math.abs(productExists.sellingPrice - item.price) > 0.01) {
-          console.error(`Price mismatch for product: ${productExists.name}`, {
-            requestedPrice: item.price,
-            actualPrice: productExists.sellingPrice
-          });
-          return res.status(400).json({
-            error: "Price mismatch",
-            product: productExists.name,
-            requestedPrice: item.price,
-            actualPrice: productExists.sellingPrice
-          });
-        }
-      }
-    } catch (validationError) {
-      console.error('Product validation error:', {
-        name: validationError.name,
-        message: validationError.message,
-        stack: validationError.stack
-      });
-      return res.status(500).json({
-        error: "Failed to validate products",
-        message: validationError.message
-      });
-    }
-
-    // Start transaction
-    session.startTransaction();
-
-    try {
-      // Update product stock
-      const updatedProducts = [];
-      for (const item of items) {
-        const product = await Product.findById(item.productId).session(session);
-        if (!product) {
-          throw new Error(`Product ${item.productId} not found during transaction`);
-        }
-        
-        // Update size-specific stock and total stock
-        const currentSizeStock = product.sizeStocks.get(item.size) || 0;
-        if (currentSizeStock < item.quantity) {
-          throw new Error(`Insufficient stock for product ${product.name} size ${item.size}`);
-        }
-
-        // Update the stock
-        product.sizeStocks.set(item.size, currentSizeStock - item.quantity);
-        product.totalStock -= item.quantity;
-        product.soldCount = (product.soldCount || 0) + item.quantity;
-
-        await product.save({ session });
-        updatedProducts.push(product);
-      }
-
-      const order = new Order({
-        userId,
-        items,
-        totalAmount,
-        status: "Pending",
-        payment_status: "Pending"
-      });
-
-      console.log('Creating order:', {
-        userId,
-        itemCount: items.length,
-        totalAmount,
-        items: items.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price
-        }))
-      });
-
-      const savedOrder = await order.save({ session });
-      await session.commitTransaction();
-      
-      console.log('Order created successfully:', {
-        orderId: savedOrder._id,
-        products: updatedProducts.map(p => ({
-          id: p._id,
-          name: p.name,
-          newTotalStock: p.totalStock
-        }))
-      });
-      
-      res.status(201).json(savedOrder);
-    } catch (transactionError) {
-      console.error('Transaction error:', {
-        name: transactionError.name,
-        message: transactionError.message,
-        stack: transactionError.stack
-      });
-      
-      if (session) {
-        try {
-          await session.abortTransaction();
-          console.log('Transaction aborted successfully');
-        } catch (abortError) {
-          console.error('Error aborting transaction:', {
-            name: abortError.name,
-            message: abortError.message,
-            stack: abortError.stack
-          });
-        }
-      }
-      
-      // Check for specific error types
-      if (transactionError.name === 'ValidationError') {
-        return res.status(400).json({
-          error: "Validation error",
-          details: transactionError.message
-        });
-      }
-      
-      if (transactionError.message.includes('Insufficient stock')) {
-        return res.status(400).json({
-          error: "Insufficient stock",
-          details: transactionError.message
-        });
-      }
-      
-      res.status(500).json({
-        error: "Failed to process order",
-        message: transactionError.message
-      });
-    }
-  } catch (error) {
-    console.error('Order creation error:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      code: error.code,
-      codeName: error.codeName,
-      connectionState: mongoose.connection.readyState,
-      isConnected: mongoose.connection.readyState === 1,
-      host: mongoose.connection.host
-    });
-    
-    if (session) {
-      try {
-      await session.abortTransaction();
-        console.log('Transaction aborted successfully');
-      } catch (abortError) {
-        console.error('Error aborting transaction:', {
-          name: abortError.name,
-          message: abortError.message,
-          stack: abortError.stack
-        });
-      }
-    }
-    
-    // Check for specific MongoDB errors
-    if (error.name === 'MongoServerError' && error.message.includes('transaction')) {
-      return res.status(500).json({ 
-        error: "Transaction error",
-        message: "Database transaction failed. Please ensure you're connected to a replica set.",
-        details: error.message
-      });
-    }
-    
-    res.status(500).json({ 
-      error: "Failed to create order",
-      message: error.message,
-      details: error.code === 'ERR_TRANSACTION_ERROR' ? 'Transaction failed - please try again' : undefined
-    });
-  } finally {
-    if (session) {
-      try {
-        await session.endSession();
-        console.log('Session ended successfully');
-      } catch (endError) {
-        console.error('Error ending session:', {
-          name: endError.name,
-          message: endError.message,
-          stack: endError.stack
-        });
-      }
-    }
   }
 });
 
@@ -691,6 +423,197 @@ router.post("/update-payment", async (req, res) => {
   } catch (err) {
     console.error("Payment update error:", err);
     res.status(500).json({ error: "Failed to update payment status" });
+  }
+});
+
+// POST /api/orders/add - Create a new order after successful payment
+router.post("/add", protect({ model: "client" }), async (req, res) => {
+  let session;
+  try {
+    session = await mongoose.startSession();
+    session.startTransaction();
+
+    const userId = req.client._id;
+    const { items, totalAmount, shippingAddress } = req.body;
+
+    // Validate required fields
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: "No items in order", details: "Order must contain at least one item" });
+    }
+    if (!totalAmount || totalAmount <= 0) {
+      return res.status(400).json({ error: "Invalid total amount", details: "Total amount must be greater than 0" });
+    }
+    if (!shippingAddress || !shippingAddress.street || !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode) {
+      return res.status(400).json({ error: "Invalid shipping address", details: "Shipping address must include street, city, state, and pincode" });
+    }
+
+    // Calculate expected total from items
+    const calculatedTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    if (Math.abs(calculatedTotal - totalAmount) > 0.01) {
+      return res.status(400).json({ error: "Total amount mismatch", details: `The sum of item prices (${calculatedTotal}) does not match the total amount (${totalAmount})` });
+    }
+
+    // Validate each item and check stock
+    for (const item of items) {
+      if (!item.productId || !item.quantity || !item.price || !item.size || !item.color) {
+        return res.status(400).json({ error: "Invalid item data", details: "Each item must have productId, quantity, price, size, and color", receivedItem: item });
+      }
+      if (!mongoose.Types.ObjectId.isValid(item.productId)) {
+        return res.status(400).json({ error: "Invalid product ID format", productId: item.productId });
+      }
+      const product = await Product.findById(item.productId).session(session);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found", productId: item.productId });
+      }
+      // Place the debug code here:
+      console.log('sizeStocks:', product.sizeStocks);
+      console.log('Requested size:', item.size);
+      let sizeStock = 0;
+      if (product.sizeStocks instanceof Map) {
+        sizeStock = product.sizeStocks.get(item.size) || 0;
+      } else if (typeof product.sizeStocks === 'object' && product.sizeStocks !== null) {
+        sizeStock = product.sizeStocks[item.size] || 0;
+      }
+      console.log('Stock for requested size:', sizeStock);
+
+      // Check stock for size
+      if (sizeStock < item.quantity) {
+        return res.status(400).json({ error: "Insufficient stock", product: product.name, size: item.size, requested: item.quantity, available: sizeStock });
+      }
+      // Check valid size and color
+      if (!product.sizes.includes(item.size)) {
+        return res.status(400).json({ error: "Invalid size", product: product.name, requestedSize: item.size, availableSizes: product.sizes });
+      }
+      if (!product.colors.includes(item.color)) {
+        return res.status(400).json({ error: "Invalid color", product: product.name, requestedColor: item.color, availableColors: product.colors });
+      }
+      // Check price
+      if (Math.abs(product.sellingPrice - item.price) > 0.01) {
+        return res.status(400).json({ error: "Price mismatch", product: product.name, requestedPrice: item.price, actualPrice: product.sellingPrice });
+      }
+    }
+
+    // Deduct stock
+    for (const item of items) {
+      const product = await Product.findById(item.productId).session(session);
+      const currentSizeStock = product.sizeStocks.get(item.size) || 0;
+      product.sizeStocks.set(item.size, currentSizeStock - item.quantity);
+      product.totalStock -= item.quantity;
+      product.soldCount = (product.soldCount || 0) + item.quantity;
+      await product.save({ session });
+    }
+
+    // Create order
+    const order = new Order({
+      userId,
+      items,
+      totalAmount,
+      status: "Confirmed",
+      payment_status: "Completed",
+      shippingAddress
+    });
+    const savedOrder = await order.save({ session });
+    await session.commitTransaction();
+
+    // Send SMS confirmation
+    if (req.client && req.client.phoneNumber) {
+      try {
+        const customerName = `${req.client.firstName || ''} ${req.client.lastName || ''}`.trim() || 'Customer';
+        const smsResult = await sendOrderConfirmationSMS(
+          req.client.phoneNumber,
+          savedOrder._id,
+          customerName,
+          savedOrder.totalAmount
+        );
+        
+        if (smsResult.success) {
+          console.log('Order confirmation SMS sent successfully:', {
+            orderId: savedOrder._id,
+            smsSid: smsResult.sid
+          });
+        } else {
+          console.warn('Order confirmation SMS failed:', {
+            orderId: savedOrder._id,
+            reason: smsResult.reason || smsResult.error
+          });
+        }
+      } catch (smsError) {
+        console.error('Error sending order confirmation SMS:', {
+          orderId: savedOrder._id,
+          error: smsError.message
+        });
+      }
+    } else {
+      console.warn('Customer phone number not found for order confirmation SMS:', {
+        orderId: savedOrder._id,
+        userId: req.client?._id
+      });
+    }
+
+    // Send Email confirmation
+    if (req.client && req.client.email) {
+      try {
+        const customerName = `${req.client.firstName || ''} ${req.client.lastName || ''}`.trim() || 'Customer';
+        
+        // Get product details for email
+        const itemsWithProductNames = await Promise.all(
+          savedOrder.items.map(async (item) => {
+            const product = await Product.findById(item.productId);
+            return {
+              ...item.toObject(),
+              productName: product ? product.name : 'Product'
+            };
+          })
+        );
+
+        const emailResult = await sendOrderConfirmationEmail(
+          req.client.email,
+          savedOrder._id,
+          customerName,
+          savedOrder.totalAmount,
+          itemsWithProductNames
+        );
+        
+        if (emailResult.success) {
+          console.log('Order confirmation email sent successfully:', {
+            orderId: savedOrder._id,
+            email: req.client.email,
+            messageId: emailResult.messageId
+          });
+        } else {
+          console.warn('Order confirmation email failed:', {
+            orderId: savedOrder._id,
+            reason: emailResult.reason || emailResult.error
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending order confirmation email:', {
+          orderId: savedOrder._id,
+          error: emailError.message
+        });
+      }
+    } else {
+      console.warn('Customer email not found for order confirmation email:', {
+        orderId: savedOrder._id,
+        userId: req.client?._id
+      });
+    }
+
+    const shipwayResult = await createShipment(savedOrder);
+    // Save tracking info to order if needed
+    savedOrder.trackingInfo = shipwayResult;
+    await savedOrder.save();
+
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    if (session) {
+      try { await session.abortTransaction(); } catch {}
+    }
+    res.status(500).json({ error: "Failed to create order", message: error.message });
+  } finally {
+    if (session) {
+      try { await session.endSession(); } catch {}
+    }
   }
 });
 
@@ -782,13 +705,106 @@ router.put("/:orderId/status", protect({ model: "admin" }), async (req, res) => 
       });
     }
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('userId', 'firstName lastName phoneNumber email');
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
 
+    const oldStatus = order.status;
     order.status = status;
     await order.save();
+
+    // Send SMS notification for status update
+    if (order.userId && order.userId.phoneNumber) {
+      try {
+        const customerName = `${order.userId.firstName || ''} ${order.userId.lastName || ''}`.trim() || 'Customer';
+        const smsResult = await sendOrderStatusUpdateSMS(
+          order.userId.phoneNumber,
+          order._id,
+          status,
+          customerName
+        );
+        
+        if (smsResult.success) {
+          console.log('Status update SMS sent successfully:', {
+            orderId: order._id,
+            status: status,
+            smsSid: smsResult.sid
+          });
+        } else {
+          console.warn('Status update SMS failed:', {
+            orderId: order._id,
+            status: status,
+            reason: smsResult.reason || smsResult.error
+          });
+        }
+      } catch (smsError) {
+        console.error('Error sending status update SMS:', {
+          orderId: order._id,
+          status: status,
+          error: smsError.message
+        });
+      }
+    } else {
+      console.warn('Customer phone number not found for status update SMS:', {
+        orderId: order._id,
+        userId: order.userId?._id
+      });
+    }
+
+    // Send Email notification for status update
+    if (order.userId && order.userId.email) {
+      try {
+        const customerName = `${order.userId.firstName || ''} ${order.userId.lastName || ''}`.trim() || 'Customer';
+        const emailResult = await sendOrderStatusUpdateEmail(
+          order.userId.email,
+          order._id,
+          status,
+          customerName
+        );
+        
+        if (emailResult.success) {
+          console.log('Status update email sent successfully:', {
+            orderId: order._id,
+            status: status,
+            email: order.userId.email,
+            messageId: emailResult.messageId
+          });
+        } else {
+          console.warn('Status update email failed:', {
+            orderId: order._id,
+            status: status,
+            reason: emailResult.reason || emailResult.error
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending status update email:', {
+          orderId: order._id,
+          status: status,
+          error: emailError.message
+        });
+      }
+    } else {
+      console.warn('Customer email not found for status update email:', {
+        orderId: order._id,
+        userId: order.userId?._id
+      });
+    }
+
+    // Log admin activity for order status change
+    if (req.admin) {
+      await logAdminActivity({
+        adminId: req.admin._id,
+        adminName: req.admin.name || req.admin.username,
+        action: 'Order Status Changed',
+        entityType: 'Order',
+        entityName: `Order #${order._id.toString().slice(-6)}`,
+        entityId: order._id,
+        details: `Changed order status from "${oldStatus}" to "${status}"`,
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+    }
 
     res.json({ 
       success: true, 
@@ -803,6 +819,11 @@ router.put("/:orderId/status", protect({ model: "admin" }), async (req, res) => 
     console.error("Order status update error:", err);
     res.status(500).json({ error: "Failed to update order status" });
   }
+});
+
+router.use((req, res, next) => {
+  console.log('Orders route hit:', req.method, req.path);
+  next();
 });
 
 module.exports = router;

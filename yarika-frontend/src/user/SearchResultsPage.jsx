@@ -2,6 +2,7 @@ import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../config/axios";
 import "../styles/ProductPage.css";
+import { useScrollFade } from "../hooks/useScrollFade";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
@@ -11,6 +12,7 @@ const SearchResultsPage = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ref, fadeClass] = useScrollFade();
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -42,7 +44,7 @@ const SearchResultsPage = () => {
   }, [query]);
 
   return (
-    <div className="page-container">
+    <div ref={ref} className={`search-results-page scroll-animate ${fadeClass}`}>
       <div className="content-section">
         <h2 className="category-title">
         Search Results for "{query}"

@@ -3,6 +3,7 @@ const router = express.Router();
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Admin = require("../models/Admin");
+const AdminActivity = require("../models/AdminActivity");
 const protect = require("../middleware/auth");
 
 // Apply admin protection to all analytics routes
@@ -73,6 +74,8 @@ router.get("/product-performance", async (req, res) => {
       {
         $project: {
           name: "$product.name",
+          categoryType: "$product.categoryType",
+          category: "$product.category",
           totalSold: 1,
           revenue: 1,
           totalStock: "$product.totalStock",
@@ -92,34 +95,57 @@ router.get("/product-performance", async (req, res) => {
 // GET /api/analytics/admin-activity
 router.get("/admin-activity", async (req, res) => {
   try {
-    const now = new Date();
-    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+    console.log("Admin activity endpoint called");
+    
+    // Get recent admin activities (last 50 activities)
+    const activities = await AdminActivity.find()
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .populate('adminId', 'name username email');
 
-    const adminActivity = await Admin.aggregate([
-      {
-        $match: {
-          lastActive: { $gte: thirtyDaysAgo }
-        }
-      },
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$lastActive" } },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]);
+    console.log(`Found ${activities.length} admin activities`);
 
-    const formatted = adminActivity.map(day => ({
-      date: day._id,
-      activity: day.count
-    }));
+    // Format activities for frontend
+    const formattedActivities = activities.map(activity => {
+      const timeAgo = getTimeAgo(activity.createdAt);
+      
+      return {
+        name: activity.adminName,
+        action: `${activity.action} ${activity.entityName}`,
+        status: activity.action,
+        time: timeAgo,
+        details: activity.details,
+        entityType: activity.entityType
+      };
+    });
 
-    res.json(formatted);
+    console.log("Formatted activities:", formattedActivities.slice(0, 3)); // Log first 3 activities
+
+    res.json(formattedActivities);
   } catch (err) {
+    console.error("Error fetching admin activity:", err);
     res.status(500).json({ error: "Failed to fetch admin activity" });
   }
 });
+
+// Helper function to format time ago
+function getTimeAgo(date) {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+  
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds}s ago`;
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours}h ago`;
+  } else {
+    const days = Math.floor(diffInSeconds / 86400);
+    return `${days}d ago`;
+  }
+}
 
 // GET /api/analytics/stats
 router.get("/stats", async (req, res) => {

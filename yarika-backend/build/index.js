@@ -8,8 +8,18 @@ const { Server } = require("socket.io");
 const session = require('express-session');
 const passport = require('passport');
 const protect = require("./middleware/auth");
+const colorRoutes = require('./routes/color');
+const sizeRoutes = require('./routes/size');
+const colorGroupRoutes = require('./routes/colorGroup');
+const sizeGroupRoutes = require('./routes/sizeGroup');
+const batchProductsRoutes = require('./routes/batchProducts');
 
+// Load environment variables - use .env.local for development
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config({ path: '.env.local' });
+} else {
 dotenv.config();
+}
 
 // Set mongoose options
 mongoose.set('strictQuery', true);
@@ -27,14 +37,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://yarika.in", "https://yarika.in"],
+    origin: ["http://localhost:3000", "https:yarika.in", "https:yarika.in"],
     methods: ["GET", "POST"],
     credentials: true,
   },
   path: "/ws",
 });
 
-const allowedOrigins = ["https://yarika.in", "https://yarika.in"];
+const allowedOrigins = ["http://localhost:3000", "https:yarika.in", "https:yarika.in"];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -64,6 +74,11 @@ app.use(
     ]
   })
 );
+
+app.use((req, res, next) => {
+  console.log('Request:', req.method, req.path, 'Origin:', req.headers.origin);
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -118,6 +133,9 @@ const connectDB = async () => {
 
     console.log('Connecting to MongoDB...');
     const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://Yarika:qw12w2e3q1r4QWER_@cluster0.8ehwkwy.mongodb.net/yarika?retryWrites=true&w=majority&appName=Cluster0";
+    
+    console.log('Environment:', process.env.NODE_ENV || 'development');
+    console.log('Database:', process.env.NODE_ENV === 'development' ? 'yarika_dev (development)' : 'yarika (production)');
     
     await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
@@ -205,6 +223,11 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/client", clientRoutes);
 app.use('/api/auth', googleAuthRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use('/api/colors', colorRoutes);
+app.use('/api/sizes', sizeRoutes);
+app.use('/api/color-groups', colorGroupRoutes);
+app.use('/api/size-groups', sizeGroupRoutes);
+app.use('/api/batch-products', batchProductsRoutes);
 
 console.log('Routes registered successfully');
 
@@ -258,16 +281,43 @@ io.on("connection", (socket) => {
 
 // 404 handler
 app.use((req, res) => {
-  console.warn('404 Not Found:', {
+  console.warn('=== 404 NOT FOUND ===');
+  console.warn('Request details:', {
     method: req.method,
     path: req.path,
+    url: req.url,
     query: req.query,
-    body: req.body
+    body: req.body,
+    headers: {
+      authorization: req.headers.authorization ? 'Bearer [hidden]' : 'none',
+      contentType: req.headers['content-type'],
+      origin: req.headers.origin,
+      userAgent: req.headers['user-agent']
+    },
+    timestamp: new Date().toISOString()
   });
+  
+  // Check if it's an orders route
+  if (req.path.includes('/api/orders')) {
+    console.warn('Orders route not found. Available orders routes:');
+    console.warn('- POST /api/orders/add');
+    console.warn('- GET /api/orders/test-auth');
+    console.warn('- GET /api/orders/debug');
+    console.warn('- GET /api/orders/recent');
+    console.warn('- GET /api/orders/all');
+  }
+  
   res.status(404).json({
     error: "Not Found",
     message: `Route ${req.method} ${req.path} not found`,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    availableRoutes: req.path.includes('/api/orders') ? [
+      "POST /api/orders/add",
+      "GET /api/orders/test-auth",
+      "GET /api/orders/debug", 
+      "GET /api/orders/recent",
+      "GET /api/orders/all"
+    ] : undefined
   });
 });
 
@@ -324,7 +374,7 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
-  console.log(`Server running at https://yarika.in`);
+  console.log(`Server running at localhost:${PORT}`);
   console.log(`WebSocket server also running at ws://localhost:${PORT}/ws`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

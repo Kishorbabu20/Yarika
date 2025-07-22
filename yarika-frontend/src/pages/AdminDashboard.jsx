@@ -10,7 +10,6 @@ import api from "../config/axios";
 import toast from "react-hot-toast";
 import "../styles/AdminDashboard.css";
 import { useQuery } from '@tanstack/react-query';
-import Modal from "react-modal";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({ ordersThisMonth: 0, activeProducts: 0, adminUsers: 0, ordersChange: "" });
@@ -19,13 +18,19 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [showAllOrders, setShowAllOrders] = useState(false);
   const [allOrders, setAllOrders] = useState([]);
-  const [showChangePassword, setShowChangePassword] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [changePwdMsg, setChangePwdMsg] = useState("");
 
   useEffect(() => {
+    // Check admin authentication on component mount
+    const adminToken = localStorage.getItem("adminToken");
+    if (!adminToken) {
+      console.error("No admin token found on dashboard load");
+      toast.error("Please log in to access admin dashboard");
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    console.log('Admin dashboard loaded with token:', adminToken ? 'Present' : 'Missing');
+    
     fetchStats();
     fetchSales();
     fetchRevenue();
@@ -62,11 +67,48 @@ const AdminDashboard = () => {
   };
   const fetchOrders = async () => {
     try {
+      // Check for admin token first
+      const adminToken = localStorage.getItem("adminToken");
+      if (!adminToken) {
+        console.error("No admin token found");
+        toast.error("Please log in again");
+        window.location.href = "/admin/login";
+        return;
+      }
+
+      console.log('Fetching recent orders...');
       const res = await api.get("/api/orders/recent");
+      console.log('Recent orders response:', {
+        status: res.status,
+        dataLength: res.data?.length || 0
+      });
+      
+      if (!res.data || !Array.isArray(res.data)) {
+        console.error('Invalid recent orders response data:', res.data);
+        toast.error("Invalid data received from server");
+        setOrders([]);
+        return;
+      }
+
       setOrders(res.data);
+      console.log(`Loaded ${res.data.length} recent orders`);
     } catch (err) {
-      console.error("Error fetching recent orders:", err);
-      toast.error("Failed to load recent orders");
+      console.error("Error fetching recent orders:", {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data,
+        config: {
+          url: err.config?.url,
+          headers: err.config?.headers
+        }
+      });
+      
+      if (err.response?.status === 401) {
+        toast.error("Authentication failed. Please log in again");
+        window.location.href = "/admin/login";
+      } else {
+        toast.error(err.response?.data?.details || "Failed to load recent orders");
+      }
       setOrders([]); // Set empty array as fallback
     }
   };
@@ -215,85 +257,36 @@ const AdminDashboard = () => {
     refetchInterval: 5000, // optional: live update every 5s
   });
 
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-    setChangePwdMsg("");
-    if (newPassword !== confirmPassword) {
-      setChangePwdMsg("New passwords do not match");
-      return;
-    }
+  const debugAuth = async () => {
     try {
-      const token = localStorage.getItem("token");
-      await api.post(
-        "/api/auth/change-password",
-        { oldPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setChangePwdMsg("Password changed successfully!");
-      setOldPassword(""); setNewPassword(""); setConfirmPassword("");
-      setTimeout(() => setShowChangePassword(false), 1200);
-    } catch (err) {
-      setChangePwdMsg(err.response?.data?.message || "Failed to change password");
+      const adminToken = localStorage.getItem("adminToken");
+      console.log('=== AUTH DEBUG ===');
+      console.log('Admin token exists:', !!adminToken);
+      console.log('Admin token length:', adminToken?.length);
+      console.log('Admin token preview:', adminToken ? `${adminToken.substring(0, 20)}...` : 'None');
+      
+      if (adminToken) {
+        // Test the token with a simple API call
+        const testRes = await api.get("/api/admins/me");
+        console.log('Token test response:', testRes.data);
+        toast.success('Authentication working!');
+      } else {
+        toast.error('No admin token found');
+      }
+    } catch (error) {
+      console.error('Auth debug error:', error);
+      toast.error(`Auth error: ${error.response?.data?.error || error.message}`);
     }
   };
+
+  // Add debug button to test authentication
+  // Remove the DebugButton rendering
 
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="main-content">
-        {/* Remove any extra space above the title */}
-        <style>{`
-          .analytics-header { margin-top: 0 !important; padding-top: 0 !important; }
-          .analytics-header h2 { margin-top: 0 !important; padding-top: 0 !important; }
-          .main-content { margin-top: 0 !important; padding-top: 0 !important; }
-          .main-content > *:first-child { margin-top: 0 !important; padding-top: 0 !important; }
-        `}</style>
-        <div className="analytics-header">
-          <h2>Dashboard</h2>
-          <div className="analytics-header-right">
-            <div className="search-container">
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search"
-              />
-              <span className="search-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="7"/><line x1="16" y1="16" x2="12.5" y2="12.5"/></svg>
-              </span>
-            </div>
-            <span className="notification-icon">🔔</span>
-            <span className="profile-icon" onClick={() => setShowChangePassword(true)}>👤</span>
-          </div>
-        </div>
-        {/* Change Password Modal */}
-        <Modal
-          isOpen={showChangePassword}
-          onRequestClose={() => setShowChangePassword(false)}
-          contentLabel="Change Password"
-          ariaHideApp={false}
-          style={{ overlay: { zIndex: 1000, background: 'rgba(0,0,0,0.3)' }, content: { maxWidth: 400, margin: 'auto', borderRadius: 12, padding: 32 } }}
-        >
-          <h2 style={{ marginBottom: 16 }}>Change Password</h2>
-          <form onSubmit={handleChangePassword}>
-            <div style={{ marginBottom: 12 }}>
-              <label>Old Password</label>
-              <input type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #ccc' }} />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>New Password</label>
-              <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #ccc' }} />
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <label>Confirm New Password</label>
-              <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #ccc' }} />
-            </div>
-            {changePwdMsg && <div style={{ color: changePwdMsg.includes('success') ? 'green' : 'red', marginBottom: 8 }}>{changePwdMsg}</div>}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-              <button type="button" onClick={() => setShowChangePassword(false)} style={{ padding: '8px 18px', borderRadius: 6, border: 'none', background: '#eee', color: '#333', cursor: 'pointer' }}>Cancel</button>
-              <button type="submit" style={{ padding: '8px 18px', borderRadius: 6, border: 'none', background: '#c6aa62', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Change</button>
-            </div>
-          </form>
-        </Modal>
+        <Header title="Dashboard" />
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: 0 }}>
           {/* Stat Cards */}
           <div className="stat-grid" style={{ margin: '32px 0 0 0' }}>
@@ -392,6 +385,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      {/* Remove the DebugButton rendering */}
     </div>
   );
 };

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const CartItem = require("../models/CartItem");
 const protect = require("../middleware/auth");
+const Product = require("../models/Product");
 
 // Debug middleware for cart routes
 router.use((req, res, next) => {
@@ -138,6 +139,43 @@ router.delete("/clear", protect({ model: "client" }), async (req, res) => {
   } catch (err) {
     console.error("Clear cart error:", err);
     res.status(500).json({ error: "Failed to clear cart" });
+  }
+});
+
+// POST /api/cart/calculate-tax
+router.post("/calculate-tax", async (req, res) => {
+  try {
+    const { items } = req.body; // [{ productId, quantity, price, ... }]
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ error: "No items provided" });
+    }
+
+    let totalTax = 0;
+    let taxBreakdown = [];
+
+    for (const item of items) {
+      const product = await Product.findById(item.productId);
+      if (!product) continue;
+
+      // Example: 12% GST for all products, or use product.taxClass if you have different rates
+      const taxRate = 0.12; // 12%
+      const itemTax = (item.price * item.quantity) * taxRate;
+
+      totalTax += itemTax;
+      taxBreakdown.push({
+        productId: item.productId,
+        tax: itemTax,
+        taxRate,
+      });
+    }
+
+    res.json({
+      totalTax: Number(totalTax.toFixed(2)),
+      taxBreakdown,
+    });
+  } catch (err) {
+    console.error("Tax calculation error:", err);
+    res.status(500).json({ error: "Failed to calculate tax" });
   }
 });
 

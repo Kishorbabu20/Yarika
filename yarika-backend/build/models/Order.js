@@ -40,6 +40,29 @@ const OrderSchema = new mongoose.Schema({
     required: [true, "Total amount is required"],
     min: [0, "Total amount cannot be negative"]
   },
+  // Shipping address fields
+  shippingAddress: {
+    street: {
+      type: String,
+      required: false, // Made optional to support existing orders
+      trim: true
+    },
+    city: {
+      type: String,
+      required: false, // Made optional to support existing orders
+      trim: true
+    },
+    state: {
+      type: String,
+      required: false, // Made optional to support existing orders
+      trim: true
+    },
+    pincode: {
+      type: String,
+      required: false, // Made optional to support existing orders
+      trim: true
+    }
+  },
   date: { 
     type: Date, 
     default: Date.now 
@@ -48,7 +71,7 @@ const OrderSchema = new mongoose.Schema({
     type: String, 
     default: "Pending",
     enum: {
-      values: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      values: ["Pending", "Confirmed", "Processing", "Shipped", "Delivered", "Cancelled"],
       message: "{VALUE} is not a valid status"
     }
   },

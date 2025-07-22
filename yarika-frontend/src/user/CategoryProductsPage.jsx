@@ -1,11 +1,12 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Link, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
 const ProductListSection = lazy(() => import("./ProductListSection"));
 
 const CategoryProductsPage = () => {
-  const { categoryType, category } = useParams();
+  const { dropdown, categoryType, category } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +24,15 @@ const CategoryProductsPage = () => {
           query.append("category", category);
         }
 
+        // Add cache-busting parameter
+        query.append("_t", Date.now());
+
         const res = await api.get(`/api/products?${query}`);
+        
+        console.log('CategoryProductsPage - API Response:', res.data);
+        console.log('CategoryProductsPage - First product sample:', res.data[0]);
+        console.log('CategoryProductsPage - First product seoUrl:', res.data[0]?.seoUrl);
+        console.log('CategoryProductsPage - First product full object:', JSON.stringify(res.data[0], null, 2));
         
         if (Array.isArray(res.data)) {
         setProducts(res.data);
@@ -49,8 +58,37 @@ const CategoryProductsPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{getFormattedTitle(categoryType)} - Ethnic Wear | Yarika</title>
+        <meta name="description" content={`Shop our exclusive ${getFormattedTitle(categoryType)} collection with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`} />
+        <meta name="keywords" content={`${getFormattedTitle(categoryType)}, ethnic wear, traditional clothing, designer wear, Yarika, ${category}`} />
+        <meta property="og:title" content={`${getFormattedTitle(categoryType)} - Ethnic Wear | Yarika`} />
+        <meta property="og:description" content={`Shop our exclusive ${getFormattedTitle(categoryType)} collection with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
         
-      <div className="container mx-auto px-4">
+      <div className="content-section">
+        <div className="breadcrumb">
+          <Link to="/">Home</Link>
+          {dropdown && (
+            <>
+              <span> &gt; </span>
+              <Link to={`/${dropdown}`}>{getFormattedTitle(dropdown)}</Link>
+            </>
+          )}
+          {categoryType && (
+            <>
+              <span> &gt; </span>
+              <Link to={`/${dropdown}/${categoryType}`}>{getFormattedTitle(categoryType)}</Link>
+            </>
+          )}
+          {category && (
+            <>
+              <span> &gt; </span>
+              <span>{getFormattedTitle(category)}</span>
+            </>
+          )}
+        </div>
         {/* Category Title */}
         <h1 className="category-title">
               {getFormattedTitle(categoryType)}
@@ -98,7 +136,7 @@ const CategoryProductsPage = () => {
                   </div>
                     </div>
                   }>
-                <ProductListSection product={product} />
+                <ProductListSection product={product} dropdown={dropdown} />
                   </Suspense>
                   ))}
                 </div>

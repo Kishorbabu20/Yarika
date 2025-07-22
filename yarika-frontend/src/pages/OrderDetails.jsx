@@ -169,12 +169,22 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          <div class="section">
-            <div class="section-title">Shipping Address</div>
-            <p>${order?.shippingAddress?.street}</p>
-            <p>${order?.shippingAddress?.city}, ${order?.shippingAddress?.state}</p>
-            <p>${order?.shippingAddress?.pincode}</p>
-            <p>${order?.shippingAddress?.country}</p>
+          <div class="grid">
+            <div class="section">
+              <div class="section-title">Shipping Address</div>
+              <p>${order?.shippingAddress?.street}</p>
+              <p>${order?.shippingAddress?.city}, ${order?.shippingAddress?.state}</p>
+              <p>${order?.shippingAddress?.pincode}</p>
+              <p>${order?.shippingAddress?.country}</p>
+            </div>
+            <div class="section">
+              <div class="section-title" style="color: #b19049;">From Yarika</div>
+              <p style="margin: 0; color: #222; line-height: 1.7;">
+                SF No. 29/18, Onapalayam,<br/>
+                Vadavalli To Thondamuthur Road,<br/>
+                Coimbatore-641 109, Tamilnadu, India.
+              </p>
+            </div>
           </div>
 
           <div class="section">
@@ -185,6 +195,8 @@ const OrderDetails = () => {
                   <th>Item</th>
                   <th>Size</th>
                   <th>Color</th>
+                  <th>Net Weight</th>
+                  <th>Gross Weight</th>
                   <th>Quantity</th>
                   <th>Price</th>
                   <th>Total</th>
@@ -196,6 +208,8 @@ const OrderDetails = () => {
                     <td>${item.product?.name}</td>
                     <td>${item.size}</td>
                     <td>${item.color}</td>
+                    <td>${item.product?.netWeight || 'N/A'}</td>
+                    <td>${item.product?.grossWeight || 'N/A'}</td>
                     <td>${item.quantity}</td>
                     <td>₹${item.price.toLocaleString('en-IN')}</td>
                     <td>₹${(item.price * item.quantity).toLocaleString('en-IN')}</td>
@@ -354,6 +368,17 @@ const OrderDetails = () => {
               <p style={{ margin: 0 }}>{order?.shippingAddress?.country}</p>
             </div>
           </div>
+
+          {/* Admin Address */}
+          <div className="info-section" style={{ background: '#fff', padding: 24, borderRadius: 12, border: '1.5px solid #e5d7b8' }}>
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: '#b19049', marginTop: 0, marginBottom: 16 }}>Admin Address</h3>
+            <div style={{ fontSize: 16, color: '#222', lineHeight: 1.7 }}>
+              SF No. 29/18, Onapalayam,<br/>
+              Vadavalli To Thondamuthur Road,<br/>
+              Coimbatore-641 109, Tamilnadu, India.
+            </div>
+          </div>
+
         </div>
 
         {/* Order Items */}
@@ -372,6 +397,16 @@ const OrderDetails = () => {
                 <div style={{ flex: 1 }}>
                   <h4 style={{ fontSize: 18, fontWeight: 600, color: '#222', margin: '0 0 8px 0' }}>{item.product?.name}</h4>
                   <p style={{ fontSize: 16, color: '#666', margin: '0 0 4px 0' }}>Code: {item.product?.code}</p>
+                  <div style={{ display: 'grid', gap: '4px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: '#666' }}>
+                      <span>Size: {item.size}</span>
+                      <span>Color: {item.color}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: '#666' }}>
+                      <span>Net Weight: {item.product?.netWeight || 'N/A'}</span>
+                      <span>Gross Weight: {item.product?.grossWeight || 'N/A'}</span>
+                    </div>
+                  </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, color: '#222' }}>
                     <span>Quantity: {item.quantity}</span>
                     <span style={{ fontWeight: 500 }}>₹{item.price}</span>

@@ -1,6 +1,7 @@
 // src/user/LeggingsPage.jsx
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
 
@@ -117,10 +118,47 @@ const LeggingsPage = () => {
 
   return (
     <div className="product-page">
+      <Helmet>
+        <title>
+          {activeCategory.slug === "" 
+            ? "All Leggings - Ethnic Wear | Yarika" 
+            : `${activeCategory.label} Leggings - Ethnic Wear | Yarika`
+          }
+        </title>
+        <meta 
+          name="description" 
+          content={
+            activeCategory.slug === ""
+              ? "Shop our exclusive collection of designer leggings with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
+              : `Shop our exclusive ${activeCategory.label} leggings with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
+          } 
+        />
+        <meta 
+          name="keywords" 
+          content={
+            activeCategory.slug === ""
+              ? "leggings, ethnic wear, traditional clothing, designer wear, Yarika, ankle length, churidar, shimmer"
+              : `${activeCategory.label}, leggings, ethnic wear, traditional clothing, designer wear, Yarika`
+          } 
+        />
+        <meta property="og:title" content={
+          activeCategory.slug === "" 
+            ? "All Leggings - Ethnic Wear | Yarika" 
+            : `${activeCategory.label} Leggings - Ethnic Wear | Yarika`
+        } />
+        <meta property="og:description" content={
+          activeCategory.slug === ""
+            ? "Shop our exclusive collection of designer leggings with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
+            : `Shop our exclusive ${activeCategory.label} leggings with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
+        } />
+        <meta property="og:type" content="website" />
+      </Helmet>
 
       {/* Hero */}
       <section className="product-hero">
-      <div className="breadcrumb">Home / Products / <span>Leggings</span></div>
+      <div className="breadcrumb">
+  <Link to="/">Home</Link> / <Link to="/home/leggings">Leggings</Link>
+</div>
         <h4 className="section-label">Leggings</h4>
         <h1 className="main-heading">Comfort Meets Style</h1>
         <h2 className="sub-heading">LEGGINGS COLLECTION</h2>

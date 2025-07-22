@@ -2,8 +2,10 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
+import { useScrollFade } from "../hooks/useScrollFade";
 
 
 const ProductCard = lazy(() => import("./ProductCard"));
@@ -97,12 +99,53 @@ const MaterialsPage = () => {
     }
   };
 
+  // Animation refs and classes for each section
+  const [heroRef, heroFade] = useScrollFade();
+  const [gridRef, gridFade] = useScrollFade();
+
   return (
     <div className="product-page">
+      <Helmet>
+        <title>
+          {activeCategory.slug === "" 
+            ? "All Materials - Ethnic Wear | Yarika" 
+            : `${activeCategory.label} Materials - Ethnic Wear | Yarika`
+          }
+        </title>
+        <meta 
+          name="description" 
+          content={
+            activeCategory.slug === ""
+              ? "Shop our exclusive collection of premium materials with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
+              : `Shop our exclusive ${activeCategory.label} materials with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
+          } 
+        />
+        <meta 
+          name="keywords" 
+          content={
+            activeCategory.slug === ""
+              ? "materials, ethnic wear, traditional clothing, designer wear, Yarika, cotton, silk, linen, blended, organic"
+              : `${activeCategory.label}, materials, ethnic wear, traditional clothing, designer wear, Yarika`
+          } 
+        />
+        <meta property="og:title" content={
+          activeCategory.slug === "" 
+            ? "All Materials - Ethnic Wear | Yarika" 
+            : `${activeCategory.label} Materials - Ethnic Wear | Yarika`
+        } />
+        <meta property="og:description" content={
+          activeCategory.slug === ""
+            ? "Shop our exclusive collection of premium materials with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
+            : `Shop our exclusive ${activeCategory.label} materials with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
+        } />
+        <meta property="og:type" content="website" />
+      </Helmet>
 
       {/* Hero */}
-      <section className="product-hero">
-        <div className="breadcrumb">Home / Products / <span>Materials</span></div>
+      <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
+        <div className="breadcrumb">
+          <Link to="/">Home</Link> / <Link to="/home/materials">Materials</Link>
+        </div>
         <h4 className="section-label">Materials</h4>
         <h1 className="main-heading">Premium Fabrics</h1>
         <h2 className="sub-heading">MATERIALS COLLECTION</h2>
@@ -133,7 +176,7 @@ const MaterialsPage = () => {
       </section>
 
       {/* Product Grid */}
-      <section className="product-grid-container">
+      <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
         <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
         <div className="grid-list">
           <Suspense fallback={

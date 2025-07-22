@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
   brand: String,
-  categoryType: String,
-  category: String,
+  categoryType: { type: String, required: true }, // e.g., 'bridal'
+  category: { type: String, required: true },     // e.g., 'bridal-lehenga'
   group: String,
   code: { 
     type: String, 
@@ -92,7 +92,13 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  mainImageAlt: {
+    type: String,
+    trim: true
+  },
   additionalImages: [String],
+  additionalImageAlts: [String],
+  seoUrl: { type: String, required: true, unique: true },
   productDescriptionWeb: String,
   productDescriptionMobile: String,
   shortDescriptionWeb: String,
@@ -112,6 +118,35 @@ const productSchema = new mongoose.Schema({
     enum: ["active", "out-of-stock", "discontinued"],
     default: "active",
   },
+  taxClass: {
+    type: String,
+    enum: ["gst-5", "gst-12"],
+    default: "gst-5",
+  },
+  qrSize: {
+    type: String,
+    enum: ["small", "medium", "large"],
+    default: "small",
+  },
+  netWeight: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  grossWeight: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  maxOrderQuantity: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  qrCodeDataUrl: {
+    type: String,
+    trim: true
+  },
 }, { 
   timestamps: true,
   toJSON: { virtuals: true },
@@ -121,6 +156,9 @@ const productSchema = new mongoose.Schema({
 // Create unique index for code field
 productSchema.index({ code: 1 }, { unique: true });
 
+// Create unique index for seoUrl field
+productSchema.index({ seoUrl: 1 }, { unique: true });
+
 // Virtual for hasStock
 productSchema.virtual('hasStock').get(function() {
   return this.totalStock > 0;
@@ -129,19 +167,25 @@ productSchema.virtual('hasStock').get(function() {
 // Pre-save middleware to update status based on stock
 productSchema.pre('save', async function(next) {
   try {
-    // Calculate total stock from sizeStocks if it exists
-    if (this.sizeStocks) {
-      const totalFromSizes = Array.from(this.sizeStocks.values()).reduce((sum, stock) => sum + (stock || 0), 0);
-      this.totalStock = totalFromSizes;
+    let totalFromSizes = 0;
+    
+    // Calculate total stock from sizeStocks
+    if (this.isModified('sizeStocks') && this.sizeStocks) {
+      totalFromSizes = Array.from(this.sizeStocks.values()).reduce((sum, stock) => sum + (stock || 0), 0);
       
       // Log the stock calculation
-      console.log('Calculating total stock:', {
+      console.log('Recalculating total stock due to sizeStocks modification:', {
         name: this.name,
         code: this.code,
         sizeStocks: Object.fromEntries(this.sizeStocks),
         totalFromSizes,
         previousTotal: this.totalStock
       });
+    }
+
+    // Update total stock
+    if (this.isModified('sizeStocks')) {
+      this.totalStock = totalFromSizes;
     }
 
     // Update status based on totalStock
@@ -158,28 +202,6 @@ productSchema.pre('save', async function(next) {
         this.status = newStatus;
       }
     }
-
-    // Validate totalStock and soldCount are non-negative
-    if (this.totalStock < 0) {
-      throw new Error(`Cannot set negative total stock (${this.totalStock}) for product ${this.name} (${this.code})`);
-    }
-    if (this.soldCount < 0) {
-      throw new Error(`Cannot set negative soldCount (${this.soldCount}) for product ${this.name} (${this.code})`);
-    }
-
-    // Validate selling price is not greater than MRP
-    if (this.sellingPrice > this.mrp) {
-      throw new Error(`Selling price (${this.sellingPrice}) cannot be greater than MRP (${this.mrp}) for product ${this.name} (${this.code})`);
-    }
-
-    // Log the final state
-    console.log('Product final state:', {
-      name: this.name,
-      code: this.code,
-      totalStock: this.totalStock,
-      sizeStocks: Object.fromEntries(this.sizeStocks),
-      status: this.status
-    });
   
     next();
   } catch (error) {
@@ -218,6 +240,38 @@ productSchema.methods.updateStock = async function(quantity, size, session) {
     console.error(`Failed to update stock for ${this.name}:`, error);
     throw error;
   }
+};
+
+// Add a method to reserve stock temporarily (for checkout process)
+productSchema.methods.reserveStock = async function(quantity, size) {
+  console.log(`Reserving stock for product ${this.name} (${this._id}):`, {
+    currentTotalStock: this.totalStock,
+    currentSizeStock: this.sizeStocks.get(size),
+    size,
+    quantityToReserve: quantity
+  });
+
+  const sizeStock = this.sizeStocks.get(size) || 0;
+  if (sizeStock < quantity) {
+    throw new Error(`Insufficient stock for ${this.name} (${this._id}) size ${size}. Required: ${quantity}, Available: ${sizeStock}`);
+  }
+
+  // Don't actually update stock, just validate availability
+  return {
+    available: true,
+    currentStock: sizeStock,
+    requestedQuantity: quantity
+  };
+};
+
+// Add a method to check stock availability without updating
+productSchema.methods.checkStockAvailability = function(quantity, size) {
+  const sizeStock = this.sizeStocks.get(size) || 0;
+  return {
+    available: sizeStock >= quantity,
+    currentStock: sizeStock,
+    requestedQuantity: quantity
+  };
 };
 
 module.exports = mongoose.model("Product", productSchema);

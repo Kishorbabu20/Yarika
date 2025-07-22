@@ -1,12 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { generateProductUrl } from "../utils/productUrl";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
 
+  const handleClick = () => {
+    // Debug: Log the product data
+    console.log('ProductCard - Product data:', {
+      name: product?.name,
+      seoUrl: product?.seoUrl,
+      categoryType: product?.categoryType,
+      category: product?.category,
+      _id: product?._id
+    });
+    
+    const url = generateProductUrl(product, 'home');
+    console.log('ProductCard - Generated URL:', url);
+    navigate(url);
+  };
+
   return (
     <div
-      onClick={() => navigate(`/product/${product._id}`)}
+      onClick={handleClick}
       className="grid-card cursor-pointer shadow-sm hover:shadow-md transition p-3"
     >
       <div className="img-wrap">

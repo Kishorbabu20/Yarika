@@ -6,7 +6,7 @@ export const useCart = () => useContext(CartContext);
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: 'https://yarika.in',
+  baseURL: 'https:yarika.in',
   headers: {
     'Content-Type': 'application/json'
   },

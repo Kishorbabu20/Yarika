@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://yarika.in", // <-- MUST be 5001
+  baseURL: "https:yarika.in", // <-- MUST be 5001
   headers: {
     "Content-Type": "application/json",
   },
@@ -20,7 +20,7 @@ const isAdminRoute = (url, method = 'get') => {
     '/api/orders/recent',
     '/api/orders/status',
     '/api/products/stats',
-    '/api/products'  // Add this line to include all product routes
+    '/api/products'
   ];
 
   // Check if URL matches any admin pattern
@@ -31,8 +31,23 @@ const isAdminRoute = (url, method = 'get') => {
     ['post', 'put', 'delete'].includes(method.toLowerCase());
 
   // Check for admin order operations (view details, update status)
-  const isAdminOrderOp = url.startsWith('/api/orders/') && 
-    (url.includes('/status') || !url.includes('/client/'));
+  // const isAdminOrderOp = (
+  //   url.startsWith('/api/orders/all') ||
+  //   url.startsWith('/api/orders/recent') ||
+  //   url.startsWith('/api/orders/status') ||
+  //   (url.startsWith('/api/orders/') && !url.includes('/client/'))
+  // );
+
+  const isAdminOrderOp = (
+    url.startsWith('/api/orders/all') ||
+    url.startsWith('/api/orders/recent') ||
+    url.startsWith('/api/orders/status') ||
+    (
+      url.startsWith('/api/orders/') &&
+      !url.includes('/client/') &&
+      url !== '/api/orders/add'
+    )
+  );
 
   return isAdminPattern || isAdminProductOp || isAdminOrderOp;
 };
@@ -84,17 +99,16 @@ api.interceptors.response.use(
     });
 
     if (error.response?.status === 401) {
-      console.log('Unauthorized response, clearing session...');
-      // Use the helper function to check if it's an admin route
+      // Check if it's an admin route
       const needsAdminAuth = isAdminRoute(error.config?.url, error.config?.method);
-      
+
       if (needsAdminAuth) {
         // Clear admin data and redirect to admin login
         localStorage.removeItem("adminToken");
         localStorage.removeItem("adminRole");
         localStorage.removeItem("adminName");
         localStorage.removeItem("adminEmail");
-        window.location.href = "/admin/login";
+        window.location.href = "/admin";
       } else {
         // Clear user data and redirect to user login
         localStorage.removeItem("token");

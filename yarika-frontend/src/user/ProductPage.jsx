@@ -1,12 +1,14 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
 import YarikaLogo from "../assets/YarikaLogo1.png";
 import SignatureBlouse1 from "../assets/SignatureBlouse1.png";
 import SignatureBlouse2 from "../assets/SignatureBlouse2.png";
 import SignatureBlouse3 from "../assets/SignatureBlouse3.png";
+import { useScrollFade } from "../hooks/useScrollFade";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
@@ -39,6 +41,8 @@ const ProductPage = () => {
   const fetchProducts = async () => {
     try {
       const res = await api.get("/api/products");
+      console.log('ProductPage - API Response:', res.data);
+      console.log('ProductPage - First product sample:', res.data[0]);
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to fetch products", err);
@@ -118,12 +122,54 @@ const ProductPage = () => {
     setCurrentPage(1);
   };
 
+  // Animation refs and classes for each section
+  const [heroRef, heroFade] = useScrollFade();
+  const [gridRef, gridFade] = useScrollFade();
+  const [occasionRef, occasionFade] = useScrollFade();
+
   return (
-    <div className="product-page">
+    <div className="product-page" style={{marginTop: 0, paddingTop: 0}}>
+      <Helmet>
+        <title>
+          {activeCategory.slug === "" 
+            ? "All Blouses - Ethnic Wear | Yarika" 
+            : `${activeCategory.label} Blouses - Ethnic Wear | Yarika`
+          }
+        </title>
+        <meta 
+          name="description" 
+          content={
+            activeCategory.slug === ""
+              ? "Shop our exclusive collection of designer blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
+              : `Shop our exclusive ${activeCategory.label} blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
+          } 
+        />
+        <meta 
+          name="keywords" 
+          content={
+            activeCategory.slug === ""
+              ? "blouses, ethnic wear, traditional clothing, designer wear, Yarika, kalamkari, embroidery, plain, zardozi, ikat"
+              : `${activeCategory.label}, blouses, ethnic wear, traditional clothing, designer wear, Yarika`
+          } 
+        />
+        <meta property="og:title" content={
+          activeCategory.slug === "" 
+            ? "All Blouses - Ethnic Wear | Yarika" 
+            : `${activeCategory.label} Blouses - Ethnic Wear | Yarika`
+        } />
+        <meta property="og:description" content={
+          activeCategory.slug === ""
+            ? "Shop our exclusive collection of designer blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
+            : `Shop our exclusive ${activeCategory.label} blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
+        } />
+        <meta property="og:type" content="website" />
+      </Helmet>
 
       {/* Hero */}
-      <section className="product-hero">
-        <div className="breadcrumb">Home / Women / <span>Readymade Blouse</span></div>
+      <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
+        <div className="breadcrumb">
+          <Link to="/">Home</Link> / <Link to="/home/blouse/readymadeblouse">Readymade Blouse</Link>
+        </div>
         <h4 className="section-label">Blouses</h4>
         <h1 className="main-heading">Elegance awaits you</h1>
         <h2 className="sub-heading">READYMADЕ BLOUSE</h2>
@@ -154,7 +200,7 @@ const ProductPage = () => {
       </section>
 
       {/* Product Grid */}
-      <section className="product-grid-container">
+      <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
         <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
         <div className="grid-list">
           <Suspense fallback={
@@ -169,9 +215,16 @@ const ProductPage = () => {
               ))}
             </div>
           }>
-            {currentItems.map((product) => (
-              <ProductCard product={product} key={product._id} />
-            ))}
+            {currentItems.map((product) => {
+              console.log('ProductPage - Passing to ProductCard:', {
+                name: product.name,
+                seoUrl: product.seoUrl,
+                categoryType: product.categoryType,
+                category: product.category,
+                _id: product._id
+              });
+              return <ProductCard product={product} key={product._id} />;
+            })}
           </Suspense>
         </div>
 
@@ -191,8 +244,8 @@ const ProductPage = () => {
         </div>
       </section>
 
-      {/* Occasion Section */}
-      <section className="occasion-section">
+      {/* Occasion Section
+      <section ref={occasionRef} className={`occasion-section scroll-animate ${occasionFade}`}>
         <h2 className="occasion-title"><span>—</span> Shop Blouses by Occasion <span>—</span></h2>
         <div className="occasion-grid">
           {occasions.map((occasion, idx) => (
@@ -224,7 +277,7 @@ const ProductPage = () => {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Offer Banner
       <div className="offer-banner">

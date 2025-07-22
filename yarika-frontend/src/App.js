@@ -17,6 +17,9 @@ import Customers from "./pages/Customers";
 import Logout from "./Logout";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import OrderDetails from './pages/OrderDetails';
+import AddProductForm from "./components/forms/AddProductForm";
+import ManageMaster from "./pages/ManageMaster";
+import AdminProfile from "./pages/AdminProfile";
 
 // User
 import HeroLanding from "./user/HeroLanding";
@@ -34,6 +37,8 @@ import LoginPage from "./user/LoginPage";
 import SignupLoginPage from "./user/SignupLoginPage";
 import UserProfile from "./user/UserProfile";
 import WishlistPage from "./user/WishlistPage";
+import UserProtectedRoute from "./utils/UserProtectedRoute";
+import BridalPage from "./user/BridalPage";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +76,19 @@ function App() {
       // Show success message
       toast.success("Google login successful!");
     }
+
+    // Listen for login events from LoginModal
+    const handleUserLogin = (event) => {
+      console.log('User logged in event received:', event.detail);
+      setIsLoggedIn(true);
+    };
+
+    window.addEventListener('userLoggedIn', handleUserLogin);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('userLoggedIn', handleUserLogin);
+    };
   }, []);
 
   const onLogin = () => {
@@ -87,30 +105,47 @@ function App() {
               {/* User Routes - All with NavigationBarSection */}
               <Route path="/" element={<><NavigationBarSection /><HeroLanding /><Footer /></>} />
               <Route path="/products" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
-              <Route path="/product/:id" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
               <Route path="/cart" element={<><NavigationBarSection /><Cart /><Footer /></>} />
               <Route path="/orders" element={<><NavigationBarSection /><MyOrders /></>} />
-              <Route path="/profile" element={<><NavigationBarSection /><UserProfile /></>} />
+              <Route path="/profile" element={
+                <UserProtectedRoute>
+                  <NavigationBarSection />
+                  <UserProfile />
+                </UserProtectedRoute>
+              } />
               <Route path="/wishlist" element={<><NavigationBarSection /><WishlistPage /></>} />
               <Route path="/products/:categorySlug" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />
               <Route path="/search" element={<><NavigationBarSection /><SearchResultsPage /><Footer /></>} />
-              <Route path="/blouses" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
-              <Route path="/trending" element={<><NavigationBarSection /><TrendingPage /><Footer /></>} />
-              <Route path="/leggings" element={<><NavigationBarSection /><LeggingsPage /><Footer /></>} />
-              <Route path="/materials" element={<><NavigationBarSection /><MaterialsPage /><Footer /></>} />
+              <Route path="/home/trending" element={<><NavigationBarSection /><TrendingPage /><Footer /></>} />
+              <Route path="/home/blouses" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
+              <Route path="/home/leggings" element={<><NavigationBarSection /><LeggingsPage /><Footer /></>} />
+              <Route path="/home/materials" element={<><NavigationBarSection /><MaterialsPage /><Footer /></>} />
               <Route path="/login" element={isLoggedIn ? <Navigate to="/profile" /> : <LoginPage />} />
               <Route path="/signup" element={<SignupLoginPage />} />
-              <Route path="/products/:categoryType/:category" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />
+              {/* Bridal Page Route */}
+              <Route path="/home/bridal" element={<><NavigationBarSection /><BridalPage /><Footer /></>} />
+              
+              {/* SEO-friendly product routes - MUST come before fallback route */}
+              <Route path="/:dropdown/:categoryType/:category" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />
+              <Route path="/:dropdown/:categoryType/:category/:productSlug" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
+              <Route path="/home/:categoryType/:category/:productSlug" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
+              
+              {/* Fallback route - MUST come last */}
+              <Route path="/product/:id" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
               
               {/* Admin Routes (no navbar, no footer) */}
               <Route path="/admin" element={<AdminLogin onLogin={onLogin} />} />
               <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
               <Route path="/admin/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+              <Route path="/admin/add-product" element={<ProtectedRoute><AddProductForm /></ProtectedRoute>} />
+              <Route path="/admin/products/edit/:id" element={<AddProductForm />} />
               <Route path="/admin/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
               <Route path="/admin/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
               <Route path="/admin/logout" element={<ProtectedRoute><Logout /></ProtectedRoute>} />
               <Route path="/admin/orders/:orderId" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+              <Route path="/admin/manage-master" element={<ProtectedRoute><ManageMaster /></ProtectedRoute>} />
+              <Route path="/admin/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
             </Routes>
           </div>
         </BrowserRouter>

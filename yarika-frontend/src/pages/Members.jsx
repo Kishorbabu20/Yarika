@@ -4,7 +4,8 @@ import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Badge } from "../components/ui/Badge";
 import api from "../config/axios";
-import AdminLayout from "../components/layout/AdminLayout";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import '../styles/NewMember.css';
 import toast from "react-hot-toast";
 import ChangePasswordModal from "../components/ChangePasswordModal";
@@ -28,6 +29,11 @@ export default function Members() {
       .catch(() => toast.error("Failed to load members"));
   }, []);
 
+  const fetchMembers = async () => {
+    const res = await api.get("/api/members");
+    setMembers(res.data.filter(m => m.status === "Active"));
+  };
+
   // Add member
   const handleAddMember = async () => {
     const { name, email, password, role } = newMember;
@@ -37,9 +43,12 @@ export default function Members() {
     }
 
     try {
-      const res = await api.post("/api/admins/add", newMember);
+      const res = await api.post("/api/admins/add", {
+        ...newMember,
+        username: newMember.email // Use email as username
+      });
       console.log("Add member response:", res.data);
-      setMembers(prev => [...prev, res.data]);
+      setMembers(prev => [...prev, res.data]); // Only runs if successful
       setShowForm(false);
       setNewMember({ name: "", email: "", password: "", role: "Admin" });
       toast.custom((t) => (
@@ -90,13 +99,14 @@ export default function Members() {
     }
   };
 
-  const removeMember = (id) => {
-    const updated = members.map(m => m._id === id ? { ...m, status: "Removed" } : m);
-    setMembers(updated);
-
-    api.put(`/api/admins/${id}`, { status: "Removed" })
-      .then(() => toast.success("Member removed"))
-      .catch(() => toast.error("Update failed"));
+  const handleDelete = async (memberId) => {
+    try {
+      await api.delete(`/api/admins/${memberId}`);
+      setMembers(prev => prev.filter(m => m._id !== memberId)); // Remove from state immediately
+      toast.success("Member removed!");
+    } catch (err) {
+      toast.error("Failed to remove member");
+    }
   };
 
   // Filter members by search
@@ -106,29 +116,12 @@ export default function Members() {
   );
 
   return (
-    <div className="members-page">
-      <AdminLayout title="">
+    <div className="dashboard-container">
+      <Sidebar />
         <div className="main-content">
-          <div className="analytics-header">
-            <h2>Members</h2>
-            <div className="analytics-header-right">
-              <div className="search-container">
-              <input
-                type="text"
-                  className="search-input"
-                placeholder="Search"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-                <span className="search-icon">
-                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="7"/><line x1="16" y1="16" x2="12.5" y2="12.5"/></svg>
-                </span>
-              </div>
-              <span className="notification-icon">🔔</span>
-              <span className="profile-icon" onClick={() => setShowChangePassword(true)}>👤</span>
-          </div>
-        </div>
+        <Header title="Members" />
         <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
+        
           <div style={{ maxWidth: 1200, margin: '0 auto', padding: 0 }}>
         {/* Main content with horizontal spacing */}
             <div style={{ padding: '0 32px' }}>
@@ -148,10 +141,10 @@ export default function Members() {
           {/* Summary Cards */}
           <div style={{ display: 'flex', gap: 24, margin: '32px 0 24px 0' }}>
             {[
-              { label: 'Total Members', value: members.length },
+              { label: 'Total Members', value: members.filter(m => m.status === 'Active').length },
               { label: 'Active Members', value: members.filter(m => m.status === 'Active').length },
-              { label: 'Super Admin', value: members.filter(m => m.role === 'Super Admin').length },
-              { label: 'Admin', value: members.filter(m => m.role === 'Admin').length },
+              { label: 'Super Admin', value: members.filter(m => m.role === 'Super Admin' && m.status === 'Active').length },
+              { label: 'Admin', value: members.filter(m => m.role === 'Admin' && m.status === 'Active').length },
             ].map((card, i) => (
               <div key={card.label} style={{ flex: 1, border: '2px solid #e5d7b8', borderRadius: 12, background: '#fff', padding: '24px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ marginBottom: 8 }}>
@@ -179,7 +172,9 @@ export default function Members() {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(filteredMembers) && filteredMembers.map((m, idx) => (
+                {Array.isArray(filteredMembers) && filteredMembers
+                  .filter(m => m.status === "Active")
+                  .map((m, idx) => (
                   <tr key={m._id || idx}>
                     <td>{m.name}</td>
                     <td>{m.email}</td>
@@ -192,7 +187,7 @@ export default function Members() {
                     </td>
                     <td>
                       {m.status === "Active" && m.role !== "Super Admin" ? (
-                        <button className="remove-badge" onClick={() => removeMember(m._id)}>Remove</button>
+                          <button className="remove-badge" onClick={() => handleDelete(m._id)}>Remove</button>
                       ) : <span className="ellipsis">...</span>}
                     </td>
                   </tr>
@@ -250,7 +245,6 @@ export default function Members() {
             </div>
           </div>
         </div>
-      </AdminLayout>
     </div>
   );
 }

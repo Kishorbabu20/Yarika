@@ -4,6 +4,7 @@ import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
+import { useScrollFade } from "../hooks/useScrollFade";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
@@ -21,6 +22,10 @@ const TrendingPage = () => {
   const [sortOption, setSortOption] = useState("");
 
   const navigate = useNavigate();
+
+  // Animation refs and classes for each section
+  const [heroRef, heroFade] = useScrollFade();
+  const [gridRef, gridFade] = useScrollFade();
 
   const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -97,8 +102,10 @@ const TrendingPage = () => {
     <div className="product-page">
 
       {/* Hero */}
-      <section className="product-hero">
-        <div className="breadcrumb">Home / Products / <span>Trending</span></div>
+      <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
+        <div className="breadcrumb">
+          <Link to="/">Home</Link> / <Link to="/home/trending">Trending</Link>
+        </div>
         <h4 className="section-label">Trending</h4>
         <h1 className="main-heading">Discover What's Hot</h1>
         <h2 className="sub-heading">TRENDING PRODUCTS</h2>
@@ -129,7 +136,7 @@ const TrendingPage = () => {
       </section>
 
       {/* Product Grid */}
-      <section className="product-grid-container">
+      <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
         <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
         <div className="grid-list">
           <Suspense fallback={

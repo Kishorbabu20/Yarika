@@ -1,11 +1,11 @@
 /* Container */
 .add-product-container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 32px auto;
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    padding: 15px 40px 15px 15px;
+    padding: 15px 20px;
     overflow: hidden;
   }
   
@@ -30,6 +30,7 @@
     flex-direction: column;
     gap: 6px;
   }
+
   
   /* Inputs and Selects */
   input,
@@ -449,28 +450,28 @@
     color: #c6aa62 !important;
   }
   
-  /* Super-global override for all select triggers and dropdowns */
-  button,
-  [data-radix-select-trigger],
-  [data-radix-select-content],
-  [data-radix-popper-content-wrapper] div,
-  .SelectTrigger,
-  .SelectContent,
-  .SelectItem {
-    border-color: #c6aa62 !important;
-    color: #c6aa62 !important;
-    background: #fff !important;
-  }
-  [data-radix-select-content] [data-state='checked'],
-  [data-radix-popper-content-wrapper] .SelectItem[data-state='checked'] {
-    background: #f9f5e7 !important;
-    color: #c6aa62 !important;
-  }
-  [data-radix-select-content] .SelectItem:hover,
-  [data-radix-popper-content-wrapper] .SelectItem:hover {
-    background: #f3e7c6 !important;
-    color: #c6aa62 !important;
-  }
+  /* Super-global override for all select triggers and dropdowns - EXCEPT Basic Information */
+button:not(.basic-info-select),
+[data-radix-select-trigger],
+[data-radix-select-content],
+[data-radix-popper-content-wrapper] div,
+.SelectTrigger,
+.SelectContent,
+.SelectItem {
+  border-color: #c6aa62 !important;
+  color: #c6aa62 !important;
+  background: #fff !important;
+}
+[data-radix-select-content] [data-state='checked'],
+[data-radix-popper-content-wrapper] .SelectItem[data-state='checked'] {
+  background: #f9f5e7 !important;
+  color: #c6aa62 !important;
+}
+[data-radix-select-content] .SelectItem:hover,
+[data-radix-popper-content-wrapper] .SelectItem:hover {
+  background: #f3e7c6 !important;
+  color: #c6aa62 !important;
+}
   
   .addproduct-modal {
     position: fixed;
@@ -569,8 +570,13 @@
   }
   
   input:focus, select:focus, textarea:focus {
-    border-color: #c6aa62;
-  }
+  border-color: #c6aa62;
+}
+
+/* Override for Basic Information section - ensure gray borders */
+.add-product-form-container form.basic-info-section select.basic-info-select:focus {
+  border-color: #caa75d !important;
+}
   
   textarea {
     min-height: 48px;
@@ -673,15 +679,25 @@
   }
   
   .ap-image-delete {
-    background: none;
+    background: none !important;   /* Remove any background */
     border: none;
-    color: #c6aa62;
+    color: #c00;                   /* Red color for visibility */
+    font-size: 18px;
     cursor: pointer;
-    margin-left: 8px;
-    padding: 2px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    padding: 0;
+    box-shadow: none;
+    outline: none;
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
+    justify-content: center;
+  }
+  .ap-image-delete svg {
+    background: none !important;   /* Remove background from SVG if any */
+    border-radius: 0;
   }
   
   .ap-additional-images {
@@ -806,4 +822,947 @@
 .ap-total-stock {
   display: none;
 }
+
+.ap-image-alt-input {
+  margin-left: 8px;
+  width: 120px;
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
   
+/* --- Section Headers --- */
+.section-header {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #181818;
+  margin-bottom: 18px;
+  margin-top: 36px;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+
+/* --- Two-Column Grid for Form --- */
+.add-product-grid,
+.add-product-form-grid,
+.ap-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 18px 48px !important;
+  width: 100% !important;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.form-group,
+.form-textarea {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (max-width: 900px) {
+  .add-product-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* --- Product Images Section --- */
+.image-upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.image-dropzone {
+  border: 2px dashed #caa75d;
+  border-radius: 12px;
+  padding: 28px 0;
+  text-align: center;
+  cursor: pointer;
+  background: #faf8f2;
+  margin-bottom: 0;
+  display: block;
+  transition: background 0.2s;
+}
+.image-dropzone:hover {
+  background: #f3f4f6;
+}
+.image-drop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #caa75d;
+  font-size: 1.1rem;
+}
+.image-upload-icon {
+  font-size: 2.2rem;
+}
+.image-preview-row {
+  display: flex;
+  align-items: center;
+  background: #fafafa;
+  border: 1.5px dashed #e5e5e5;
+  border-radius: 12px;
+  min-height: 60px;
+  padding: 8px 14px;
+  gap: 14px;
+  position: relative;
+  margin-top: 8px;
+}
+.image-preview-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f3f3f3;
+  border: 1px solid #e5e7eb;
+}
+.image-preview-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.image-delete-btn {
+  background: none;
+  border: none;
+  color: #caa75d;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.image-delete-btn:hover {
+  background: #f3f3f3;
+}
+
+/* --- Buttons --- */
+button, .yarika-button-primary {
+  font-size: 1.05rem !important;
+  padding: 9px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+}
+button[type="submit"], .yarika-button-primary {
+  background: #caa75d !important;
+  color: #fff !important;
+  border: none !important;
+}
+button[type="submit"]:hover, .yarika-button-primary:hover {
+  background: #bfa046 !important;
+}
+button[type="button"].secondary, .ap-btn-white {
+  background: #fff !important;
+  color: #caa75d !important;
+  border: 1.5px solid #caa75d !important;
+}
+button[type="button"].secondary:hover, .ap-btn-white:hover {
+  background: #f7f5ef !important;
+}
+
+/* --- Textareas --- */
+/* This rule is now handled by section-specific rules above */
+
+/* Ensure dropdowns keep full width */
+select.form-select {
+  width: 100% !important;
+}
+.form-textarea:focus {
+  border-color: #c6aa62;
+}
+
+/* --- Misc --- */
+.add-product-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: #181818;
+}
+.breadcrumb {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #caa75d;
+  font-weight: 500;
+}
+.add-product-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* --- Form Container --- */
+.add-product-form-container {
+  max-width: 1200px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+  padding: 32px 20px 24px 20px;
+  width: 100%;
+}
+
+/* --- Section Headers --- */
+.section-header {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #181818;
+  margin-bottom: 18px;
+  margin-top: 24px;
+  text-align: left;
+  letter-spacing: 0.01em;
+  grid-column: 1 / span 2;
+}
+
+/* --- Two-Column Grid for Form --- */
+.add-product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* gap: 18px 24px; */
+  width: 100%;
+  gap: 6rem;
+}
+@media (max-width: 900px) {
+  .add-product-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* --- Form Groups --- */
+.basic-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.pricing-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.more-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.product-images-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+/* --- Inputs and Selects --- */
+.form-select,
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fafafa;
+  transition: border 0.2s;
+}
+.form-select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: #caa75d;
+  outline: none;
+}
+
+/* --- Labels --- */
+label,
+.Label {
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 2px;
+}
+
+/* --- Sizes Row --- */
+.sizes-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.size-pill {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 16px;
+  background: #f3f3f3;
+  color: #444;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 1.5px solid #e5e5e5;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.size-pill.selected {
+  background: #caa75d;
+  color: #fff;
+  border: 1.5px solid #caa75d;
+}
+
+/* --- Buttons --- */
+button,
+.Button {
+  background: #caa75d;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover,
+.Button:hover {
+  background: #bfa046;
+}
+button[type="button"].secondary,
+.ap-btn-white {
+  background: #fff !important;
+  color: #caa75d !important;
+  border: 1.5px solid #caa75d !important;
+}
+button[type="button"].secondary:hover,
+.ap-btn-white:hover {
+  background: #f7f5ef !important;
+}
+
+/* --- Textareas --- */
+.form-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1.2px solid #d1d1d1;
+  background: #fff;
+  resize: vertical;
+  transition: border 0.15s;
+}
+.form-textarea:focus {
+  border-color: #c6aa62;
+}
+
+/* --- Misc --- */
+.add-product-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: #181818;
+}
+.breadcrumb {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #caa75d;
+  font-weight: 500;
+}
+.add-product-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+  
+.form-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px; /* row gap, column gap */
+  align-items: start;
+}
+.form-row {
+  display: contents; /* allows children to span grid columns naturally */
+}
+.form-label {
+  font-size: 15px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.form-input,
+.form-select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 15px;
+  background: #fff;
+}
+.unit-label {
+  margin-left: 8px;
+  color: #aaa;
+  font-size: 14px;
+  vertical-align: middle;
+}
+.section-divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 32px 0 24px 0;
+}
+
+/* FORCE OVERRIDE - Add Product Form Specific Styles */
+
+/* Pricing & Information Section - Textareas only */
+.pricing-info-section textarea.form-textarea {
+  width: 400px !important;
+  min-height: 120px !important;
+  border: 1.2px solid #d1d1d1 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  background: #fff !important;
+  resize: vertical !important;
+  transition: border 0.15s !important;
+}
+
+/* All other textareas in other sections */
+.more-info-section textarea.form-textarea,
+.product-images-section textarea.form-textarea {
+  width: 100% !important;
+  min-height: 120px !important;
+  border: 1.2px solid #d1d1d1 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  background: #fff !important;
+  resize: vertical !important;
+  transition: border 0.15s !important;
+}
+
+/* All dropdowns in More Info section */
+.more-info-section select.form-select {
+  width: 100% !important;
+  min-height: 40px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 15px !important;
+  background: #fff !important;
+}
+
+/* Basic Information Dropdowns - REMOVED - replaced with more specific rules below */
+
+/* ===== SECTION-SPECIFIC STYLES ===== */
+
+/* Basic Information Section - REMOVED - replaced with more specific rules below */
+
+/* Pricing & Information Section */
+.pricing-info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+/* More Info Section */
+.more-info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+/* Product Images Section */
+.product-images-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+/* Responsive Design for All Sections */
+@media (max-width: 900px) {
+  .basic-info-section,
+  .pricing-info-section,
+  .more-info-section,
+  .product-images-section {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* SECTION-SPECIFIC FORM STYLES: All form element styles are now section-specific. No global input/select/textarea/.form-group rules. */
+
+/* --- Basic Information Section --- */
+.add-product-form-container form.add-product-basic-info-section input,
+.add-product-form-container form.add-product-basic-info-section select,
+.add-product-form-container form.add-product-basic-info-section textarea {
+  border: 1.5px solid #ccc !important;
+  color: #222 !important;
+  background: #fff !important;
+  border-radius: 6px !important;
+  font-size: 15px !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 8px 12px !important;
+  transition: border 0.2s !important;
+}
+.add-product-form-container form.add-product-basic-info-section input:focus,
+.add-product-form-container form.add-product-basic-info-section select:focus,
+.add-product-form-container form.add-product-basic-info-section textarea:focus {
+  border: 1.5px solid #caa75d !important;
+  background: #fff !important;
+  color: #222 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.add-product-form-container form.add-product-basic-info-section .basic-info-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+.add-product-form-container form.add-product-basic-info-section label,
+.add-product-form-container form.add-product-basic-info-section .Label {
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 2px !important;
+  font-size: 0.97rem !important;
+}
+.add-product-form-container form.add-product-basic-info-section {
+  /* display: grid !important; */
+  grid-template-columns: 1fr 1fr !important;
+  gap: 18px 24px !important;
+  width: 100% !important;
+  margin-bottom: 32px !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+@media (max-width: 900px) {
+  .add-product-form-container form.add-product-basic-info-section {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* --- Pricing & Information Section --- */
+/* Commented out old broad rules to allow new compact styles to take effect */
+/*
+.pricing-info-section input,
+.pricing-info-section select,
+.pricing-info-section textarea {
+  border: 1.5px solid #e5e5e5 !important;
+  color: #222 !important;
+  background: #fafafa !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 10px 12px !important;
+  transition: border 0.2s !important;
+}
+.pricing-info-section input:focus,
+.pricing-info-section select:focus,
+.pricing-info-section textarea:focus {
+  border: 1.5px solid #caa75d !important;
+  background: #fff !important;
+  color: #222 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.pricing-info-section .pricing-info-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+.pricing-info-section label,
+.pricing-info-section .Label {
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 2px !important;
+  font-size: 0.97rem !important;
+}
+*/
+/*
+.more-info-section input,
+.more-info-section select,
+.more-info-section textarea {
+  border: 1.5px solid #e5e5e5 !important;
+  color: #222 !important;
+  background: #fafafa !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 10px 12px !important;
+  transition: border 0.2s !important;
+}
+.more-info-section input:focus,
+.more-info-section select:focus,
+.more-info-section textarea:focus {
+  border: 1.5px solid #caa75d !important;
+  background: #fff !important;
+  color: #222 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.more-info-section .more-info-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+.more-info-section label,
+.more-info-section .Label {
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 2px !important;
+  font-size: 0.97rem !important;
+}
+*/
+
+/* --- More Info Section --- */
+.more-info-section input,
+.more-info-section select,
+.more-info-section textarea {
+  border: 1.5px solid #e5e5e5 !important;
+  color: #222 !important;
+  background: #fafafa !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 10px 12px !important;
+  transition: border 0.2s !important;
+}
+.more-info-section input:focus,
+.more-info-section select:focus,
+.more-info-section textarea:focus {
+  border: 1.5px solid #caa75d !important;
+  background: #fff !important;
+  color: #222 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.more-info-section .more-info-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+.more-info-section label,
+.more-info-section .Label {
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 2px !important;
+  font-size: 0.97rem !important;
+}
+
+/* --- Product Images Section --- */
+.product-images-section input,
+.product-images-section select,
+.product-images-section textarea {
+  border: 1.5px solid #e5e5e5 !important;
+  color: #222 !important;
+  background: #fafafa !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 10px 12px !important;
+  transition: border 0.2s !important;
+}
+.product-images-section input:focus,
+.product-images-section select:focus,
+.product-images-section textarea:focus {
+  border: 1.5px solid #caa75d !important;
+  background: #fff !important;
+  color: #222 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.product-images-section .product-images-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+.product-images-section label,
+.product-images-section .Label {
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 2px !important;
+  font-size: 0.97rem !important;
+}
+
+/* --- Pricing & Information Section Spacing --- */
+.pricing-info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  margin-bottom: 40px;
+}
+.pricing-info-section .pricing-info-group {
+  margin-bottom: 18px !important;
+}
+
+/* --- More Info Section Spacing --- */
+.more-info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  margin-bottom: 40px;
+}
+.more-info-section .more-info-group {
+  margin-bottom: 18px !important;
+}
+
+@media (max-width: 900px) {
+  .pricing-info-section,
+  .more-info-section {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* --- Pricing & Information Section Max Width --- */
+/* Remove all max-width for inputs/selects/textareas in pricing-info-section */
+/* .pricing-info-section input,
+.pricing-info-section select,
+.pricing-info-section textarea {
+  max-width: 400px;
+} */
+
+/* --- More Info Section Max Width --- */
+/* Remove all max-width for inputs/selects/textareas in more-info-section */
+/* .more-info-section input,
+.more-info-section select,
+.more-info-section textarea {
+  max-width: 400px;
+} */
+
+/* Ensure all fields fill their columns */
+.pricing-info-section input,
+.pricing-info-section select,
+.pricing-info-section textarea,
+.more-info-section input,
+.more-info-section select,
+.more-info-section textarea {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Optionally, if you want only textareas to have a max-width, uncomment and adjust below: */
+/*
+.pricing-info-section textarea,
+.more-info-section textarea {
+  max-width: 600px !important;
+}
+*/
+
+.pricing-info-section textarea {
+  background: #ffe4e1 !important;
+  max-width: 600px;
+}
+
+.add-product-container,
+.add-product-form-container {
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+  width: 100%;
+}
+
+.pricing-info-section,
+.more-info-section {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 18px 24px !important;
+  width: 100% !important;
+  margin-bottom: 0 !important;
+}
+
+.pricing-info-group,
+.more-info-group {
+  margin-bottom: 6px !important; /* Reduce vertical gap */
+}
+
+.pricing-info-section label,
+.more-info-section label {
+  margin-bottom: 2px !important;
+}
+
+.pricing-info-section textarea,
+.more-info-section textarea,
+.pricing-info-section input,
+.more-info-section input {
+  min-height: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  background: #fff !important;
+  border-radius: 8px !important;
+  border: 1.2px solid #d1d1d1 !important;
+}
+
+.add-product-form-container .pricing-info-section .pricing-info-group {
+  margin-bottom: 6px !important;
+  gap: 4px !important;
+}
+
+.add-product-form-container .pricing-info-section label,
+.add-product-form-container .pricing-info-section .Label {
+  margin-bottom: 2px !important;
+}
+
+.add-product-form-container .pricing-info-section input,
+.add-product-form-container .pricing-info-section select,
+.add-product-form-container .pricing-info-section textarea {
+  min-height: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  background: #fff !important;
+  border-radius: 8px !important;
+  border: 1.2px solid #d1d1d1 !important;
+  margin-bottom: 0 !important;
+}
+
+.add-product-form-container .more-info-section .more-info-group {
+  margin-bottom: 6px !important;
+  gap: 4px !important;
+}
+
+.add-product-form-container .more-info-section label,
+.add-product-form-container .more-info-section .Label {
+  margin-bottom: 2px !important;
+}
+
+.add-product-form-container .more-info-section input,
+.add-product-form-container .more-info-section select,
+.add-product-form-container .more-info-section textarea {
+  min-height: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  background: #fff !important;
+  border-radius: 8px !important;
+  border: 1.2px solid #d1d1d1 !important;
+  margin-bottom: 0 !important;
+}
+body .add-product-form-container .pricing-info-section .pricing-info-group input,
+body .add-product-form-container .pricing-info-section .pricing-info-group textarea,
+body .add-product-form-container .pricing-info-section .pricing-info-group select {
+  background: #fff !important;
+  border: 1.2px solid #d1d1d1 !important;
+  min-height: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  margin-bottom: 0 !important;
+  border-radius: 8px !important;
+}
+
+.pricing-info-section.single-column,
+.more-info-section.single-column {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+}
+
+.pricing-info-section.single-column .pricing-info-group,
+.more-info-section.single-column .more-info-group {
+  width: 100% !important;
+}
+
+.pricing-info-section textarea,
+.more-info-section textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+
+.gold-btn {
+  background: #caa75d !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  min-width: 80px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.gold-btn:hover {
+  background: #bfa046 !important;
+}
+.gold-outline-btn {
+  background: #fff !important;
+  color: #caa75d !important;
+  border: 1.5px solid #caa75d !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  min-width: 80px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.gold-outline-btn:hover {
+  background: #f7f5ef !important;
+  color: #bfa046 !important;
+  border-color: #bfa046 !important;
+}
+
+/* Spinner animation for product code validation */
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.add-product-container,
+.add-product-form-container,
+.add-product-title,
+.add-product-header-row,
+.section-header,
+form,
+label,
+input,
+select,
+textarea,
+button {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+}
