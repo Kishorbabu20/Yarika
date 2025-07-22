@@ -56,7 +56,7 @@ const BridalCollections = () => {
             </div>
           ))
         ) : products.length > 0 ? (
-          (products.slice(0, 4)).map((prod) => (
+          (Array.isArray(products) ? products : []).slice(0, 4).map((prod) => (
             <div className="bridal-card" key={prod._id}>
               <div className="bridal-img-placeholder">
                 {prod.mainImage && (
