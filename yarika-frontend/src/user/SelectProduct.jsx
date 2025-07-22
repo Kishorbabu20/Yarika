@@ -95,6 +95,7 @@ const expandHex = (hex) => {
 };
 
 const SelectProduct = () => {
+  // All useState and useEffect hooks here
   const { dropdown, categoryType, category, productSlug, id } = useParams();
   const navigate = useNavigate();
   const { addToCart, clearCart } = useCart();
@@ -125,9 +126,47 @@ const SelectProduct = () => {
     return dropdownName ? dropdownName.charAt(0).toUpperCase() + dropdownName.slice(1) : '';
   };
 
-  // Guard: If no product identifier is available, show error
+  // All useEffect hooks at the top
+  useEffect(() => {
+    if (productIdentifier && productIdentifier !== 'undefined') {
+      fetchProduct();
+    }
+  }, [productIdentifier]);
+
+  useEffect(() => {
+    if (product) {
+      console.log('=== PRODUCT STATE CHANGED ===');
+      console.log('Timestamp:', new Date().toISOString());
+      console.log('Product stock data:', {
+        name: product.name,
+        totalStock: product.totalStock,
+        sizeStocks: product.sizeStocks,
+        status: product.status
+      });
+      if (isInPaymentFlow) {
+        console.warn('⚠️ PRODUCT STATE CHANGED DURING PAYMENT FLOW ⚠️');
+        console.warn('This might indicate an issue with stock management');
+      }
+    }
+  }, [product, isInPaymentFlow]);
+
+  useEffect(() => {
+    console.log('=== PAYMENT FLOW STATE CHANGED ===');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Payment flow state:', {
+      isInPaymentFlow,
+      productName: product?.name,
+      productStock: product?.totalStock
+    });
+  }, [isInPaymentFlow, product]);
+
+  // Place all early returns after hooks
   if (!productIdentifier || productIdentifier === 'undefined') {
     return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>Invalid product URL. Please select a product from the list.</div>;
+  }
+  if (loading || !product) return <div>Loading...</div>;
+  if (!loading && !product) {
+    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>This product is no longer available.</div>;
   }
 
     const fetchProduct = async () => {
@@ -185,43 +224,6 @@ const SelectProduct = () => {
         setLoading(false);
       }
     };
-
-  useEffect(() => {
-    if (productIdentifier && productIdentifier !== 'undefined') {
-    fetchProduct();
-    }
-  }, [productIdentifier]);
-
-  // Monitor product state changes
-  useEffect(() => {
-    if (product) {
-      console.log('=== PRODUCT STATE CHANGED ===');
-      console.log('Timestamp:', new Date().toISOString());
-      console.log('Product stock data:', {
-        name: product.name,
-        totalStock: product.totalStock,
-        sizeStocks: product.sizeStocks,
-        status: product.status
-      });
-      
-      // Check if product state changed during payment flow
-      if (isInPaymentFlow) {
-        console.warn('⚠️ PRODUCT STATE CHANGED DURING PAYMENT FLOW ⚠️');
-        console.warn('This might indicate an issue with stock management');
-      }
-    }
-  }, [product, isInPaymentFlow]);
-
-  // Monitor payment flow state changes
-  useEffect(() => {
-    console.log('=== PAYMENT FLOW STATE CHANGED ===');
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('Payment flow state:', {
-      isInPaymentFlow,
-      productName: product?.name,
-      productStock: product?.totalStock
-    });
-  }, [isInPaymentFlow, product]);
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
@@ -673,21 +675,6 @@ const SelectProduct = () => {
     } finally {
       setWishlistLoading(false);
     }
-  };
-
-  if (loading || !product) return <div>Loading...</div>;
-
-  if (!loading && !product) {
-    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>This product is no longer available.</div>;
-  }
-
-  const zoomProps = {
-    width: 400,
-    height: 600,
-    zoomWidth: 400,
-    img: selectedImage,
-    zoomPosition: "original",
-    scale: 1,
   };
 
   const getColorValue = (color) => {
