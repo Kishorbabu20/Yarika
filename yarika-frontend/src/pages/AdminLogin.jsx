@@ -16,7 +16,7 @@ const AdminLogin = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/api/admins/login", {
+      const response = await api.post("/admins/login", {
         username: identifier, // Send as username for backend compatibility
         password
       });
