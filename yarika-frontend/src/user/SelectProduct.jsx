@@ -669,22 +669,28 @@ const SelectProduct = () => {
   };
 
   const getColorValue = (color) => {
-    // If it's already a hex color
-    if (color.startsWith('#')) {
+    if (!color) return "#000000";
+    if (typeof color === "object") {
+      return color.code || "#000000";
+    }
+    if (typeof color === "string" && color.startsWith('#')) {
       return color;
     }
-    
-    // Convert color name to lowercase for consistent lookup
-    const normalizedColor = color.toLowerCase();
-    return COLOR_MAP[normalizedColor] || color;
+    // Otherwise, treat as ID
+    return COLOR_MAP[color] || color;
   };
 
   const getColorName = (color) => {
-    if (color.startsWith('#')) {
+    if (!color) return "Unknown Color";
+    if (typeof color === "object") {
+      // If color is an object with a name property, use it
+      return color.name || color.code || "Unknown Color";
+    }
+    if (typeof color === "string" && color.startsWith('#')) {
       const expanded = expandHex(color.toLowerCase());
       return HEX_TO_COLOR_NAME[expanded] || color;
     }
-    // Otherwise, treat as ID
+    // Otherwise, treat as ID or name string
     const COLOR_NAMES = {
       "4": "Black",
       "8": "White", 
@@ -712,7 +718,7 @@ const SelectProduct = () => {
       "102": "Gold",
       "103": "Silver"
     };
-    return COLOR_NAMES[color] || HEX_TO_COLOR_NAME[color.toLowerCase()] || "Unknown Color";
+    return COLOR_NAMES[color] || HEX_TO_COLOR_NAME[color?.toLowerCase?.()] || "Unknown Color";
   };
 
   const isColorAvailable = (color) => {
