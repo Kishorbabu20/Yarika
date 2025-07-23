@@ -1070,7 +1070,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
               <Label>Product Category *</Label>
               <select value={categoryType} onChange={e => setCategoryType(e.target.value)} className="add-product-basic-info-select">
                 <option value="">Select Category</option>
-                <option value="readymade-blouse">Blouse</option>
+                <option value="readymade-blouse">Readymade Blouse</option>
                 <option value="leggings">Leggings</option>
                 <option value="readymade-blouse-cloth">Blouse Cloth</option>
                 <option value="trending">Trending</option>

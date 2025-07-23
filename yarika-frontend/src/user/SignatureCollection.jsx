@@ -32,7 +32,7 @@ const signatureBlouses = [
   {
     id: 3,
     title: "Readymade Blouse",
-    link: "/home/blouses"
+    link: "/home/readymade-blouse"
   }
 ];
 

@@ -259,7 +259,7 @@ const HeroLanding = () => {
           <section ref={blouseRef} className={`category-section scroll-animate ${blouseFade}`}>
             <div className="blouse-section-header">
               <h2 className="blouse-section-title">Readymade Blouse</h2>
-              <Link to="/home/products" className="view-all-btn">View All</Link>
+              <Link to="/home/readymade-blouse" className="view-all-btn">View All</Link>
             </div>
             <div className="filter-list">
               {blouseTypes.map((type, idx) => (

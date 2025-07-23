@@ -117,7 +117,7 @@ function App() {
               <Route path="/products/:categorySlug" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />
               <Route path="/search" element={<><NavigationBarSection /><SearchResultsPage /><Footer /></>} />
               <Route path="/home/trending" element={<><NavigationBarSection /><TrendingPage /><Footer /></>} />
-              <Route path="/home/blouses" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
+              <Route path="/home/readymade-blouse" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
               <Route path="/home/leggings" element={<><NavigationBarSection /><LeggingsPage /><Footer /></>} />
               <Route path="/home/materials" element={<><NavigationBarSection /><MaterialsPage /><Footer /></>} />
               <Route path="/login" element={isLoggedIn ? <Navigate to="/profile" /> : <LoginPage />} />
