@@ -82,6 +82,13 @@
 }
 .breadcrumb span { color: #000; }
 
+.breadcrumb ol,
+.breadcrumb ul {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
 .section-label {
   letter-spacing: 4px;
   font-size: 1.5rem;
