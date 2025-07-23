@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
 import { useScrollFade } from "../hooks/useScrollFade";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 
 const ProductCard = lazy(() => import("./ProductCard"));
@@ -144,7 +145,21 @@ const MaterialsPage = () => {
       {/* Hero */}
       <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
         <div className="breadcrumb">
-          <Link to="/">Home</Link> / <Link to="/home/materials">Materials</Link>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/home/materials">Materials</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         <h4 className="section-label">Materials</h4>
         <h1 className="main-heading">Premium Fabrics</h1>

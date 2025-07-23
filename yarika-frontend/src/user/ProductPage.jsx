@@ -9,6 +9,7 @@ import SignatureBlouse1 from "../assets/SignatureBlouse1.png";
 import SignatureBlouse2 from "../assets/SignatureBlouse2.png";
 import SignatureBlouse3 from "../assets/SignatureBlouse3.png";
 import { useScrollFade } from "../hooks/useScrollFade";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
@@ -168,7 +169,21 @@ const ProductPage = () => {
       {/* Hero */}
       <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
         <div className="breadcrumb">
-          <Link to="/">Home</Link> / <Link to="/home/blouse/readymadeblouse">Readymade Blouse</Link>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/home/blouse/readymadeblouse">Readymade Blouse</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         <h4 className="section-label">Blouses</h4>
         <h1 className="main-heading">Elegance awaits you</h1>

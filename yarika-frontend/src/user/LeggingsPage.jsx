@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
@@ -157,8 +158,22 @@ const LeggingsPage = () => {
       {/* Hero */}
       <section className="product-hero">
       <div className="breadcrumb">
-  <Link to="/">Home</Link> / <Link to="/home/leggings">Leggings</Link>
-</div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/home/leggings">Leggings</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
         <h4 className="section-label">Leggings</h4>
         <h1 className="main-heading">Comfort Meets Style</h1>
         <h2 className="sub-heading">LEGGINGS COLLECTION</h2>

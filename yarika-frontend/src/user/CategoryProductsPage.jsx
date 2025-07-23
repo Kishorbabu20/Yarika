@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 const ProductListSection = lazy(() => import("./ProductListSection"));
 
 const CategoryProductsPage = () => {
@@ -69,25 +70,43 @@ const CategoryProductsPage = () => {
         
       <div className="content-section">
         <div className="breadcrumb">
-          <Link to="/">Home</Link>
-          {dropdown && (
-            <>
-              <span> &gt; </span>
-              <Link to={`/${dropdown}`}>{getFormattedTitle(dropdown)}</Link>
-            </>
-          )}
-          {categoryType && (
-            <>
-              <span> &gt; </span>
-              <Link to={`/${dropdown}/${categoryType}`}>{getFormattedTitle(categoryType)}</Link>
-            </>
-          )}
-          {category && (
-            <>
-              <span> &gt; </span>
-              <span>{getFormattedTitle(category)}</span>
-            </>
-          )}
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {dropdown && (
+                <>
+                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to={`/${dropdown}`}>{getFormattedTitle(dropdown)}</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </>
+              )}
+              {categoryType && (
+                <>
+                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to={`/${dropdown}/${categoryType}`}>{getFormattedTitle(categoryType)}</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </>
+              )}
+              {category && (
+                <>
+                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{getFormattedTitle(category)}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         {/* Category Title */}
         <h1 className="category-title">

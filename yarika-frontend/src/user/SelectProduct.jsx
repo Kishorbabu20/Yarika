@@ -12,6 +12,7 @@ import { Heart, Check } from 'lucide-react';
 import SizeChartModal from './SizeChartModal';
 import ProductImagePopup from './ProductImagePopup';
 import ShippingAddressModal from './ShippingAddressModal';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 // Helper function to determine if a color is light
 const isLightColor = (hexColor) => {
@@ -828,30 +829,77 @@ const SelectProduct = () => {
       </Helmet>
 
       <div className="breadcrumb">
-        {isDropdownPattern ? (
-          // Dropdown pattern: /women/readymade-blouse/kalamkari-blouse/redcolour
-          <>
-            <Link to={`/${dropdown}`}>{capitalizeDropdown(dropdown)}</Link> /
-            <Link to={`/${dropdown}/${categoryType}`}>{categoryType}</Link> /
-            <Link to={`/${dropdown}/${categoryType}/${category}`}>{category}</Link> /
-            <span>{product?.name}</span>
-          </>
-        ) : isHomePattern ? (
-          // Home pattern: /home/readymade-blouse/plain/orange-colour-blouse
-          <>
-        <Link to="/">Home</Link> / 
-            <Link to={`/home/${categoryType}`}>{categoryType}</Link> /
-            <Link to={`/home/${categoryType}/${category}`}>{category}</Link> /
-            <span>{product?.name}</span>
-          </>
-        ) : (
-          // Fallback ID pattern: /product/123456
-          <>
-            <Link to="/">Home</Link> /
-            <Link to="/products">Products</Link> /
-            <span>{product?.name}</span>
-          </>
-        )}
+        <Breadcrumb>
+          <BreadcrumbList>
+            {isDropdownPattern ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={`/${dropdown}`}>{capitalizeDropdown(dropdown)}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={`/${dropdown}/${categoryType}`}>{categoryType}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={`/${dropdown}/${categoryType}/${category}`}>{category}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{product?.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            ) : isHomePattern ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/">Home</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={`/home/${categoryType}`}>{categoryType}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={`/home/${categoryType}/${category}`}>{category}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{product?.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            ) : (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/">Home</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/products">Products</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{product?.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       <div className="product-container">

@@ -14,6 +14,7 @@ import Header from "../Header";
 import axios from "../../config/axios";
 import QRCode from "qrcode";
 import { useQueryClient } from '@tanstack/react-query';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 const categoryOptions = {
   bridal: [
@@ -1029,12 +1030,22 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
           {/* Breadcrumb and Back Button */}
           <div className="add-product-header-row">
             <div className="breadcrumb">
-              <span style={{ color: '#caa75d', fontWeight: 500 }}>Product</span>
-              <span style={{ margin: '0 6px', color: '#888' }}>/</span>
-              <span style={{ color: '#caa75d', fontWeight: 500 }}>Manage Product</span>
-              <span style={{ margin: '0 6px', color: '#888' }}>/</span>
-              <span style={{ color: '#222', fontWeight: 600 }}>Create Product</span>
-        </div>
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage style={{ color: '#caa75d', fontWeight: 500 }}>Product</BreadcrumbPage>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage style={{ color: '#caa75d', fontWeight: 500 }}>Manage Product</BreadcrumbPage>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage style={{ color: '#222', fontWeight: 600 }}>Create Product</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
             <Button
               className="gold-btn"
               onClick={() => navigate(-1)}

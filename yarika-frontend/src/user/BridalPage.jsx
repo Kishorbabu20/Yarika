@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import BridalCollections from "./BridalCollections";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 const BridalPage = () => {
   return (
@@ -16,7 +17,19 @@ const BridalPage = () => {
       </Helmet>
       <div className="container">
         <div className="breadcrumb">
-          <Link to="/">Home</Link> / <span>Bridal</span>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage>Bridal</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         <h1 className="category-title">Bridal Collections</h1>
         <h2 className="section-label" style={{marginBottom: '2rem'}}>Lehengas & Gowns for Your Special Day</h2>
