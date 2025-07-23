@@ -71,7 +71,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://yarika.in/auth/google";
+    window.location.href = "https://yarika.in/api/auth/google";
   };
 
   return (
