@@ -3,23 +3,32 @@ const router = express.Router();
 const BatchProduct = require("../models/BatchProduct");
 const ColorGroup = require("../models/ColorGroup"); // Import at the top
 const Color = require("../models/Color"); // Import at the top
+const Product = require("../models/Product"); // Import Product model
 
 // Get all batch products
 router.get("/", async (req, res) => {
   try {
     const products = await BatchProduct.find().sort({ createdAt: -1 });
-    // Populate color code for each product
-    const populatedProducts = await Promise.all(products.map(async (product) => {
-      let colorObj = { name: product.color?.name || "Unknown", code: product.color?.code || "#000000" };
-      if (product.color && product.color.name) {
-        // Try to find the color code by name
-        const colorDoc = await Color.findOne({ name: product.color.name });
-        if (colorDoc) {
-          colorObj = { name: colorDoc.name, code: colorDoc.code };
+    // Populate color code for each product by matching with Product colors
+    const populatedProducts = await Promise.all(products.map(async (batchProduct) => {
+      let colorObj = { name: batchProduct.color?.name || "Unknown", code: batchProduct.color?.code || "#000000" };
+      // Try to find a product with the same name as the batch product
+      const product = await Product.findOne({ name: batchProduct.name });
+      if (product && Array.isArray(product.colors)) {
+        // Try to match color by name (case-insensitive)
+        const matchedColorName = product.colors.find(
+          c => c.toLowerCase() === (batchProduct.color?.name || "").toLowerCase()
+        );
+        if (matchedColorName) {
+          // Find the color code from the Color collection
+          const colorDoc = await Color.findOne({ name: new RegExp(`^${matchedColorName}$`, 'i') });
+          if (colorDoc) {
+            colorObj = { name: colorDoc.name, code: colorDoc.code };
+          }
         }
       }
       return {
-        ...product.toObject(),
+        ...batchProduct.toObject(),
         color: colorObj
       };
     }));
