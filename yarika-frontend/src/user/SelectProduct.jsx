@@ -169,7 +169,7 @@ const SelectProduct = () => {
     return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>This product is no longer available.</div>;
   }
 
-    const fetchProduct = async () => {
+  const fetchProduct = async () => {
       try {
       let productRes;
       
@@ -951,7 +951,7 @@ const SelectProduct = () => {
         ) : isHomePattern ? (
           // Home pattern: /home/readymade-blouse/plain/orange-colour-blouse
           <>
-        <Link to="/">Home</Link> / 
+            <Link to="/">Home</Link> /
             <Link to={`/home/${categoryType}`}>{categoryType}</Link> /
             <Link to={`/home/${categoryType}/${category}`}>{category}</Link> /
             <span>{product?.name}</span>
