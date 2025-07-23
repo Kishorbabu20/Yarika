@@ -13,7 +13,7 @@ const sizeRoutes = require('./routes/size');
 const colorGroupRoutes = require('./routes/colorGroup');
 const sizeGroupRoutes = require('./routes/sizeGroup');
 const batchProductsRoutes = require('./routes/batchProducts');
-const Color = require('../models/Color');
+const Color = require('./models/Color');
 
 // Load environment variables - use .env.local for development
 if (process.env.NODE_ENV === 'development') {
