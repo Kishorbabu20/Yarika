@@ -44,7 +44,10 @@ const io = new Server(server, {
   path: "/ws",
 });
 
-const allowedOrigins = ["http://localhost:3000", "https:yarika.in", "https:yarika.in"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://yarika.in"
+];
 app.use(
   cors({
     origin: function (origin, callback) {
