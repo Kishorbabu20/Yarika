@@ -4,6 +4,7 @@ import axios from 'axios';
 import { User, LogOut, Plus, Edit, Trash2, MapPin } from 'lucide-react';
 import "../styles/UserProfilePage.css";
 import { useScrollFade } from "../hooks/useScrollFade";
+import api from '../config/axios';
 
 const UserProfile = () => {
     const navigate = useNavigate();
@@ -158,7 +159,7 @@ const UserProfile = () => {
             
             if (editingAddress) {
                 // Update existing address
-                res = await axios.put(
+                res = await api.put(
                     `/client/address/${editingAddress}`,
                     addressForm,
                     {
@@ -167,7 +168,7 @@ const UserProfile = () => {
                 );
             } else {
                 // Add new address
-                res = await axios.post(
+                res = await api.post(
                     "/client/address",
                     addressForm,
                     {
@@ -198,7 +199,7 @@ const UserProfile = () => {
 
         try {
             setLoading(true);
-            const res = await axios.delete(
+            const res = await api.delete(
                 `/client/address/${addressId}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },

@@ -438,137 +438,27 @@ const SelectProduct = () => {
         description: "Purchase Payment",
         order_id: razorpayRes.data.id,
         handler: async (response) => {
-            try {
-                console.log('Payment successful, verifying payment...');
-                
-            // Verify payment
-          const verifyRes = await api.post("/payment/verify-payment", {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
+          console.log("Razorpay handler fired", response);
+          try {
+            // 1. Verify payment with your backend
+            const verifyRes = await api.post("/payment/verify-payment", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature
-          });
+            });
 
-              if (verifyRes.data.success) {
-                    console.log('Payment verified, creating order...');
-                    
-              // Only now create the order in the backend
-              try {
-                        console.log('=== SELECTPRODUCT ORDER CREATION ===');
-                        console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
-                        console.log('User token:', localStorage.getItem('token') ? 'Present' : 'Missing');
-                        console.log('API base URL:', 'https:yarika.in');
-                        console.log('Full URL:', 'https:yarika.in/orders/add');
-                        
-                        // Add request debugging
-                        console.log('Request context:', {
-                            timestamp: new Date().toISOString(),
-                            userAgent: navigator.userAgent,
-                            url: window.location.href,
-                            tokenLength: localStorage.getItem('token')?.length
-                        });
-                        
-                        // Log the exact request we're about to make
-                        console.log('=== ABOUT TO MAKE ORDER REQUEST ===');
-                        console.log('URL:', 'https:yarika.in/orders/add');
-                        console.log('Method:', 'POST');
-                        console.log('Headers:', {
-                            'Authorization': `Bearer ${localStorage.getItem('token') ? 'Present' : 'Missing'}`,
-                            'Content-Type': 'application/json'
-                        });
-                        console.log('Body:', JSON.stringify(orderData, null, 2));
-                        
-                        const orderRes = await api.post(
-                          "/orders/add",
-                          orderData,
-                          {
-                            headers: {
-                              Authorization: `Bearer ${localStorage.getItem('token')}`,
-                              'Content-Type': 'application/json'
-                            }
-                          }
-                        );
-                        
-                        console.log('Order creation response:', {
-                            status: orderRes.status,
-                            statusText: orderRes.statusText,
-                            data: orderRes.data,
-                            hasOrderId: !!orderRes.data._id
-                        });
-                        
-                if (orderRes.data && orderRes.data._id) {
-                  toast.success("Order placed successfully!");
-                  navigate('/orders'); // Redirect to My Orders page
-                }
-                        
-                        console.log('Order created successfully:', orderRes.data._id);
-                        
-                        // Clear cart and show success message
-                await clearCart();
-                        toast.success(`Order placed successfully! Order ID: ${orderRes.data._id}`);
-                        
-                        // Reset payment flow state
-                        setLoading(false);
-                        setIsInPaymentFlow(false);
-                        
-                        // Navigate to orders page after a short delay
-                        setTimeout(() => {
-                navigate('/orders');
-                        }, 2000);
-                        
-              } catch (orderError) {
-                        console.error('=== SELECTPRODUCT ORDER CREATION ERROR ===');
-                        console.error('Error details:', {
-                            message: orderError.message,
-                            status: orderError.response?.status,
-                            statusText: orderError.response?.statusText,
-                            data: orderError.response?.data,
-                            config: {
-                                url: orderError.config?.url,
-                                method: orderError.config?.method,
-                                baseURL: orderError.config?.baseURL,
-                                headers: orderError.config?.headers
-                            }
-                        });
-                        
-                        // Show specific error messages based on the error type
-                        if (orderError.response?.status === 404) {
-                            toast.error("Order creation endpoint not found. Please contact support.");
-                        } else if (orderError.response?.status === 401) {
-                            toast.error("Authentication failed. Please log in again.");
-                        } else if (orderError.response?.status === 400) {
-                            const errorData = orderError.response?.data;
-                            if (errorData?.error === "Insufficient stock") {
-                                toast.error("This item is out of stock. Please refresh the page.");
-                            } else if (errorData?.error === "Invalid size") {
-                                toast.error("Selected size is no longer available.");
-                            } else if (errorData?.error === "Invalid color") {
-                                toast.error("Selected color is no longer available.");
-                            } else if (errorData?.error === "Price mismatch") {
-                                toast.error("Product price has changed. Please refresh the page.");
-                            } else {
-                                toast.error(errorData?.details || errorData?.error || "Order creation failed. Please try again.");
-                            }
-                        } else if (orderError.response?.status === 500) {
-                            toast.error("Server error. Please contact support with your payment details.");
-                        } else {
-                toast.error("Order creation failed after payment. Please contact support.");
-                        }
-                        
-                        setLoading(false);
-                        setIsInPaymentFlow(false);
-              }
-              } else {
-                toast.error("Payment verification failed. Please contact support.");
-                    setLoading(false);
-                    setIsInPaymentFlow(false);
-              }
-            } catch (verifyError) {
-            console.error('Payment verification error:', verifyError);
-              toast.error("Failed to verify payment. Please check your order status.");
-                setLoading(false);
-                setIsInPaymentFlow(false);
+            if (verifyRes.data.success) {
+              // 2. (Optional) Create order in backend
+              // 3. Show confirmation or redirect
+              window.location.href = "/orders"; // or show a "Payment Confirmed" message
+            } else {
+              alert("Payment verification failed!");
             }
-          },
+          } catch (error) {
+            console.error("Payment handler error:", error);
+            alert("There was an error confirming your payment.");
+          }
+        },
           prefill: {
             name: localStorage.getItem('userName') || '',
             email: localStorage.getItem('userEmail') || '',
