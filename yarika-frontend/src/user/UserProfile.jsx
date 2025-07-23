@@ -47,7 +47,8 @@ const UserProfile = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const res = await axios.get("/client/me", {
+                // Use custom api instance for profile fetch
+                const res = await api.get("/client/me", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -88,7 +89,7 @@ const UserProfile = () => {
         try {
             setLoading(true);
             setError(null);
-            const res = await axios.put(
+            const res = await api.put(
                 "/client/me",
                 profile,
                 {
