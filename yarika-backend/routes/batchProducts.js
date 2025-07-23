@@ -9,19 +9,24 @@ const Product = require("../models/Product"); // Import Product model
 router.get("/", async (req, res) => {
   try {
     const products = await BatchProduct.find().sort({ createdAt: -1 });
-    // Populate color code for each product by matching with Product colors
+    // Populate color code for each product by matching with Product using serialNo/code
     const populatedProducts = await Promise.all(products.map(async (batchProduct) => {
       let colorObj = { name: batchProduct.color?.name || "Unknown", code: batchProduct.color?.code || "#000000" };
-      // Try to find a product with the same name as the batch product
-      const product = await Product.findOne({ name: batchProduct.name });
+      // Try to find a product with the same code as the batch product's serialNo
+      const product = await Product.findOne({ code: batchProduct.serialNo });
+      console.log("BatchProduct serialNo:", batchProduct.serialNo);
+      console.log("BatchProduct color:", batchProduct.color?.name);
+      console.log("Matched product:", product ? product.name : "None");
       if (product && Array.isArray(product.colors)) {
         // Try to match color by name (case-insensitive)
         const matchedColorName = product.colors.find(
           c => c.toLowerCase() === (batchProduct.color?.name || "").toLowerCase()
         );
+        console.log("Matched color name:", matchedColorName);
         if (matchedColorName) {
           // Find the color code from the Color collection
           const colorDoc = await Color.findOne({ name: new RegExp(`^${matchedColorName}$`, 'i') });
+          console.log("ColorDoc:", colorDoc ? colorDoc.name : "None");
           if (colorDoc) {
             colorObj = { name: colorDoc.name, code: colorDoc.code };
           }

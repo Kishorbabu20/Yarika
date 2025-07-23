@@ -754,7 +754,7 @@ export default function ManageMaster() {
                             <Eye size={18} />
                           </button>
                           <button className="action-btn" title="Download" onClick={() => handleDownloadLabel(item)}>
-                            <Download size={18} />
+                            <Download size={18} color="#caa75d" />
                           </button>
                         </td>
                       </tr>
