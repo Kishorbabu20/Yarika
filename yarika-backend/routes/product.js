@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const { logAdminActivity } = require("../utils/adminActivityLogger");
 const BatchProduct = require("../models/BatchProduct");
 const ColorGroup = require("../models/ColorGroup");
+const Color = require('../models/Color'); // Make sure this is at the top
 
 // POST /api/products/add - Add a product
 router.post(
@@ -529,6 +530,18 @@ router.get("/", async (req, res, next) => {
       return enhancedProduct;
     });
 
+    // Populate color names for each product
+    for (let product of serializedProducts) {
+      if (product.colors && Array.isArray(product.colors)) {
+        product.colors = await Promise.all(
+          product.colors.map(async (code) => {
+            const colorObj = await Color.findOne({ code });
+            return colorObj ? { name: colorObj.name, code: colorObj.code } : { name: code, code };
+          })
+        );
+      }
+    }
+
     // Log the request for debugging
     console.log('Products fetch request:', {
       filters: req.query,
@@ -601,6 +614,16 @@ router.get("/seo/:seoUrl", async (req, res, next) => {
       status: response.status || (response.totalStock > 0 ? 'active' : 'out-of-stock')
     };
 
+    // Populate color names for the single product
+    if (enhancedResponse.colors && Array.isArray(enhancedResponse.colors)) {
+      enhancedResponse.colors = await Promise.all(
+        enhancedResponse.colors.map(async (code) => {
+          const colorObj = await Color.findOne({ code });
+          return colorObj ? { name: colorObj.name, code: colorObj.code } : { name: code, code };
+        })
+      );
+    }
+
     console.log('Product fetch by SEO URL:', {
       seoUrl,
       found: !!product,
@@ -666,6 +689,16 @@ router.get("/:id", validateObjectId, async (req, res, next) => {
       additionalImageAlts: response.additionalImageAlts || [],
       status: response.status || (response.totalStock > 0 ? 'active' : 'out-of-stock')
     };
+
+    // Populate color names for the single product
+    if (enhancedResponse.colors && Array.isArray(enhancedResponse.colors)) {
+      enhancedResponse.colors = await Promise.all(
+        enhancedResponse.colors.map(async (code) => {
+          const colorObj = await Color.findOne({ code });
+          return colorObj ? { name: colorObj.name, code: colorObj.code } : { name: code, code };
+        })
+      );
+    }
 
     // Log the request for debugging
     console.log('Product fetch response:', {
