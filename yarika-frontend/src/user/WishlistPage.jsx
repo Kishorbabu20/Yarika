@@ -52,19 +52,22 @@ const WishlistPage = () => {
     // Use productId for navigation if available, fallback to _id
     const handleBuyNow = async (item) => {
         let product = item.productId || item;
+        console.log("Initial product in wishlist:", product);
         // If SEO fields are missing, fetch full product details
         if (!product.seoUrl || !product.categoryType || !product.category) {
             try {
                 const res = await api.get(`/products/${product._id}`);
                 product = res.data;
+                console.log("Fetched product by ID:", product);
             } catch (err) {
-                // fallback to ID-based URL if fetch fails
+                console.log("Fetch by ID failed, navigating to /product/:id");
                 navigate(`/product/${product._id}`);
                 return;
             }
         }
         // Use generateProductUrl for consistent SEO-friendly navigation
         const url = generateProductUrl(product, 'home');
+        console.log("Navigating to:", url);
         navigate(url);
     };
 
