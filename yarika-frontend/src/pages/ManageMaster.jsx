@@ -53,9 +53,9 @@ export default function ManageMaster() {
       setError("");
       try {
         const [colorRes, sizeRes, groupRes] = await Promise.all([
-          axios.get("/api/colors"),
-          axios.get("/api/sizes"),
-          axios.get("/api/color-groups")
+          axios.get("/colors"),
+          axios.get("/sizes"),
+          axios.get("/color-groups")
         ]);
         setColors(colorRes.data);
         setSizes(sizeRes.data);
@@ -73,7 +73,7 @@ export default function ManageMaster() {
   useEffect(() => {
     const fetchSizeGroups = async () => {
       try {
-        const res = await axios.get("/api/size-groups");
+        const res = await axios.get("/size-groups");
         setSizeGroups(res.data);
       } catch (err) {
         // Optionally set error
@@ -156,10 +156,10 @@ export default function ManageMaster() {
     setError("");
     try {
       if (sizeModalMode === "add") {
-        const res = await axios.post("/api/sizes", size);
+        const res = await axios.post("/sizes", size);
         setSizes([res.data, ...sizes]);
       } else if (sizeModalMode === "edit") {
-        const res = await axios.put(`/api/sizes/${sizeToEdit._id}`, size);
+        const res = await axios.put(`/sizes/${sizeToEdit._id}`, size);
         setSizes(sizes.map(s => s._id === sizeToEdit._id ? res.data : s));
       }
       setShowSizeModal(false);
@@ -173,7 +173,7 @@ export default function ManageMaster() {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`/api/sizes/${id}`);
+      await axios.delete(`/sizes/${id}`);
       setSizes(sizes.filter(s => s._id !== id));
     } catch (err) {
       setError("Failed to delete size");
@@ -198,10 +198,10 @@ export default function ManageMaster() {
     setError("");
     try {
       if (groupModalMode === "add") {
-        const res = await axios.post("/api/color-groups", group);
+        const res = await axios.post("/color-groups", group);
         setColorGroups([res.data, ...colorGroups]);
       } else if (groupModalMode === "edit") {
-        const res = await axios.put(`/api/color-groups/${groupToEdit._id}`, group);
+        const res = await axios.put(`/color-groups/${groupToEdit._id}`, group);
         setColorGroups(colorGroups.map(g => g._id === groupToEdit._id ? res.data : g));
       }
       setShowGroupModal(false);
@@ -215,7 +215,7 @@ export default function ManageMaster() {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`/api/color-groups/${id}`);
+      await axios.delete(`/color-groups/${id}`);
       setColorGroups(colorGroups.filter(g => g._id !== id));
     } catch (err) {
       setError("Failed to delete group");
@@ -239,10 +239,10 @@ export default function ManageMaster() {
     setError("");
     try {
       if (sizeGroupModalMode === "add") {
-        const res = await axios.post("/api/size-groups", group);
+        const res = await axios.post("/size-groups", group);
         setSizeGroups([res.data, ...sizeGroups]);
       } else if (sizeGroupModalMode === "edit") {
-        const res = await axios.put(`/api/size-groups/${sizeGroupToEdit._id}`, group);
+        const res = await axios.put(`/size-groups/${sizeGroupToEdit._id}`, group);
         setSizeGroups(sizeGroups.map(g => g._id === sizeGroupToEdit._id ? res.data : g));
       }
       setShowSizeGroupModal(false);
@@ -256,7 +256,7 @@ export default function ManageMaster() {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`/api/size-groups/${id}`);
+      await axios.delete(`/size-groups/${id}`);
       setSizeGroups(sizeGroups.filter(g => g._id !== id));
     } catch (err) {
       setError("Failed to delete size group");
