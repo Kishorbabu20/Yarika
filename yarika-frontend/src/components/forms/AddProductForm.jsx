@@ -14,7 +14,7 @@ import Header from "../Header";
 import axios from "../../config/axios";
 import QRCode from "qrcode";
 import { useQueryClient } from '@tanstack/react-query';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../ui/Breadcrumb";
 
 const categoryOptions = {
   bridal: [
