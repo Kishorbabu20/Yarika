@@ -24,7 +24,7 @@ const SearchResultsPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await api.get("/api/products");
+        const res = await api.get("/products");
         const filtered = res.data.filter(product =>
           product.name?.toLowerCase().includes(query.toLowerCase()) ||
           product.code?.toLowerCase().includes(query.toLowerCase()) ||

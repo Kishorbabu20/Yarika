@@ -30,7 +30,7 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
   const fetchProducts = async () => {
       try {
       setLoading(true);
-      let url = "/api/products";
+      let url = "/products";
       const query = new URLSearchParams();
       
         if (filterType && filterValue) {

@@ -21,7 +21,7 @@ export default function Members() {
 
   // Load members on mount
   useEffect(() => {
-    api.get("/api/admins")
+    api.get("/admins")
       .then(res => {
         // Defensive: only set array
         setMembers(Array.isArray(res.data) ? res.data : []);
@@ -30,7 +30,7 @@ export default function Members() {
   }, []);
 
   const fetchMembers = async () => {
-    const res = await api.get("/api/members");
+    const res = await api.get("/members");
     setMembers(res.data.filter(m => m.status === "Active"));
   };
 
@@ -43,7 +43,7 @@ export default function Members() {
     }
 
     try {
-      const res = await api.post("/api/admins/add", {
+      const res = await api.post("/admins/add", {
         ...newMember,
         username: newMember.email // Use email as username
       });
@@ -101,7 +101,7 @@ export default function Members() {
 
   const handleDelete = async (memberId) => {
     try {
-      await api.delete(`/api/admins/${memberId}`);
+      await api.delete(`/admins/${memberId}`);
       setMembers(prev => prev.filter(m => m._id !== memberId)); // Remove from state immediately
       toast.success("Member removed!");
     } catch (err) {

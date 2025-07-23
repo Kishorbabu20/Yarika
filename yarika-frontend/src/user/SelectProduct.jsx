@@ -466,7 +466,7 @@ const SelectProduct = () => {
                         console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
                         console.log('User token:', localStorage.getItem('token') ? 'Present' : 'Missing');
                         console.log('API base URL:', 'https:yarika.in');
-                        console.log('Full URL:', 'https:yarika.in/api/orders/add');
+                        console.log('Full URL:', 'https:yarika.in/orders/add');
                         
                         // Add request debugging
                         console.log('Request context:', {
@@ -478,7 +478,7 @@ const SelectProduct = () => {
                         
                         // Log the exact request we're about to make
                         console.log('=== ABOUT TO MAKE ORDER REQUEST ===');
-                        console.log('URL:', 'https:yarika.in/api/orders/add');
+                        console.log('URL:', 'https:yarika.in/orders/add');
                         console.log('Method:', 'POST');
                         console.log('Headers:', {
                             'Authorization': `Bearer ${localStorage.getItem('token') ? 'Present' : 'Missing'}`,

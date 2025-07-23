@@ -39,7 +39,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await api.get("/api/analytics/stats");
+      const res = await api.get("/analytics/stats");
       setStats(res.data);
     } catch (err) {
       // fallback or error handling
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   };
   const fetchSales = async () => {
     try {
-      const res = await api.get("/api/analytics/sales-chart");
+      const res = await api.get("/analytics/sales-chart");
       setSalesData(res.data);
     } catch (err) {
       console.error("Error fetching sales chart:", err);
@@ -57,7 +57,7 @@ const AdminDashboard = () => {
   };
   const fetchRevenue = async () => {
     try {
-      const res = await api.get("/api/analytics/orders-per-day");
+      const res = await api.get("/analytics/orders-per-day");
       setRevenueData(res.data);
     } catch (err) {
       console.error("Error fetching revenue chart:", err);
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
       }
 
       console.log('Fetching recent orders...');
-      const res = await api.get("/api/orders/recent");
+      const res = await api.get("/orders/recent");
       console.log('Recent orders response:', {
         status: res.status,
         dataLength: res.data?.length || 0
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
       }
 
       console.log('Fetching all orders...');
-      const res = await api.get("/api/orders/all");
+      const res = await api.get("/orders/all");
       console.log('Orders response:', {
         status: res.status,
         dataLength: res.data?.length || 0
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
 
   const fetchProductStats = async () => {
     try {
-      const res = await api.get("/api/products/stats");
+      const res = await api.get("/products/stats");
       return {
         totalProducts: res.data.totalProducts || 0,
         activeProducts: res.data.activeProducts || 0,
@@ -204,7 +204,7 @@ const AdminDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const res = await api.get("/api/analytics/stats");
+      const res = await api.get("/analytics/stats");
       return res.data || {
         ordersThisMonth: 0,
         activeProducts: 0,
@@ -242,7 +242,7 @@ const AdminDashboard = () => {
 
   const fetchAdminCount = async () => {
     try {
-      const res = await api.get("/api/admins/count");
+      const res = await api.get("/admins/count");
       return res.data.count;
     } catch (err) {
       console.error("Error fetching admin count:", err);
@@ -267,7 +267,7 @@ const AdminDashboard = () => {
       
       if (adminToken) {
         // Test the token with a simple API call
-        const testRes = await api.get("/api/admins/me");
+        const testRes = await api.get("/admins/me");
         console.log('Token test response:', testRes.data);
         toast.success('Authentication working!');
       } else {

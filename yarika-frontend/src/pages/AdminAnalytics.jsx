@@ -55,7 +55,7 @@ export default function AdminAnalytics() {
 
   const fetchOrderStatus = async () => {
     try {
-      const res = await api.get("/api/analytics/order-status");
+      const res = await api.get("/analytics/order-status");
       setOrderStatusData(res.data);
     } catch (err) {
       console.error("Error fetching order status:", err);
@@ -64,7 +64,7 @@ export default function AdminAnalytics() {
   };
   const fetchOrdersPerDay = async () => {
     try {
-      const res = await api.get("/api/analytics/orders-per-day");
+      const res = await api.get("/analytics/orders-per-day");
       setOrdersPerDayData(res.data);
     } catch (err) {
       console.error("Error fetching orders per day:", err);
@@ -73,7 +73,7 @@ export default function AdminAnalytics() {
   };
   const fetchProductPerformance = async () => {
     try {
-      const res = await api.get("/api/analytics/product-performance");
+      const res = await api.get("/analytics/product-performance");
       setProductPerformance(res.data);
     } catch (err) {
       console.error("Error fetching product performance:", err);
@@ -83,7 +83,7 @@ export default function AdminAnalytics() {
   const fetchAdminActivity = async () => {
     try {
       console.log("Fetching admin activity...");
-      const res = await api.get("/api/analytics/admin-activity");
+      const res = await api.get("/analytics/admin-activity");
       console.log("Admin activity response:", res.data);
       setAdminActivity(res.data || []);
     } catch (err) {
@@ -118,7 +118,7 @@ export default function AdminAnalytics() {
   };
   const fetchStats = async () => {
     try {
-      const res = await api.get("/api/analytics/stats");
+      const res = await api.get("/analytics/stats");
       setStats(res.data || {
         totalRevenue: 0,
         unitSold: 0,

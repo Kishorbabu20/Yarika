@@ -18,7 +18,7 @@ export default function Customers() {
 
   const loadCustomers = async () => {
     try {
-      const res = await api.get("/api/client/all");
+      const res = await api.get("/client/all");
       setCustomers(res.data.data || []);
     } catch (error) {
       console.error("Error loading customers:", error);

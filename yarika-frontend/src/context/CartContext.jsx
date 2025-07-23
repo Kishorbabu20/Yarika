@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
         if (token) {
           setIsAuthenticated(true);
           console.log('Making request to /api/cart');
-          const { data } = await api.get("/api/cart");
+          const { data } = await api.get("/cart");
           console.log('Cart data received:', data);
           // Transform the data to include product details
           const transformedData = data.map(item => ({
@@ -93,7 +93,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (token) {
         setIsAuthenticated(true);
-        const { data } = await api.get("/api/cart");
+        const { data } = await api.get("/cart");
         const transformedData = data.map(item => ({
           productId: item.productId._id,
           name: item.productId.name,
@@ -152,7 +152,7 @@ export const CartProvider = ({ children }) => {
       }
 
       // Fetch product details and add to backend cart
-      const { data: product } = await api.get(`/api/products/${productId}`);
+      const { data: product } = await api.get(`/products/${productId}`);
       
       if (!product) {
         toast.error("Product not found");
@@ -167,7 +167,7 @@ export const CartProvider = ({ children }) => {
       }
 
       // Add to backend cart
-      const { data: updatedCart } = await api.post("/api/cart/add", {
+      const { data: updatedCart } = await api.post("/cart/add", {
         productId,
         size,
         qty,
@@ -212,7 +212,7 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      await api.delete(`/api/cart/remove/${productId}?size=${size}`);
+      await api.delete(`/cart/remove/${productId}?size=${size}`);
       await fetchCart(); // Reload cart after removal
       toast.success("Item removed from cart");
     } catch (error) {
@@ -248,7 +248,7 @@ export const CartProvider = ({ children }) => {
       }
 
       // Update quantity in backend
-      await api.put("/api/cart/update", {
+      await api.put("/cart/update", {
         productId,
         size,
         qty: newQty
@@ -268,7 +268,7 @@ export const CartProvider = ({ children }) => {
   const clearCart = async () => {
     try {
       if (isAuthenticated) {
-        await api.delete("/api/cart/clear");
+        await api.delete("/cart/clear");
       }
       setCartItems([]);
       localStorage.removeItem("cart");

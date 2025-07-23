@@ -13,7 +13,7 @@ const Header = ({ title }) => {
   // Poll for new orders every 30 seconds
   useEffect(() => {
     const fetchNotifications = async () => {
-      const res = await api.get("/api/orders/recent");
+      const res = await api.get("/orders/recent");
       // Filter for new/unseen orders (implement your own logic)
       setNotifications(res.data.filter(order => !order.seen));
     };

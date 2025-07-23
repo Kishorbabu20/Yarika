@@ -44,7 +44,7 @@ const LeggingsPage = () => {
         query.append("category", activeCategory.slug);
       }
 
-      const res = await api.get(`/api/products?${query}`);
+      const res = await api.get(`/products?${query}`);
       
       let filtered = res.data;
       

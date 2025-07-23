@@ -48,7 +48,7 @@ const AdminProfile = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await api.post("/api/admin/change-password", {
+      const response = await api.post("/admin/change-password", {
         currentPassword,
         newPassword,
       });

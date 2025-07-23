@@ -23,7 +23,7 @@ const OrderDetails = () => {
   const fetchOrderDetails = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/api/orders/${orderId}`);
+      const response = await api.get(`/orders/${orderId}`);
       setOrder(response.data);
       setError(null);
     } catch (err) {
@@ -38,7 +38,7 @@ const OrderDetails = () => {
   const handleStatusUpdate = async (newStatus) => {
     try {
       setUpdatingStatus(true);
-      await api.put(`/api/orders/${orderId}/status`, { status: newStatus });
+      await api.put(`/orders/${orderId}/status`, { status: newStatus });
       await fetchOrderDetails();
       toast.success(`Order status updated to ${newStatus}`);
     } catch (err) {

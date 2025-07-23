@@ -41,8 +41,8 @@ const MyOrders = () => {
             setError(null);
             try {
                 const [profileRes, ordersRes] = await Promise.all([
-                    api.get("/api/client/me"),
-                    api.get("/api/orders")
+                    api.get("/client/me"),
+                    api.get("/orders")
                 ]);
 
                 setProfile(profileRes.data);

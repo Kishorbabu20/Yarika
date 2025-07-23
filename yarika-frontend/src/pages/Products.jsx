@@ -61,7 +61,7 @@ export default function Products() {
 
   const fetchStats = async () => {
     try {
-      const res = await api.get("/api/products/stats");
+      const res = await api.get("/products/stats");
       console.log("Fetched stats:", res.data);
       return res.data;
     } catch (error) {
@@ -75,7 +75,7 @@ export default function Products() {
       if (searchTerm) query.append("search", searchTerm);
       if (status !== "all") query.append("status", status);
       if (category !== "all") query.append("categoryType", category); // <-- use categoryType
-      const res = await api.get(`/api/products?${query.toString()}`);
+      const res = await api.get(`/products?${query.toString()}`);
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -85,7 +85,7 @@ export default function Products() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      await api.delete(`/api/products/${id}`);
+      await api.delete(`/products/${id}`);
       fetchProducts();
     } catch (error) {
       console.error("Delete failed:", error);

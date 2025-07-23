@@ -43,7 +43,7 @@ const CartPage = () => {
                 return;
             }
             try {
-                const res = await api.post('/api/cart/calculate-tax', {
+                const res = await api.post('/cart/calculate-tax', {
                     items: cartItems.map(item => ({
                         productId: item.productId,
                         quantity: item.qty,
@@ -95,7 +95,7 @@ const CartPage = () => {
             // Check stock availability for all items before proceeding
             for (const item of cartItems) {
                 try {
-                    const stockCheck = await api.get(`/api/products/${item.productId}/check-stock?quantity=${item.qty || 1}&size=${item.size || 'Default'}`);
+                    const stockCheck = await api.get(`/products/${item.productId}/check-stock?quantity=${item.qty || 1}&size=${item.size || 'Default'}`);
                     
                     if (!stockCheck.data.canProceed) {
                         toast.error(`${item.name} - Size ${item.size} is no longer available`);
@@ -131,7 +131,7 @@ const CartPage = () => {
 
             // Create Razorpay order first (no database order yet)
             console.log('Making API call to create Razorpay order...');
-            const razorpayRes = await api.post("/api/payment/create-order", {
+            const razorpayRes = await api.post("/payment/create-order", {
                 amount: total,
                 receipt: `order_${Date.now()}` // Use timestamp as receipt
             });
@@ -143,7 +143,7 @@ const CartPage = () => {
             }
 
             console.log('Getting Razorpay key...');
-            const keyRes = await api.get("/api/payment/key");
+            const keyRes = await api.get("/payment/key");
             const razorpayKeyId = keyRes.data.key_id;
             console.log('Razorpay key received:', razorpayKeyId ? 'Present' : 'Missing');
 
@@ -160,7 +160,7 @@ const CartPage = () => {
                         console.log('Payment successful, verifying payment...');
                         
                         // Verify payment
-                        const verifyRes = await api.post("/api/payment/verify-payment", {
+                        const verifyRes = await api.post("/payment/verify-payment", {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature
@@ -175,7 +175,7 @@ const CartPage = () => {
                                 console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
                                 console.log('User token:', localStorage.getItem('token') ? 'Present' : 'Missing');
                                 
-                                const orderRes = await api.post("/api/orders/add", orderData);
+                                const orderRes = await api.post("/orders/add", orderData);
                                 
                                 console.log('Order creation response:', {
                                     status: orderRes.status,

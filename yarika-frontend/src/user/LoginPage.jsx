@@ -37,7 +37,7 @@ export default function LoginPage() {
       setLoading(true);
       console.log('Attempting login with email:', formData.email);
       
-      const res = await api.post("/api/client/login", formData);
+      const res = await api.post("/client/login", formData);
       console.log('Login response:', res.data);
 
       const { token, client } = res.data;

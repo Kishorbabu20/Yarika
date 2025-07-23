@@ -27,7 +27,7 @@ export default function LoginModal({ onClose }) {
             setLoading(true);
             console.log('Attempting login with email:', email);
             
-            const res = await api.post("/api/client/login", {
+            const res = await api.post("/client/login", {
                 email,
                 password,
             });

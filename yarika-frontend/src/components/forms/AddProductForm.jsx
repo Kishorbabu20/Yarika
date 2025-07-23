@@ -622,7 +622,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
     setIsCheckingCode(true);
     try {
-      const response = await api.get(`/api/products/check-code/${encodeURIComponent(code.trim())}`);
+      const response = await api.get(`/products/check-code/${encodeURIComponent(code.trim())}`);
       const exists = response.data.exists;
       
       if (exists) {
@@ -891,7 +891,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       let res;
       if (id) {
         // Edit mode: update product
-        res = await api.put(`/api/products/${id}`,
+        res = await api.put(`/products/${id}`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -901,7 +901,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         return;
       } else {
         // Add mode: create new product
-        res = await api.post("/api/products/add", formData, {
+        res = await api.post("/products/add", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -984,7 +984,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   useEffect(() => {
     if (id) {
-      api.get(`/api/products/${id}`).then(res => {
+      api.get(`/products/${id}`).then(res => {
         const data = res.data;
         setBrand(data.brand || "");
         setCategoryType(data.categoryType || "");

@@ -27,7 +27,7 @@ const CategoryProductsPage = () => {
         // Add cache-busting parameter
         query.append("_t", Date.now());
 
-        const res = await api.get(`/api/products?${query}`);
+        const res = await api.get(`/products?${query}`);
         
         console.log('CategoryProductsPage - API Response:', res.data);
         console.log('CategoryProductsPage - First product sample:', res.data[0]);

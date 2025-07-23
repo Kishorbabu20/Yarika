@@ -59,7 +59,7 @@ const HeroLanding = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await api.get("/api/products");
+        const res = await api.get("/products");
         // Defensive: ensure array
         setProducts(Array.isArray(res.data) ? res.data : []);
       } catch (err) {

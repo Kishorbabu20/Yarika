@@ -275,7 +275,7 @@ export default function SignupLoginPage() {
           <button
             type="button"
             className="btn google-btn"
-            onClick={() => window.location.href = "https://yarika.in/api/auth/google"}
+            onClick={() => window.location.href = "https://yarika.in/auth/google"}
           >
             <FcGoogle size={20} />
             Login with Google
