@@ -812,16 +812,8 @@ const SelectProduct = () => {
           })}
         </div>
         {selectedColor && (
-          <div style={{
-            fontSize: '14px',
-            color: '#666',
-            marginTop: '12px',
-            padding: '8px 16px',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '4px',
-            display: 'inline-block'
-          }}>
-            Selected: {getColorName(selectedColor)}
+          <div>
+            Selected: {selectedColor.name || getColorName(selectedColor.code || selectedColor)}
           </div>
         )}
       </div>
