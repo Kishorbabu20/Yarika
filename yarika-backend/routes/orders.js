@@ -6,7 +6,7 @@ const Client = require("../models/Client");
 const protect = require("../middleware/auth");
 const mongoose = require("mongoose");
 const { logAdminActivity } = require("../utils/adminActivityLogger");
-const { sendOrderConfirmationSMS, sendOrderStatusUpdateSMS } = require("../utils/smsService");
+// const { sendOrderConfirmationSMS, sendOrderStatusUpdateSMS } = require("../utils/smsService");
 const { sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require("../services/emailService");
 const { createShipment } = require('../services/shipway');
 
@@ -516,39 +516,39 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
     await session.commitTransaction();
 
     // Send SMS confirmation
-    if (req.client && req.client.phoneNumber) {
-      try {
-        const customerName = `${req.client.firstName || ''} ${req.client.lastName || ''}`.trim() || 'Customer';
-        const smsResult = await sendOrderConfirmationSMS(
-          req.client.phoneNumber,
-          savedOrder._id,
-          customerName,
-          savedOrder.totalAmount
-        );
+    // if (req.client && req.client.phoneNumber) {
+    //   try {
+    //     const customerName = `${req.client.firstName || ''} ${req.client.lastName || ''}`.trim() || 'Customer';
+    //     const smsResult = await sendOrderConfirmationSMS(
+    //       req.client.phoneNumber,
+    //       savedOrder._id,
+    //       customerName,
+    //       savedOrder.totalAmount
+    //     );
         
-        if (smsResult.success) {
-          console.log('Order confirmation SMS sent successfully:', {
-            orderId: savedOrder._id,
-            smsSid: smsResult.sid
-          });
-        } else {
-          console.warn('Order confirmation SMS failed:', {
-            orderId: savedOrder._id,
-            reason: smsResult.reason || smsResult.error
-          });
-        }
-      } catch (smsError) {
-        console.error('Error sending order confirmation SMS:', {
-          orderId: savedOrder._id,
-          error: smsError.message
-        });
-      }
-    } else {
-      console.warn('Customer phone number not found for order confirmation SMS:', {
-        orderId: savedOrder._id,
-        userId: req.client?._id
-      });
-    }
+    //     if (smsResult.success) {
+    //       console.log('Order confirmation SMS sent successfully:', {
+    //         orderId: savedOrder._id,
+    //         smsSid: smsResult.sid
+    //       });
+    //     } else {
+    //       console.warn('Order confirmation SMS failed:', {
+    //         orderId: savedOrder._id,
+    //         reason: smsResult.reason || smsResult.error
+    //       });
+    //     }
+    //   } catch (smsError) {
+    //     console.error('Error sending order confirmation SMS:', {
+    //       orderId: savedOrder._id,
+    //       error: smsError.message
+    //     });
+    //   }
+    // } else {
+    //   console.warn('Customer phone number not found for order confirmation SMS:', {
+    //     orderId: savedOrder._id,
+    //     userId: req.client?._id
+    //   });
+    // }
 
     // Send Email confirmation
     if (req.client && req.client.email) {
@@ -715,42 +715,42 @@ router.put("/:orderId/status", protect({ model: "admin" }), async (req, res) => 
     await order.save();
 
     // Send SMS notification for status update
-    if (order.userId && order.userId.phoneNumber) {
-      try {
-        const customerName = `${order.userId.firstName || ''} ${order.userId.lastName || ''}`.trim() || 'Customer';
-        const smsResult = await sendOrderStatusUpdateSMS(
-          order.userId.phoneNumber,
-          order._id,
-          status,
-          customerName
-        );
+    // if (order.userId && order.userId.phoneNumber) {
+    //   try {
+    //     const customerName = `${order.userId.firstName || ''} ${order.userId.lastName || ''}`.trim() || 'Customer';
+    //     const smsResult = await sendOrderStatusUpdateSMS(
+    //       order.userId.phoneNumber,
+    //       order._id,
+    //       status,
+    //       customerName
+    //     );
         
-        if (smsResult.success) {
-          console.log('Status update SMS sent successfully:', {
-            orderId: order._id,
-            status: status,
-            smsSid: smsResult.sid
-          });
-        } else {
-          console.warn('Status update SMS failed:', {
-            orderId: order._id,
-            status: status,
-            reason: smsResult.reason || smsResult.error
-          });
-        }
-      } catch (smsError) {
-        console.error('Error sending status update SMS:', {
-          orderId: order._id,
-          status: status,
-          error: smsError.message
-        });
-      }
-    } else {
-      console.warn('Customer phone number not found for status update SMS:', {
-        orderId: order._id,
-        userId: order.userId?._id
-      });
-    }
+    //     if (smsResult.success) {
+    //       console.log('Status update SMS sent successfully:', {
+    //         orderId: order._id,
+    //         status: status,
+    //         smsSid: smsResult.sid
+    //       });
+    //     } else {
+    //       console.warn('Status update SMS failed:', {
+    //         orderId: order._id,
+    //         status: status,
+    //         reason: smsResult.reason || smsResult.error
+    //       });
+    //     }
+    //   } catch (smsError) {
+    //     console.error('Error sending status update SMS:', {
+    //       orderId: order._id,
+    //       status: status,
+    //       error: smsError.message
+    //     });
+    //   }
+    // } else {
+    //   console.warn('Customer phone number not found for status update SMS:', {
+    //     orderId: order._id,
+    //     userId: order.userId?._id
+    //   });
+    // }
 
     // Send Email notification for status update
     if (order.userId && order.userId.email) {
