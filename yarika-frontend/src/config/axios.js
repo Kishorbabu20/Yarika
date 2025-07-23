@@ -11,20 +11,20 @@ const unauthorizedEvent = new Event(UNAUTHORIZED_EVENT);
 // Helper function to check if a route is an admin route
 const isAdminRoute = (url, method = 'get') => {
   const adminPatterns = [
-    '/api/admins',
-    '/api/analytics',
-    '/api/orders/all',
-    '/api/orders/recent',
-    '/api/orders/status',
-    '/api/products/stats',
-    '/api/products'
+    '/admins',
+    '/analytics',
+    '/orders/all',
+    '/orders/recent',
+    '/orders/status',
+    '/products/stats',
+    '/products'
   ];
 
   // Check if URL matches any admin pattern
   const isAdminPattern = adminPatterns.some(pattern => url.includes(pattern));
 
   // Check for admin product operations
-  const isAdminProductOp = url.includes('/api/products') && 
+  const isAdminProductOp = url.includes('/products') && 
     ['post', 'put', 'delete'].includes(method.toLowerCase());
 
   // Check for admin order operations (view details, update status)
@@ -36,13 +36,13 @@ const isAdminRoute = (url, method = 'get') => {
   // );
 
   const isAdminOrderOp = (
-    url.startsWith('/api/orders/all') ||
-    url.startsWith('/api/orders/recent') ||
-    url.startsWith('/api/orders/status') ||
+    url.startsWith('/orders/all') ||
+    url.startsWith('/orders/recent') ||
+    url.startsWith('/orders/status') ||
     (
-      url.startsWith('/api/orders/') &&
+      url.startsWith('/orders/') &&
       !url.includes('/client/') &&
-      url !== '/api/orders/add'
+      url !== '/orders/add'
     )
   );
 

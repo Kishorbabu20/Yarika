@@ -85,7 +85,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (productId, size) => {
     try {
-      const res = await api.delete(`/api/cart/remove/${productId}?size=${size}`);
+      const res = await api.delete(`/cart/remove/${productId}?size=${size}`);
       setCartItems(res.data);
     } catch (err) {
       console.error("Error removing item:", err);
@@ -94,7 +94,7 @@ export const CartProvider = ({ children }) => {
 
   const updateQty = async (productId, size, qty) => {
     try {
-      const res = await api.put("/api/cart/update", { productId, size, qty });
+      const res = await api.put("/cart/update", { productId, size, qty });
       setCartItems(res.data);
     } catch (err) {
       console.error("Error updating quantity:", err);
@@ -103,7 +103,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = async () => {
     try {
-      await api.delete("/api/cart/clear");
+      await api.delete("/cart/clear");
       setCartItems([]);
     } catch (err) {
       console.error("Error clearing cart:", err);
@@ -112,7 +112,7 @@ export const CartProvider = ({ children }) => {
 
   const placeOrder = async () => {
     try {
-      const res = await api.post("/api/orders/place");
+      const res = await api.post("/orders/place");
       setOrders((prev) => [res.data, ...prev]);
       await clearCart();
     } catch (err) {
@@ -122,7 +122,7 @@ export const CartProvider = ({ children }) => {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const res = await api.put(`/api/orders/${orderId}/status`, { status });
+      const res = await api.put(`/orders/${orderId}/status`, { status });
       setOrders((prev) =>
         prev.map((o) => (o._id === orderId ? { ...o, status: res.data.status } : o))
       );
@@ -133,7 +133,7 @@ export const CartProvider = ({ children }) => {
 
   const deleteOrder = async (orderId) => {
     try {
-      await api.delete(`/api/orders/${orderId}`);
+      await api.delete(`/orders/${orderId}`);
       setOrders(prev => prev.filter(order => order._id !== orderId));
       return true;
     } catch (err) {
@@ -145,7 +145,7 @@ export const CartProvider = ({ children }) => {
   const clearAllOrders = async () => {
     try {
       console.log("Attempting to clear all orders...");
-      const response = await api.delete("/api/orders");
+      const response = await api.delete("/orders");
       console.log("Server response:", response.data);
       
       if (response.data && response.data.message) {
