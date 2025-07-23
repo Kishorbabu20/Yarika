@@ -16,12 +16,12 @@ const ProductCard = lazy(() => import("./ProductCard"));
 const ProductPage = () => {
   const categories = [
     { label: "All Products", slug: "", categoryType: "" },
-    { label: "Kalamkari", slug: "kalamkari-readymade-blouse", categoryType: "readymade-blouse" },
-    { label: "Embroidery", slug: "embroidery-readymade-blouse", categoryType: "readymade-blouse" },
-    { label: "Plain", slug: "plain-readymade-blouse", categoryType: "readymade-blouse" },
-    { label: "Zardozi", slug: "zardozi-readymade-blouse", categoryType: "readymade-blouse" },
-    { label: "Ikat", slug: "ikat-readymade-blouse", categoryType: "readymade-blouse" },
-    { label: "Designer", slug: "designer-readymade-blouse", categoryType: "readymade-blouse" }
+    { label: "Kalamkari", slug: "kalamkari-blouse", categoryType: "readymade-blouse" },
+    { label: "Embroidery", slug: "embroidery-blouse", categoryType: "readymade-blouse" },
+    { label: "Plain", slug: "plain-blouse", categoryType: "readymade-blouse" },
+    { label: "Zardozi", slug: "zardozi-blouse", categoryType: "readymade-blouse" },
+    { label: "Ikat", slug: "ikat-blouse", categoryType: "readymade-blouse" },
+    { label: "Designer", slug: "designer-blouse", categoryType: "readymade-blouse" }
   ];
 
   const [activeCategory, setActiveCategory] = useState(categories[0]);

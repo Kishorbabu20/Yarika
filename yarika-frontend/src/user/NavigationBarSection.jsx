@@ -89,13 +89,13 @@ const NavigationBarSection = () => {
       "readymade-blouse": {
         title: "Readymade Blouse",
         items: [
-          { name: "Aari Readymade Blouse", slug: "aari-readymade-blouse" },
-          { name: "Designer Readymade Blouse", slug: "designer-readymade-blouse" },
-          { name: "Embroidery Readymade Blouse", slug: "embroidery-readymade-blouse" },
-          { name: "Ikat Readymade Blouse", slug: "ikat-readymade-blouse" },
-          { name: "Kalamkari Readymade Blouse", slug: "kalamkari-readymade-blouse" },
-          { name: "Plain Readymade Blouse", slug: "plain-readymade-blouse" },
-          { name: "Zardozi Readymade Blouse", slug: "zardozi-readymade-blouse" }
+          { name: "Aari Blouse", slug: "aari-blouse" },
+          { name: "Designer Blouse", slug: "designer-blouse" },
+          { name: "Embroidery Blouse", slug: "embroidery-blouse" },
+          { name: "Ikat Blouse", slug: "ikat-blouse" },
+          { name: "Kalamkari Blouse", slug: "kalamkari-blouse" },
+          { name: "Plain Blouse", slug: "plain-blouse" },
+          { name: "Zardozi Blouse", slug: "zardozi-blouse" }
         ]
       },
       leggings: {
