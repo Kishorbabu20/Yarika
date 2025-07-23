@@ -95,7 +95,7 @@ const expandHex = (hex) => {
 };
 
 const SelectProduct = () => {
-  // All useState and useEffect hooks here
+  // All hooks, state, and function declarations here
   const { dropdown, categoryType, category, productSlug, id } = useParams();
   const navigate = useNavigate();
   const { addToCart, clearCart } = useCart();
@@ -159,15 +159,6 @@ const SelectProduct = () => {
       productStock: product?.totalStock
     });
   }, [isInPaymentFlow, product]);
-
-  // Place all early returns after hooks
-  if (!productIdentifier || productIdentifier === 'undefined') {
-    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>Invalid product URL. Please select a product from the list.</div>;
-  }
-  if (loading || !product) return <div>Loading...</div>;
-  if (!loading && !product) {
-    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>This product is no longer available.</div>;
-  }
 
   const fetchProduct = async () => {
       try {
@@ -926,6 +917,15 @@ const SelectProduct = () => {
       </div>
     );
   };
+
+  // All early returns after hooks and function declarations
+  if (!productIdentifier || productIdentifier === 'undefined') {
+    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>Invalid product URL. Please select a product from the list.</div>;
+  }
+  if (loading || !product) return <div>Loading...</div>;
+  if (!loading && !product) {
+    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>This product is no longer available.</div>;
+  }
 
   return (
     <div className="select-product-page">
