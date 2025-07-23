@@ -36,7 +36,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
     const fetchAddresses = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/api/client/me');
+            const response = await api.get('/client/me');
             setAddresses(response.data.addresses || []);
         } catch (error) {
             console.error('Error fetching addresses:', error);
@@ -93,9 +93,9 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
             let response;
             
             if (editingAddress) {
-                response = await api.put(`/api/client/address/${editingAddress}`, addressForm);
+                response = await api.put(`/client/address/${editingAddress}`, addressForm);
             } else {
-                response = await api.post('/api/client/address', addressForm);
+                response = await api.post('/client/address', addressForm);
             }
 
             setAddresses(response.data.addresses);
@@ -116,7 +116,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
 
         try {
             setLoading(true);
-            const response = await api.delete(`/api/client/address/${addressId}`);
+            const response = await api.delete(`/client/address/${addressId}`);
             setAddresses(response.data.addresses);
             toast.success('Address deleted successfully!');
         } catch (error) {

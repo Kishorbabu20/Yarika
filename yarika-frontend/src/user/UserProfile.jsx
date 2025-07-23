@@ -46,7 +46,7 @@ const UserProfile = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const res = await axios.get("https:yarika.in/api/client/me", {
+                const res = await axios.get("/client/me", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -88,7 +88,7 @@ const UserProfile = () => {
             setLoading(true);
             setError(null);
             const res = await axios.put(
-                "https:yarika.in/api/client/me",
+                "/client/me",
                 profile,
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -159,7 +159,7 @@ const UserProfile = () => {
             if (editingAddress) {
                 // Update existing address
                 res = await axios.put(
-                    `https:yarika.in/api/client/address/${editingAddress}`,
+                    `/client/address/${editingAddress}`,
                     addressForm,
                     {
                         headers: { Authorization: `Bearer ${token}` },
@@ -168,7 +168,7 @@ const UserProfile = () => {
             } else {
                 // Add new address
                 res = await axios.post(
-                    "https:yarika.in/api/client/address",
+                    "/client/address",
                     addressForm,
                     {
                         headers: { Authorization: `Bearer ${token}` },
@@ -199,7 +199,7 @@ const UserProfile = () => {
         try {
             setLoading(true);
             const res = await axios.delete(
-                `https:yarika.in/api/client/address/${addressId}`,
+                `/client/address/${addressId}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

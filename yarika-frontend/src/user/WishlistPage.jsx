@@ -26,8 +26,8 @@ const WishlistPage = () => {
             try {
                 setLoading(true);
                 const [profileRes, wishlistRes] = await Promise.all([
-                    api.get("/api/client/me"),
-                    api.get("/api/wishlist")
+                    api.get("/client/me"),
+                    api.get("/wishlist")
                 ]);
                 setProfile(profileRes.data);
 
@@ -55,7 +55,7 @@ const WishlistPage = () => {
         // If SEO fields are missing, fetch full product details
         if (!product.seoUrl || !product.categoryType || !product.category) {
             try {
-                const res = await api.get(`/api/products/${product._id}`);
+                const res = await api.get(`/products/${product._id}`);
                 product = res.data;
             } catch (err) {
                 // fallback to ID-based URL if fetch fails
@@ -71,7 +71,7 @@ const WishlistPage = () => {
     // Use _id for removal (wishlist item id)
     const handleRemove = async (itemId) => {
         console.log('Removing wishlist item with _id:', itemId);
-        await api.delete(`/api/wishlist/remove-item/${itemId}`);
+        await api.delete(`/wishlist/remove-item/${itemId}`);
         setWishlistItems(prev => prev.filter(item => item._id !== itemId));
             toast.success("Item removed from wishlist");
     };

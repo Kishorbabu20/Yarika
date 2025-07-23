@@ -42,7 +42,7 @@ const ProtectedRoute = ({ children }) => {
 
       try {
         // Make a request to a protected endpoint to validate token
-        await api.get("/api/analytics/stats");
+        await api.get("/analytics/stats");
         setIsValid(true);
       } catch (err) {
         console.error("Token validation failed:", {

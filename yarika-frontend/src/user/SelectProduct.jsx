@@ -175,10 +175,10 @@ const SelectProduct = () => {
       
       // Try SEO URL first if productSlug is available
       if (productSlug) {
-        productRes = await api.get(`/api/products/seo/${productSlug}`);
+        productRes = await api.get(`/products/seo/${productSlug}`);
       } else {
         // Fallback to ID-based fetch
-        productRes = await api.get(`/api/products/${id}`);
+        productRes = await api.get(`/products/${id}`);
       }
         
         setProduct(productRes.data);
@@ -191,7 +191,7 @@ const SelectProduct = () => {
           setSelectedSize(productRes.data.sizes[0]);
         }
         // Fetch similar products
-        const similarRes = await api.get(`/api/products`, {
+        const similarRes = await api.get(`/products`, {
           params: {
             category: productRes.data.category,
           exclude: productRes.data._id,
@@ -203,7 +203,7 @@ const SelectProduct = () => {
         const token = localStorage.getItem('token');
         if (token) {
           try {
-            const wishlistRes = await api.get('/api/wishlist');
+            const wishlistRes = await api.get('/wishlist');
           setIsInWishlist(wishlistRes.data.items.some(item => item.id === productRes.data._id));
           } catch (wishlistErr) {
             setIsInWishlist(false);
@@ -322,7 +322,7 @@ const SelectProduct = () => {
           size: selectedSize
         });
         
-        const stockCheck = await api.get(`/api/products/${product._id}/check-stock?quantity=1&size=${selectedSize}`);
+        const stockCheck = await api.get(`/products/${product._id}/check-stock?quantity=1&size=${selectedSize}`);
         
         console.log('Stock check API response:', stockCheck.data);
         
@@ -418,7 +418,7 @@ const SelectProduct = () => {
 
       console.log('Making API call to create Razorpay order...');
       // Create Razorpay order first (no database order yet)
-      const razorpayRes = await api.post("/api/payment/create-order", {
+      const razorpayRes = await api.post("/payment/create-order", {
         amount: product.sellingPrice,
         receipt: `order_${Date.now()}` // Use timestamp as receipt
       });
@@ -431,7 +431,7 @@ const SelectProduct = () => {
 
       console.log('Getting Razorpay key...');
         // Get Razorpay key from backend
-        const keyRes = await api.get("/api/payment/key");
+        const keyRes = await api.get("/payment/key");
         if (!keyRes.data.key_id) {
           throw new Error("Failed to get Razorpay key");
         }
@@ -451,7 +451,7 @@ const SelectProduct = () => {
                 console.log('Payment successful, verifying payment...');
                 
             // Verify payment
-          const verifyRes = await api.post("/api/payment/verify-payment", {
+          const verifyRes = await api.post("/payment/verify-payment", {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature
@@ -487,7 +487,7 @@ const SelectProduct = () => {
                         console.log('Body:', JSON.stringify(orderData, null, 2));
                         
                         const orderRes = await api.post(
-                          "/api/orders/add",
+                          "/orders/add",
                           orderData,
                           {
                             headers: {
@@ -658,10 +658,10 @@ const SelectProduct = () => {
       }
 
       if (isInWishlist) {
-        await api.delete(`/api/wishlist/remove/${product._id}`);
+        await api.delete(`/wishlist/remove/${product._id}`);
         toast.success('Removed from wishlist');
       } else {
-        await api.post('/api/wishlist/add', { productId: product._id });
+        await api.post('/wishlist/add', { productId: product._id });
         toast.success('Added to wishlist');
       }
       setIsInWishlist(!isInWishlist);

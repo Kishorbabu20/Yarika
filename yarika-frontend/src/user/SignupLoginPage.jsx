@@ -62,7 +62,7 @@ export default function SignupLoginPage() {
         phoneNumber: formData.phoneNumber 
       });
       
-      const res = await api.post("/api/client/register", formData);
+      const res = await api.post("/client/register", formData);
       console.log('Registration response:', res.data);
       
       if (res.data.requiresVerification) {
@@ -93,13 +93,13 @@ export default function SignupLoginPage() {
       return;
     }
     try {
-      const res = await api.post("/api/client/verify-email", {
+      const res = await api.post("/client/verify-email", {
         email: verificationEmail,
         verificationCode
       });
       toast.success("Email verified! Logging you in...");
       // Auto-login after verification
-      const loginRes = await api.post("/api/client/login", {
+      const loginRes = await api.post("/client/login", {
         email: verificationEmail,
         password: tempPassword
       });
