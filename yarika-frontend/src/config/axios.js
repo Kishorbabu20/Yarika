@@ -1,10 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://yarika.in/api", // Correct base URL
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: "https://yarika.in/api"
 });
 
 // Custom event for unauthorized responses

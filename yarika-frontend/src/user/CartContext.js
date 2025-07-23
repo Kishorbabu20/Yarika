@@ -6,7 +6,7 @@ export const useCart = () => useContext(CartContext);
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: 'https:yarika.in',
+  baseURL: 'https://yarika.in/api',
   headers: {
     'Content-Type': 'application/json'
   },
@@ -49,7 +49,7 @@ export const CartProvider = ({ children }) => {
 
   const loadCart = async () => {
     try {
-      const res = await api.get("/api/cart");
+      const res = await api.get("/cart");
       const data = res.data;
   
       if (Array.isArray(data)) {
@@ -65,7 +65,7 @@ export const CartProvider = ({ children }) => {
 
   const loadOrders = async () => {
     try {
-      const res = await api.get("/api/orders");
+      const res = await api.get("/orders");
       setOrders(res.data);
     } catch (err) {
       console.error("Error loading orders:", err.response?.data || err.message);
@@ -74,7 +74,7 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = async (item) => {
     try {
-      await api.post("/api/cart/add", item);
+      await api.post("/cart/add", item);
       await loadCart();
       return true; // success
     } catch (err) {
