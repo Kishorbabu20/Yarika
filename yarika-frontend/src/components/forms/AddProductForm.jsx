@@ -406,14 +406,14 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   // Fetch color groups on mount
   useEffect(() => {
-    axios.get("/api/color-groups")
+    axios.get("/color-groups")
       .then(res => setColorGroups(res.data))
       .catch(() => setColorGroups([]));
   }, []);
 
   // Fetch size groups on mount
   useEffect(() => {
-    axios.get("/api/size-groups")
+    axios.get("/size-groups")
       .then(res => setSizeGroups(res.data))
       .catch(() => setSizeGroups([]));
   }, []);

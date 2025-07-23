@@ -91,7 +91,7 @@ export default function ManageMaster() {
     if (activeTab === "Batch & Products") {
       setBatchLoading(true);
       setBatchError("");
-      axios.get("/api/batch-products")
+      axios.get("/batch-products")
         .then(res => setBatchProducts(res.data))
         .catch(err => setBatchError("Failed to load batch products"))
         .finally(() => setBatchLoading(false));
@@ -114,10 +114,10 @@ export default function ManageMaster() {
     setError("");
     try {
       if (colorModalMode === "add") {
-        const res = await axios.post("/api/colors", color);
+        const res = await axios.post("/colors", color);
         setColors([res.data, ...colors]);
       } else if (colorModalMode === "edit") {
-        const res = await axios.put(`/api/colors/${colorToEdit._id}`, color);
+        const res = await axios.put(`/colors/${colorToEdit._id}`, color);
         setColors(colors.map(c => c._id === colorToEdit._id ? res.data : c));
       }
       setShowColorModal(false);
@@ -131,7 +131,7 @@ export default function ManageMaster() {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`/api/colors/${id}`);
+      await axios.delete(`/colors/${id}`);
       setColors(colors.filter(c => c._id !== id));
     } catch (err) {
       setError("Failed to delete color");

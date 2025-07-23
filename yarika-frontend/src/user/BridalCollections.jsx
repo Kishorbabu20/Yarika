@@ -15,7 +15,7 @@ const BridalCollections = () => {
   useEffect(() => {
     setLoading(true);
     api
-      .get(`/api/products?categoryType=bridal&category=${activeCategory.value}`)
+      .get(`/products?categoryType=bridal&category=${activeCategory.value}`)
       .then((res) => {
         setProducts(res.data);
         setLoading(false);
