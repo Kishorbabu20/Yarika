@@ -128,10 +128,10 @@ const SelectProduct = () => {
 
   // All useEffect hooks at the top
   useEffect(() => {
-    if (productIdentifier && productIdentifier !== 'undefined') {
+    if (productSlug || id) {
       fetchProduct();
     }
-  }, [productIdentifier]);
+  }, [productSlug, id]);
 
   useEffect(() => {
     if (product) {

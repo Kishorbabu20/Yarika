@@ -155,7 +155,7 @@ const WishlistPage = () => {
                                         className="buy-now-button" 
                                         onClick={() => handleBuyNow(item)}
                                     >
-                                        Buy Now
+                                       View
                                     </button>
                                         <button className="remove-button" onClick={() => handleRemove(item._id)}>
                                         remove
