@@ -2,12 +2,28 @@ const express = require("express");
 const router = express.Router();
 const BatchProduct = require("../models/BatchProduct");
 const ColorGroup = require("../models/ColorGroup"); // Import at the top
+const Color = require("../models/Color"); // Import at the top
 
 // Get all batch products
 router.get("/", async (req, res) => {
   try {
     const products = await BatchProduct.find().sort({ createdAt: -1 });
-    res.json(products);
+    // Populate color code for each product
+    const populatedProducts = await Promise.all(products.map(async (product) => {
+      let colorObj = { name: product.color?.name || "Unknown", code: product.color?.code || "#000000" };
+      if (product.color && product.color.name) {
+        // Try to find the color code by name
+        const colorDoc = await Color.findOne({ name: product.color.name });
+        if (colorDoc) {
+          colorObj = { name: colorDoc.name, code: colorDoc.code };
+        }
+      }
+      return {
+        ...product.toObject(),
+        color: colorObj
+      };
+    }));
+    res.json(populatedProducts);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch batch products" });
   }

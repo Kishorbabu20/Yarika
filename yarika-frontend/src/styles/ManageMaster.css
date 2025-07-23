@@ -633,3 +633,9 @@
   opacity: 1;
   font-size: 1.1rem;
 }
+  .action-btn svg {
+    color: #caa75d !important;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+  }
