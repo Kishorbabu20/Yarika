@@ -24,17 +24,20 @@ export const CartProvider = ({ children }) => {
           const { data } = await api.get("/cart");
           console.log('Cart data received:', data);
           // Transform the data to include product details
-          const transformedData = data.map(item => ({
-            productId: item.productId._id,
-            name: item.productId.name || "Kalamkari Print Blouse",
-            price: item.productId.sellingPrice || 640.00,
-            mrp: item.productId.mrp || 960.00,
-            image: item.productId.mainImage,
-            size: item.size || "36",
-            color: item.color || "GREEN",
-            qty: item.qty || 1,
-            sku: item.productId.code || "BL.DW.KK.00075"
-          }));
+          const transformedData = data.map(item => {
+            const product = item.productId || {};
+            return {
+              productId: product._id || "",
+              name: product.name || "Kalamkari Print Blouse",
+              price: product.sellingPrice || 640.00,
+              mrp: product.mrp || 960.00,
+              image: product.mainImage,
+              size: item.size || "36",
+              color: item.color || "GREEN",
+              qty: item.qty || 1,
+              sku: product.code || "BL.DW.KK.00075"
+            };
+          });
           setCartItems(transformedData);
         } else {
           console.log('No token found, clearing cart');

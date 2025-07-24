@@ -741,6 +741,11 @@ body {
 @media (max-width: 600px) {
   .footer-section {
     padding: 2rem 0.5rem 1rem !important;
+    margin-bottom: 12px !important;
+  }
+  .footer {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
   }
   .footer-top {
     flex-direction: column !important;
@@ -769,6 +774,11 @@ body {
   .footer-bottom {
     font-size: 0.95rem !important;
     padding: 0.5rem 0 !important;
+    text-align: center !important;
+  }
+  .footer a, .footer a:visited {
+    color: #fff !important;
+    text-decoration: none !important;
   }
 }
 

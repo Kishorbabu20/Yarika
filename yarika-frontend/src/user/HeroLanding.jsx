@@ -274,9 +274,6 @@ const HeroLanding = () => {
                   >
                     {formatSlug(type)}
                   </button>
-                  {idx < blouseTypes.length - 1 && (
-                    <span className="filter-separator">/</span>
-                  )}
                 </span>
               ))}
             </div>
@@ -308,9 +305,6 @@ const HeroLanding = () => {
                   >
                     {formatSlug(type)}
                   </button>
-                  {idx < leggingsTypes.length - 1 && (
-                    <span className="filter-separator">/</span>
-                  )}
                 </span>
               ))}
             </div>
@@ -342,9 +336,6 @@ const HeroLanding = () => {
                   >
                     {formatSlug(type)}
                   </button>
-                  {idx < materialTypes.length - 1 && (
-                    <span className="filter-separator">/</span>
-                  )}
                 </span>
               ))}
             </div>
