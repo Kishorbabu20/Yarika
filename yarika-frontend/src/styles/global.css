@@ -1425,19 +1425,28 @@ html, body {
 }
 
 .view-all-btn {
-  background: #caa75d;
-  color: #fff;
+  background: #fff !important;
+  color: #111 !important;
+  border: 1.5px solid #111 !important;
   padding: 0.5rem 1.2rem;
   border-radius: 6px;
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: none !important;
   font-size: 1rem;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2s;
   margin-left: 1rem;
+  box-shadow: none;
 }
 .view-all-btn:hover {
-  background: #b99b54;
-  color: #fff;
+  background: #f7f7f7 !important;
+  color: #111 !important;
+  border-color: #111 !important;
+  text-decoration: none !important;
+}
+
+/* Remove underline from View All in bridal collection */
+.bridal-section .view-all-btn {
+  text-decoration: none !important;
 }
 
 .blouse-section-title {
@@ -2242,23 +2251,33 @@ html, body {
   .testimonial-marquee {
     display: flex !important;
     flex-direction: row !important;
-    overflow-x: auto !important;
+    overflow-x: hidden !important;
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
     gap: 1rem !important;
     padding-bottom: 8px !important;
     scrollbar-width: thin;
-    animation: testimonial-marquee-scroll 30s linear infinite;
+    animation: testimonial-marquee-scroll 40s linear infinite;
+  }
+  .testimonial-marquee:hover {
+    animation-play-state: paused;
   }
   .testimonial-marquee .testimonial-card {
-    min-width: 90vw !important;
-    max-width: 90vw !important;
-    flex: 0 0 90vw !important;
+    min-width: 420px !important;
+    max-width: 420px !important;
+    flex: 0 0 420px !important;
     scroll-snap-align: center !important;
     margin: 0 !important;
   }
+  @media (max-width: 600px) {
+    .testimonial-marquee .testimonial-card {
+      min-width: 90vw !important;
+      max-width: 90vw !important;
+      flex: 0 0 90vw !important;
+    }
+  }
 }
 @keyframes testimonial-marquee-scroll {
-  0% { scroll-behavior: auto; }
-  100% { scroll-behavior: auto; }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }

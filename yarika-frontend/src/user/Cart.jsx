@@ -321,6 +321,9 @@ const CartPage = () => {
         navigate(`/product/${productId}`);
     };
 
+    // Filter out invalid cart items (missing productId)
+    const validCartItems = cartItems?.filter(item => item.productId && item.productId !== "");
+
     if (loading) {
         return (
             <div className="cart-page">
@@ -336,7 +339,7 @@ const CartPage = () => {
         );
     }
 
-    if (!cartItems?.length) {
+    if (!validCartItems?.length) {
         return (
             <div className="cart-page">
                 <Helmet>
@@ -397,7 +400,7 @@ const CartPage = () => {
 
             <div className="cart-content">
                             <div className="cart-items">
-                    {cartItems?.map((item, index) => (
+                    {validCartItems?.map((item, index) => (
                         <div className="cart-item" key={index}>
                                         <div className="product-image">
                                 <img src={item.image || `https://placehold.co/273x273/f5f5f5/cccccc?text=Product`} alt={item.name} />
