@@ -395,10 +395,10 @@ const HeroLanding = () => {
             <div className="testimonial-cards testimonial-marquee">
               {[...testimonials, ...testimonials].map((testimonial, idx) => (
                 <div className="testimonial-card" key={idx}>
-                  <span className="testimonial-quote">“</span>
+                <span className="testimonial-quote">“</span>
                   <p>{testimonial.text}</p>
                   <div className="testimonial-author">~ {testimonial.author}</div>
-                </div>
+              </div>
               ))}
             </div>
           </section>

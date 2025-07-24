@@ -2244,9 +2244,9 @@ html, body {
     box-sizing: border-box !important;
   }
   .signature-simple-card {
-    width: 100vw !important;
+    width: calc(100vw - 32px) !important;
     max-width: 100vw !important;
-    margin: 0 !important;
+    margin: 0 auto 1rem auto !important;
     box-sizing: border-box !important;
   }
 }
