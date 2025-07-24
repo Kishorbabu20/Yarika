@@ -380,7 +380,7 @@ body {
   }
   
   .about-paragraph {
-    max-width: 800px;
+    max-width: 700px;
     margin: 0 auto 100px auto;
     color: #fff;
     font-size: 1.5rem;
@@ -2281,6 +2281,8 @@ html, body {
   -webkit-overflow-scrolling: touch !important;
   gap: 1rem !important;
   padding-bottom: 8px !important;
+  padding-right: 48px; /* Add this */
+  padding-left: 48px;  /* Add this */
   scrollbar-width: thin;
   animation: testimonial-marquee-scroll 20s linear infinite;
 }
