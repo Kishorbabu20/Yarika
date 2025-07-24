@@ -40,18 +40,18 @@ const Footer = () => (
         <div className="footer-title">PAYMENT & SHIPPING PARTNER</div>
         <div className="footer-logos">
           <div className="footer-logo-bg">
-            <img src={shipwayLogo} alt="Shipway" className="footer-logo" />
+          <img src={razorpayLogo} alt="Razorpay" className="footer-logo" />
           </div>
           <div className="footer-logo-bg">
-            <img src={razorpayLogo} alt="Razorpay" className="footer-logo" />
+          <img src={shipwayLogo} alt="Shipway" className="footer-logo" />
           </div>
         </div>
-        <div className="footer-title" style={{ marginTop: "1.5rem" }}>SOCIAL LINKS</div>
+        {/* <div className="footer-title" style={{ marginTop: "1.5rem" }}>SOCIAL LINKS</div>
         <div>
           <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
             <img src={instagramIcon} alt="Instagram" className="footer-social" />
           </a>
-        </div>
+        </div> */}
       </div>
     </div>
     <hr className="footer-divider" />

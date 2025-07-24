@@ -359,11 +359,11 @@ const HeroLanding = () => {
               <div className="about-paragraph">
               At Yarika, we believe that true elegance is a blend of artistry, authenticity, and individuality. Born from a deep appreciation for India's rich textile heritage, our brand is dedicated to creating exquisite readymade and custom blouses that transcend fleeting trends. Each piece is a testament to meticulous craftsmanship, brought to life by skilled artisans who pour their passion into every stitch and detail.
               </div>
-              <div className="about-marquee-bg">
+              {/* <div className="about-marquee-bg">
                 <div className="about-marquee-track">
                   <YarikaMarquee />
                 </div>
-              </div>
+              </div> */}
             </div>
           </section>
 
@@ -373,7 +373,7 @@ const HeroLanding = () => {
             <h2 className="testimonial-heading">
               Our Customers <span className="gold">Love us.</span>
             </h2>
-            <div className="testimonial-cards">
+            <div className="testimonial-cards testimonial-marquee">
               <div className="testimonial-card">
                 <span className="testimonial-quote">“</span>
                 <p>I  received excellent service from the team at Yarika. They were attentive, professional, and helped me find the ideal blouse for my occasion.</p>
@@ -383,6 +383,16 @@ const HeroLanding = () => {
                 <span className="testimonial-quote">“</span>
                 <p>Yarika's attention to detail and quality craftsmanship set them apart. I was impressed by the intricate embroidery and design of my blouse.</p>
                 <div className="testimonial-author">~ Leena</div>
+              </div>
+              <div className="testimonial-card">
+                <span className="testimonial-quote">“</span>
+                <p>Yarika's online store provided an excellent shopping experience! Their selections are great, and the perfect blouse was easily found for my occasion. The professionalism and attentiveness to detail are impressive.</p>
+                <div className="testimonial-author">~ Rekha</div>
+              </div>
+              <div className="testimonial-card">
+                <span className="testimonial-quote">“</span>
+                <p>Yarika is my new go-to online store for women and kids' clothing. The quality of the blouse purchased was exceptional, and the attentiveness in helping choose the perfect piece was impressive. The entire experience was professional and truly delightful.</p>
+                <div className="testimonial-author">~ Harini</div>
               </div>
             </div>
           </section>

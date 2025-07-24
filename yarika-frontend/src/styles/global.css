@@ -374,7 +374,7 @@ body {
     color: #fff;
     margin-bottom: 28px;
     letter-spacing: 0.04em;
-    text-align: left;
+    text-align: center;
     font-family: 'Inter', Arial, sans-serif;
     margin-left: 16px;
   }
@@ -385,7 +385,7 @@ body {
     color: #fff;
     font-size: 1.5rem;
     line-height: 1.6;
-    text-align: left;
+    text-align: center;
     font-family: 'Inter', Arial, sans-serif;
     margin-left: 16px;
   }
@@ -1348,6 +1348,7 @@ html, body {
     width: 100% !important;
     text-align: center !important;
     /* margin-bottom: 0.2rem !important; */
+    gap: 0.2rem !important;
   }
   .footer-title {
     margin-bottom: 0.7rem !important;
@@ -1653,17 +1654,22 @@ html, body {
   }
   /* Centered signature section and grid */
   .signature-section {
-    margin: 0 auto;
-    padding: 10px 0;
-    width: 100%;
-    max-width: 420px;
+    margin: 0 auto !important;
+    padding: 10px 8px !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
   .signature-grid {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 420px;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    justify-items: center !important;
   }
   /* Compact filter list and product grid */
   .filter-list {
@@ -1709,8 +1715,8 @@ html, body {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    overflow-x: unset !important;
-    white-space: normal !important;
+    overflow-x: hidden !important;
+    white-space: nowrap !important;
     width: 100vw !important;
     max-width: 100vw !important;
     margin-left: -50vw !important;
@@ -1718,22 +1724,22 @@ html, body {
     right: 50%;
     box-sizing: border-box !important;
     padding: 0.5rem 0.5rem !important;
-    -webkit-overflow-scrolling: unset;
-    scrollbar-width: unset;
   }
   .golden-banner h4 {
     display: flex !important;
     align-items: center !important;
-    flex-wrap: wrap !important;
-    white-space: normal !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
     justify-content: center !important;
-    font-size: clamp(0.85rem, 4vw, 1.1rem) !important;
+    font-size: min(4vw, 1.1rem) !important; /* Shrinks as needed */
     line-height: 1.2 !important;
     width: 100% !important;
-    min-width: unset !important;
+    min-width: 0 !important;
     padding: 0 8px;
-    word-break: break-word;
+    word-break: normal;
     text-align: center;
+    overflow: visible !important;
+    text-overflow: unset !important;
   }
 }
 
@@ -2230,4 +2236,29 @@ html, body {
     width: 100vw !important;
     box-sizing: border-box !important;
   }
+}
+
+@media (max-width: 600px) {
+  .testimonial-marquee {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 1rem !important;
+    padding-bottom: 8px !important;
+    scrollbar-width: thin;
+    animation: testimonial-marquee-scroll 30s linear infinite;
+  }
+  .testimonial-marquee .testimonial-card {
+    min-width: 90vw !important;
+    max-width: 90vw !important;
+    flex: 0 0 90vw !important;
+    scroll-snap-align: center !important;
+    margin: 0 !important;
+  }
+}
+@keyframes testimonial-marquee-scroll {
+  0% { scroll-behavior: auto; }
+  100% { scroll-behavior: auto; }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import YarikaLogo from "../assets/YarikaLogo1.png";
@@ -17,6 +17,21 @@ const NavigationBarSection = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileDropdown, setMobileDropdown] = useState(null); // Track which dropdown is open
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
+
+  useEffect(() => {
+    const updateLoginState = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+      setUserName(localStorage.getItem("userName") || "");
+    };
+    window.addEventListener("userLoggedIn", updateLoginState);
+    window.addEventListener("storage", updateLoginState);
+    return () => {
+      window.removeEventListener("userLoggedIn", updateLoginState);
+      window.removeEventListener("storage", updateLoginState);
+    };
+  }, []);
 
   const handleMouseEnter = (dropdownName) => {
     setActiveDropdown(dropdownName);
@@ -428,7 +443,7 @@ const NavigationBarSection = () => {
               </a>
               <button className="icon-item" onClick={handleLoginClick}>
             <User size={20} />
-            <span className="icon-label">Login</span>
+            <span className="icon-label">{isLoggedIn ? "Profile" : "Login"}</span>
           </button>
               <button className="icon-item" onClick={handleWishlistClick}>
             <Heart size={20} />
