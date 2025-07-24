@@ -2204,3 +2204,22 @@ html, body {
     margin-top: 56px !important;
   }
 }
+
+.about-title,
+.about-paragraph {
+  text-align: center !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.about-content {
+  align-items: center !important;
+}
+
+.about-title {
+  margin-bottom: 28px !important;
+}
+
+.about-paragraph {
+  margin-top: 0 !important;
+}
