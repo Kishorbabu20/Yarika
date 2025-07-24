@@ -2221,5 +2221,8 @@ html, body {
 }
 
 .about-paragraph {
-  margin-top: 0 !important;
+  max-width: 800px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
 }
