@@ -1347,7 +1347,7 @@ html, body {
     min-width: 0 !important;
     width: 100% !important;
     text-align: center !important;
-    margin-bottom: 0.2rem !important;
+    /* margin-bottom: 0.2rem !important; */
   }
   .footer-title {
     margin-bottom: 0.7rem !important;
@@ -1710,7 +1710,7 @@ html, body {
     align-items: center !important;
     justify-content: center !important;
     overflow-x: unset !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
     width: 100vw !important;
     max-width: 100vw !important;
     margin-left: -50vw !important;
@@ -1724,14 +1724,16 @@ html, body {
   .golden-banner h4 {
     display: flex !important;
     align-items: center !important;
-    flex-wrap: nowrap !important;
-    white-space: nowrap !important;
+    flex-wrap: wrap !important;
+    white-space: normal !important;
     justify-content: center !important;
-    font-size: 1.1rem !important;
+    font-size: clamp(0.85rem, 4vw, 1.1rem) !important;
     line-height: 1.2 !important;
     width: 100% !important;
     min-width: unset !important;
     padding: 0 8px;
+    word-break: break-word;
+    text-align: center;
   }
 }
 
