@@ -1409,19 +1409,21 @@ html, body {
 }
 
 .view-all-btn {
-  background: #caa75d;
-  color: #fff;
+  background: #fff !important;
+  color: #181818 !important;
+  border: 1.5px solid #181818 !important;
   padding: 0.5rem 1.2rem;
   border-radius: 6px;
   font-weight: 600;
   text-decoration: none;
   font-size: 1rem;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2s;
   margin-left: 1rem;
 }
 .view-all-btn:hover {
-  background: #b99b54;
-  color: #fff;
+  background: #181818 !important;
+  color: #fff !important;
+  border: 1.5px solid #181818 !important;
 }
 
 .blouse-section-title {
@@ -1434,6 +1436,7 @@ html, body {
   text-align: left;
   margin: 0;
   margin-left: 0 !important;
+  margin-bottom: 18px !important;
 }
 
 .blouse-section-header {
