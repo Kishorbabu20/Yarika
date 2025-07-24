@@ -189,6 +189,8 @@ const HeroLanding = () => {
     }
   ];
 
+  const carouselRef = useAutoCarousel();
+
   return (
     <div className="hero-landing-container">
       <Helmet>
@@ -393,7 +395,7 @@ const HeroLanding = () => {
             <h2 className="testimonial-heading">
               Our Customers <span className="gold">Love us.</span>
             </h2>
-            <div className="testimonial-cards" ref={useAutoCarousel()}>
+            <div className="testimonial-cards" ref={carouselRef}>
               {[...testimonials, ...testimonials].map((testimonial, idx) => (
                 <div className="testimonial-card" key={idx}>
                 <span className="testimonial-quote">“</span>
