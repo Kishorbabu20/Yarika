@@ -964,6 +964,13 @@ const SelectProduct = () => {
           </div>
           <div className="tax-info">Inclusive of all taxes</div>
 
+          {/* Product Description */}
+          {(product.productDescriptionWeb || product.productDescriptionMobile) && (
+            <div className="product-description" style={{ margin: '18px 0', color: '#444', fontSize: '1.1rem', lineHeight: 1.6 }}>
+              {product.productDescriptionWeb || product.productDescriptionMobile}
+            </div>
+          )}
+
           {/* Stock Status */}
           <div style={{
             marginTop: '16px',

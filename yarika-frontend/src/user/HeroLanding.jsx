@@ -298,7 +298,7 @@ const HeroLanding = () => {
             </div>
             <div className="product-grid">
               <Suspense fallback={<div>Loading...</div>}>
-                {blouseProducts.map((p) => (
+                {blouseProducts.slice(0, 5).map((p) => (
                   <ProductCard product={p} key={p._id} />
                 ))}
               </Suspense>
@@ -329,7 +329,7 @@ const HeroLanding = () => {
             </div>
             <div className="product-grid">
               <Suspense fallback={<div>Loading...</div>}>
-                {leggingProducts.map((p) => (
+                {leggingProducts.slice(0, 5).map((p) => (
                   <ProductCard product={p} key={p._id} />
                 ))}
               </Suspense>
@@ -360,7 +360,7 @@ const HeroLanding = () => {
             </div>
             <div className="product-grid">
               <Suspense fallback={<div>Loading...</div>}>
-                {materialProducts.map((p) => (
+                {materialProducts.slice(0, 5).map((p) => (
                   <ProductCard product={p} key={p._id} />
                 ))}
               </Suspense>

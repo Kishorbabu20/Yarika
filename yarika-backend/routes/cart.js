@@ -51,7 +51,12 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
     const userId = req.client._id;
     const { productId, size, color, qty = 1 } = req.body;
 
+    // Enhanced logging for debugging
+    console.log("[Add to Cart] userId:", userId);
+    console.log("[Add to Cart] Request body:", req.body);
+
     if (!productId || !size) {
+      console.error("[Add to Cart] Missing productId or size", { productId, size });
       return res.status(400).json({ error: "Product ID and size are required" });
     }
 
@@ -68,8 +73,8 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
     const updatedCart = await CartItem.find({ userId }).populate("productId");
     res.json(updatedCart);
   } catch (err) {
-    console.error("Add to cart error:", err);
-    res.status(500).json({ error: "Failed to add item" });
+    console.error("[Add to Cart] Error:", err.message, err.stack);
+    res.status(500).json({ error: "Failed to add item", details: err.message, stack: err.stack });
   }
 });
 
