@@ -28,6 +28,7 @@ import BridalCollections from "./BridalCollections";
 import { useScrollFade } from "../hooks/useScrollFade";
 import LeggingsBanner from "../assets/Leggingsbanner.png";
 import LeggingsBannerMobile from "../assets/Leggingsbannermobile.png";
+import { useAutoCarousel } from "../hooks/useAutoCarousel";
 
 function useScrollAnimation() {
   const ref = useRef(null);
@@ -392,7 +393,7 @@ const HeroLanding = () => {
             <h2 className="testimonial-heading">
               Our Customers <span className="gold">Love us.</span>
             </h2>
-            <div className="testimonial-cards testimonial-marquee">
+            <div className="testimonial-cards" ref={useAutoCarousel()}>
               {[...testimonials, ...testimonials].map((testimonial, idx) => (
                 <div className="testimonial-card" key={idx}>
                 <span className="testimonial-quote">“</span>
