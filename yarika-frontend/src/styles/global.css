@@ -1714,12 +1714,12 @@ html, body {
   .golden-banner h4 {
     display: flex !important;
     align-items: center !important;
-    flex-wrap: nowrap !important;
-    white-space: nowrap !important;
+    flex-wrap: wrap !important;
+    white-space: normal !important;
     justify-content: flex-start !important;
     font-size: 1.1rem !important;
     line-height: 1.2 !important;
-    width: auto !important;
+    width: 100% !important;
     min-width: max-content !important;
     padding: 0 8px;
   }
@@ -2195,5 +2195,27 @@ html, body {
 @media (max-width: 600px) {
   .content-section {
     margin-top: 56px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .product-grid {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 8px !important;   /* or 0 for edge-to-edge */
+    padding-right: 8px !important;  /* or 0 for edge-to-edge */
+    width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .category-section {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100vw !important;
+    box-sizing: border-box !important;
   }
 }

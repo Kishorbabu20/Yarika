@@ -173,7 +173,7 @@ const LeggingsPage = () => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+</div>
         <h4 className="section-label">Leggings</h4>
         <h1 className="main-heading">Comfort Meets Style</h1>
         <h2 className="sub-heading">LEGGINGS COLLECTION</h2>

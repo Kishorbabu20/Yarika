@@ -440,26 +440,26 @@ const SelectProduct = () => {
         order_id: razorpayRes.data.id,
         handler: async (response) => {
           console.log("Razorpay handler fired", response);
-          try {
+            try {
             // 1. Verify payment with your backend
-            const verifyRes = await api.post("/payment/verify-payment", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
+          const verifyRes = await api.post("/payment/verify-payment", {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature
-            });
+          });
 
-            if (verifyRes.data.success) {
+              if (verifyRes.data.success) {
               // 2. (Optional) Create order in backend
               // 3. Show confirmation or redirect
               window.location.href = "/orders"; // or show a "Payment Confirmed" message
-            } else {
+                            } else {
               alert("Payment verification failed!");
-            }
+              }
           } catch (error) {
             console.error("Payment handler error:", error);
             alert("There was an error confirming your payment.");
-          }
-        },
+            }
+          },
           prefill: {
             name: localStorage.getItem('userName') || '',
             email: localStorage.getItem('userEmail') || '',
@@ -831,7 +831,7 @@ const SelectProduct = () => {
       <div className="breadcrumb">
         <Breadcrumb>
           <BreadcrumbList>
-            {isDropdownPattern ? (
+        {isDropdownPattern ? (
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
@@ -854,8 +854,8 @@ const SelectProduct = () => {
                 <BreadcrumbItem>
                   <BreadcrumbPage>{product?.name}</BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
-            ) : isHomePattern ? (
+          </>
+        ) : isHomePattern ? (
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
@@ -878,8 +878,8 @@ const SelectProduct = () => {
                 <BreadcrumbItem>
                   <BreadcrumbPage>{product?.name}</BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
-            ) : (
+          </>
+        ) : (
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
@@ -896,8 +896,8 @@ const SelectProduct = () => {
                 <BreadcrumbItem>
                   <BreadcrumbPage>{product?.name}</BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
-            )}
+          </>
+        )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>

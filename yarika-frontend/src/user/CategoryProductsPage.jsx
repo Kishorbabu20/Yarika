@@ -74,37 +74,37 @@ const CategoryProductsPage = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Home</Link>
+          <Link to="/">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              {dropdown && (
-                <>
+          {dropdown && (
+            <>
                   <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to={`/${dropdown}`}>{getFormattedTitle(dropdown)}</Link>
+              <Link to={`/${dropdown}`}>{getFormattedTitle(dropdown)}</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                </>
-              )}
-              {categoryType && (
-                <>
+            </>
+          )}
+          {categoryType && (
+            <>
                   <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link to={`/${dropdown}/${categoryType}`}>{getFormattedTitle(categoryType)}</Link>
+              <Link to={`/${dropdown}/${categoryType}`}>{getFormattedTitle(categoryType)}</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                </>
-              )}
-              {category && (
-                <>
+            </>
+          )}
+          {category && (
+            <>
                   <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
                     <BreadcrumbPage>{getFormattedTitle(category)}</BreadcrumbPage>
                   </BreadcrumbItem>
-                </>
-              )}
+            </>
+          )}
             </BreadcrumbList>
           </Breadcrumb>
         </div>

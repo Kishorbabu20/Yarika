@@ -95,15 +95,15 @@ router.get("/recent", protect({ model: "admin" }), async (req, res) => {
           email: user.email
         } : null,
         totalAmount: order.totalAmount,
-        status: order.status || "Pending",
+      status: order.status || "Pending",
         shippingAddress: order.shippingAddress || {}, // <-- Add shipping address
-        items: order.items.map(item => ({
+      items: order.items.map(item => ({
           product: item.productId,
-          quantity: item.quantity,
+        quantity: item.quantity,
           price: item.price,
           size: item.size,
           color: item.color
-        }))
+      }))
       };
     });
 
@@ -256,24 +256,24 @@ router.get("/all", protect({ model: "admin" }), async (req, res) => {
       return {
         _id: order._id,
         createdAt: order.createdAt,
-        user: order.userId ? {
-          firstName: order.userId.firstName || 'Unknown',
-          lastName: order.userId.lastName || 'User',
-          email: order.userId.email || 'No Email'
-        } : {
-          firstName: "Unknown",
-          lastName: "User",
-          email: "unknown@example.com"
-        },
-        totalAmount: order.totalAmount || 0,
+          user: order.userId ? {
+            firstName: order.userId.firstName || 'Unknown',
+            lastName: order.userId.lastName || 'User',
+            email: order.userId.email || 'No Email'
+          } : {
+            firstName: "Unknown",
+            lastName: "User",
+            email: "unknown@example.com"
+          },
+          totalAmount: order.totalAmount || 0,
         status: order.status || "Pending",
         shippingAddress: order.shippingAddress || {}, // <-- Add shipping address
-        items: (order.items || []).map(item => ({
-          product: item.productId || null,
-          quantity: item.quantity || 0,
-          price: item.price || 0,
-          size: item.size || '',
-          color: item.color || ''
+          items: (order.items || []).map(item => ({
+            product: item.productId || null,
+            quantity: item.quantity || 0,
+            price: item.price || 0,
+            size: item.size || '',
+            color: item.color || ''
         }))
       };
       } catch (err) {

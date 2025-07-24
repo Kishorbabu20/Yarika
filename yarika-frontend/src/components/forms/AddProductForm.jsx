@@ -1045,7 +1045,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
-            </div>
+        </div>
             <Button
               className="gold-btn"
               onClick={() => navigate(-1)}
