@@ -258,7 +258,7 @@ body {
     margin-bottom: 18px;
     text-transform: uppercase;
     text-align: left;
-    margin-left: 40px;
+    margin-left: 0 !important;
   }
   
   .filter-list {
@@ -268,7 +268,7 @@ body {
     gap: 1rem;
     margin-bottom: 1.5rem;
     font-family: 'Inter', Arial, sans-serif;;
-    margin-left: 40px;
+    margin-left: 0 !important;
   }
   
   .filter-item-wrapper {
@@ -1433,6 +1433,7 @@ html, body {
   text-transform: uppercase;
   text-align: left;
   margin: 0;
+  margin-left: 0 !important;
 }
 
 .blouse-section-header {
@@ -1950,6 +1951,14 @@ html, body {
   padding-left: 0 !important;
   margin-right: 0 !important;
   padding-right: 0 !important;
+}
+
+/* Strong override for all relevant classes */
+.section-title,
+.blouse-section-title,
+.filter-list {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
 }
 
 @media (min-width: 601px) {
