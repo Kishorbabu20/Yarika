@@ -1768,6 +1768,8 @@ html, body {
 }
 
 /* --- TESTIMONIAL CARDS GRID LAYOUT --- */
+/* Remove grid overrides for testimonial-cards so marquee works */
+/*
 @media (min-width: 600px) {
   .testimonial-cards {
     display: grid !important;
@@ -1786,7 +1788,6 @@ html, body {
     align-items: stretch;
   }
 }
-
 @media (max-width: 600px) {
   .testimonial-cards {
     display: grid !important;
@@ -1796,490 +1797,9 @@ html, body {
     align-items: stretch;
   }
 }
-
-@media (max-width: 600px) {
-  .bridal-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1rem !important;
-    margin: 0 auto 2rem auto !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .product-grid > *:nth-child(n+5) {
-    display: none !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .bg-text {
-    white-space: nowrap !important;
-    overflow-x: auto !important;
-    text-overflow: ellipsis !important;
-    display: block !important;
-    width: 100%;
-    padding: 0 4px;
-  }
-}
-
-@media (max-width: 600px) {
-  .signature-title {
-    white-space: nowrap !important;
-    overflow-x: auto !important;
-    text-overflow: ellipsis !important;
-    display: block !important;
-    width: 100%;
-    padding: 0 4px;
-    text-align: center;
-  }
-}
-
-.signature-row .signature-simple-card {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-}
-
-.signature-row .signature-simple-img {
-
-  object-fit: cover !important;
-  display: block !important;
-  margin: 0 auto 1rem auto !important;
-  border-radius: 12px !important;
-  background: #f5f5f5 !important;
-  max-width: 100% !important;
-  min-width: 100px !important;
-  min-height: 130px !important;
-}
-
-.signature-link {
-  text-decoration: none !important;
-  color: inherit !important;
-  display: block;
-}
-
-.stats-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 10px;
-  padding: 32px 24px;
-  max-width: 1300px;
-  margin: 2rem auto;
-  color: #1a1a1a !important;
-  font-family: 'Cormorant', serif;
-  box-sizing: border-box;
-}
-.stat-box {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
-  margin: 0;
-  padding: 0;
-}
-.stat-box h2 {
-  font-size: 2.2rem;
-  color: #1a1a1a !important;
-  font-family: 'Cormorant', serif;
-  font-weight: 400;
-  margin: 0 0 8px 0;
-}
-.stat-box p {
-  color: #111;
-  font-size: 1.1rem;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  margin: 0;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
-@media (max-width: 600px) {
-  .stats-bar {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: stretch !important;
-    gap: 0 !important;
-    padding: 0.7rem 0.2rem !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin-left: -50vw !important;
-    left: 50%;
-    right: 50%;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-  }
-  .stat-box {
-    flex: 1 1 0;
-    min-width: 0;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 0.2rem !important;
-    margin: 0 !important;
-    margin-bottom: 0.1rem !important;
-  }
-  .stat-box h2 {
-    font-size: 1.2rem !important;
-    margin-bottom: 0.1rem !important;
-    color: #1a1a1a !important;
-  }
-  .stat-box p {
-    font-size: 0.8rem !important;
-    color: #111 !important;
-    margin: 0 !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-  }
-}
-
-/* Standard side gap for all main sections except the main banner */
-@media (min-width: 601px) {
-  .signature-section,
-  .golden-banner,
-  .stats-bar,
-  .category-section,
-  .testimonial-section,
-  .about-section,
-  .bridal-section,
-  .footer-section {
-    padding-left: 48px;
-    padding-right: 48px;
-    box-sizing: border-box;
-  }
-}
-
-/* Ensure all main sections have the same side gap */
-@media (min-width: 601px) {
-  .signature-section,
-  .golden-banner,
-  .stats-bar,
-  .category-section,
-  .testimonial-section,
-  .about-section,
-  .bridal-section,
-  .footer-section {
-    padding-left: 48px !important;
-    padding-right: 48px !important;
-    box-sizing: border-box !important;
-  }
-}
-
-/* Remove all left/right margin and padding from headers/titles inside sections */
-.category-section,
-.blouse-section-header,
-.blouse-section-title,
-.section-title,
-.filter-list {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
-
-.blouse-section-title,
-.section-title {
-  margin-bottom: 18px !important;
-}
-.filter-list {
-  margin-top: 0 !important;
-}
-.blouse-section-header {
-  margin-bottom: 0 !important;
-}
-
-@media (min-width: 601px) {
-  .bridal-page,
-  .product-page,
-  .hero-landing-container,
-  .main-content,
-  .category-section,
-  .signature-section,
-  .testimonial-section,
-  .about-section,
-  .bridal-section,
-  .footer-section {
-    margin-top: 64px !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .bridal-page,
-  .product-page,
-  .hero-landing-container,
-  .main-content,
-  .category-section,
-  .signature-section,
-  .testimonial-section,
-  .about-section,
-  .bridal-section,
-  .footer-section {
-    margin-top: 0 !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .cart-page {
-    margin-top: 0 !important;
-  }
-}
-
-/* Signature Collection Section - Desktop View */
-.signature-section {
-  margin: 0 auto 48px auto;
-  padding: 0 24px;
-  max-width: 1600px;
-}
-.signature-heading {
-  color: #caa75d;
-  text-transform: uppercase;
-  font-family: 'Cormorant', serif;
-  text-align: left;
-  font-size: 2.2rem;
-  margin-bottom: 32px;
-  letter-spacing: 0.08em;
-  font-weight: 600;
-}
-.signature-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 64px;
-}
-.signature-simple-card {
-  background: none !important;
-  box-shadow: none;
-  border-radius: 24px;
-  padding: 0;
-  width: 380px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-}
-.signature-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-}
-.signature-simple-img {
-  width: 380px;
-  height: 380px;
-  object-fit: contain !important;
-  border-radius: 24px;
-  margin-bottom: 18px;
-  box-shadow: none;
-  background: none !important;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-.signature-title {
-  font-family: 'Cormorant', serif;
-  font-size: 2rem;
-  color: #222;
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 0;
-  font-weight: 400;
-}
-
-@media (min-width: 769px) {
-  .signature-simple-img {
-    width: 380px;
-    height: 400px;
-    object-fit: contain !important; /* Ensure full image is visible, not cropped */
-    border-radius: 32px;
-    margin-bottom: 18px;
-    box-shadow: none;
-    background: none;
-    display: block;
-  }
-}
-
-@media (max-width: 1200px) {
-  .signature-simple-card {
-    width: 260px;
-  }
-  .signature-simple-img {
-    width: 260px;
-    height: 280px;
-  }
-  .signature-row {
-    gap: 32px;
-  }
-}
-@media (max-width: 900px) {
-  .signature-section {
-    padding: 0 8px;
-  }
-  .signature-row {
-    gap: 12px;
-  }
-  .signature-simple-card {
-    width: 140px;
-  }
-  .signature-simple-img {
-    width: 140px;
-    height: 160px;
-  }
-  .signature-title {
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .you-may-like-section .product-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .you-may-like-section .product-card {
-    min-width: 0 !important;
-    max-width: 100% !important;
-    padding: 8px !important;
-    margin: 0 !important;
-  }
-}
-
-/* Filter Button Styles for HeroLanding sections */
-.filter-btn {
-  border: 2px solid #caa75d;
-  border-radius: 12px;
-  background: #fff;
-  color: #caa75d;
-  font-family: 'Cormorant', serif;
-  font-size: 1.2rem;
-  font-weight: 600;
-  padding: 10px 32px;
-  margin: 0 12px 12px 0;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-  outline: none;
-  box-shadow: none;
-}
-.filter-btn.active,
-.filter-btn:focus {
-  background: #caa75d;
-  color: #fff;
-  border-color: #caa75d;
-}
-.filter-btn:hover {
-  background: #f7ecd2;
-  color: #b19049;
-  border-color: #b19049;
-}
-  .filter-list .filter-btn.active {
-    background: #caa75d !important;
-    color: #fff !important;
-    border-color: #caa75d !important;
-  }
-
-/* Reduce vertical spacing between main sections on HeroLanding */
-.category-section,
-.stats-bar,
-.signature-section,
-.bridal-section,
-.about-section,
-.testimonial-section {
-  margin-top: 1.5rem !important;
-  margin-bottom: 1.5rem !important;
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
-}
-
-/* Remove extra margin from blouse-section-header */
-.blouse-section-header {
-  margin: 1rem 0 0.5rem 0 !important;
-}
-
-/* --- GLOBAL PRODUCT GRID LAYOUT FOR ALL PAGES --- */
-.product-grid {
-  display: grid;
-  width: 100%;
-  box-sizing: border-box;
-  grid-template-columns: repeat(5, 1fr) !important;
-  gap: 1.5rem;
-}
-
-@media (max-width: 600px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.7rem !important;
-  }
-  .product-grid > *:nth-child(n+5) {
-    display: none !important;
-  }
-}
-
-@media (min-width: 1200px) {
-  .product-grid {
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 32px !important;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-@media (max-width: 1199px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-@media (min-width: 601px) {
-  .content-section {
-    margin-top: 64px !important;
-  }
-}
-@media (max-width: 600px) {
-  .content-section {
-    margin-top: 56px !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .product-grid {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 8px !important;   /* or 0 for edge-to-edge */
-    padding-right: 8px !important;  /* or 0 for edge-to-edge */
-    width: 100vw !important;
-    box-sizing: border-box !important;
-  }
-}
-
-@media (min-width: 601px) {
-  .category-section {
-    padding-left: 48px !important;
-    padding-right: 48px !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    box-sizing: border-box !important;
-  }
-}
-@media (max-width: 600px) {
-  .category-section {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100vw !important;
-    box-sizing: border-box !important;
-  }
-}
-
-.testimonial-marquee {
+*/
+.testimonial-cards.testimonial-marquee,
+.testimonial-marquee.testimonial-cards {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
@@ -2328,5 +1848,35 @@ html, body {
   }
   .filter-list::-webkit-scrollbar {
     display: none; /* Chrome/Safari */
+  }
+}
+
+.signature-simple-img {
+  width: 380px;
+  height: 380px;
+  object-fit: contain !important;
+  border-radius: 24px;
+  margin-bottom: 18px;
+  box-shadow: none;
+  background: none !important;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: visible !important;
+}
+
+@media (min-width: 769px) {
+  .signature-simple-img {
+    width: 380px;
+    height: 380px;
+    object-fit: contain !important;
+    border-radius: 32px;
+    margin-bottom: 18px;
+    box-shadow: none;
+    background: none !important;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: visible !important;
   }
 }
