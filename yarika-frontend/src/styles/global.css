@@ -2247,34 +2247,32 @@ html, body {
   }
 }
 
+.testimonial-marquee {
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+  gap: 1rem !important;
+  padding-bottom: 8px !important;
+  scrollbar-width: thin;
+  animation: testimonial-marquee-scroll 40s linear infinite;
+}
+.testimonial-marquee:hover {
+  animation-play-state: paused;
+}
+.testimonial-marquee .testimonial-card {
+  min-width: 420px !important;
+  max-width: 420px !important;
+  flex: 0 0 420px !important;
+  scroll-snap-align: center !important;
+  margin: 0 !important;
+}
 @media (max-width: 600px) {
-  .testimonial-marquee {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 1rem !important;
-    padding-bottom: 8px !important;
-    scrollbar-width: thin;
-    animation: testimonial-marquee-scroll 40s linear infinite;
-  }
-  .testimonial-marquee:hover {
-    animation-play-state: paused;
-  }
   .testimonial-marquee .testimonial-card {
-    min-width: 420px !important;
-    max-width: 420px !important;
-    flex: 0 0 420px !important;
-    scroll-snap-align: center !important;
-    margin: 0 !important;
-  }
-  @media (max-width: 600px) {
-    .testimonial-marquee .testimonial-card {
-      min-width: 90vw !important;
-      max-width: 90vw !important;
-      flex: 0 0 90vw !important;
-    }
+    min-width: 90vw !important;
+    max-width: 90vw !important;
+    flex: 0 0 90vw !important;
   }
 }
 @keyframes testimonial-marquee-scroll {

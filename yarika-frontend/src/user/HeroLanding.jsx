@@ -169,6 +169,25 @@ const HeroLanding = () => {
   const [aboutRef, aboutFade] = useScrollFade();
   const [testimonialsRef, testimonialsFade] = useScrollFade();
 
+  const testimonials = [
+    {
+      text: "I received excellent service from the team at Yarika. They were attentive, professional, and helped me find the ideal blouse for my occasion.",
+      author: "Tina"
+    },
+    {
+      text: "Yarika's attention to detail and quality craftsmanship set them apart. I was impressed by the intricate embroidery and design of my blouse.",
+      author: "Leena"
+    },
+    {
+      text: "Yarika's online store provided an excellent shopping experience! Their selections are great, and the perfect blouse was easily found for my occasion. The professionalism and attentiveness to detail are impressive.",
+      author: "Rekha"
+    },
+    {
+      text: "Yarika is my new go-to online store for women and kids' clothing. The quality of the blouse purchased was exceptional, and the attentiveness in helping choose the perfect piece was impressive. The entire experience was professional and truly delightful.",
+      author: "Harini"
+    }
+  ];
+
   return (
     <div className="hero-landing-container">
       <Helmet>
@@ -374,26 +393,13 @@ const HeroLanding = () => {
               Our Customers <span className="gold">Love us.</span>
             </h2>
             <div className="testimonial-cards testimonial-marquee">
-              <div className="testimonial-card">
-                <span className="testimonial-quote">“</span>
-                <p>I  received excellent service from the team at Yarika. They were attentive, professional, and helped me find the ideal blouse for my occasion.</p>
-                <div className="testimonial-author">~ Tina</div>
-              </div>
-              <div className="testimonial-card">
-                <span className="testimonial-quote">“</span>
-                <p>Yarika's attention to detail and quality craftsmanship set them apart. I was impressed by the intricate embroidery and design of my blouse.</p>
-                <div className="testimonial-author">~ Leena</div>
-              </div>
-              <div className="testimonial-card">
-                <span className="testimonial-quote">“</span>
-                <p>Yarika's online store provided an excellent shopping experience! Their selections are great, and the perfect blouse was easily found for my occasion. The professionalism and attentiveness to detail are impressive.</p>
-                <div className="testimonial-author">~ Rekha</div>
-              </div>
-              <div className="testimonial-card">
-                <span className="testimonial-quote">“</span>
-                <p>Yarika is my new go-to online store for women and kids' clothing. The quality of the blouse purchased was exceptional, and the attentiveness in helping choose the perfect piece was impressive. The entire experience was professional and truly delightful.</p>
-                <div className="testimonial-author">~ Harini</div>
-              </div>
+              {[...testimonials, ...testimonials].map((testimonial, idx) => (
+                <div className="testimonial-card" key={idx}>
+                  <span className="testimonial-quote">“</span>
+                  <p>{testimonial.text}</p>
+                  <div className="testimonial-author">~ {testimonial.author}</div>
+                </div>
+              ))}
             </div>
           </section>
 
