@@ -1880,3 +1880,19 @@ html, body {
     overflow: visible !important;
   }
 }
+
+.filter-btn {
+  border: 1.5px solid #caa75d !important;
+  border-radius: 4px !important;
+  background: #fff;
+  color: #caa75d;
+  font-family: 'Cormorant', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.3rem 1.2rem !important;
+  margin: 0 12px 12px 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  outline: none;
+  box-shadow: none;
+}

@@ -56,6 +56,7 @@ export default function Products() {
   const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [colorGroups, setColorGroups] = useState([]);
 
   const navigate = useNavigate();
 
@@ -112,11 +113,29 @@ export default function Products() {
     return COLOR_MAP[colorId] || colorId;
   };
 
+  const getProductColors = (product) => {
+    if (!product.colorGroup) return [];
+    const group = colorGroups.find(g => g._id === product.colorGroup || g._id === product.colorGroupId);
+    return group ? group.colors : [];
+  };
+
   const { data: stats, refetch } = useQuery({
     queryKey: ['productStats'],
     queryFn: fetchStats,
     refetchInterval: 5000,
   });
+
+  useEffect(() => {
+    const fetchColorGroups = async () => {
+      try {
+        const res = await api.get("/color-groups");
+        setColorGroups(res.data);
+      } catch (err) {
+        console.error("Failed to fetch color groups", err);
+      }
+    };
+    fetchColorGroups();
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -277,8 +296,23 @@ export default function Products() {
                         <td style={{ padding: '16px', color: '#444' }}>₹{product.sellingPrice}</td>
                         <td style={{ padding: '16px', color: '#444' }}>₹{product.mrp}</td>
                         <td style={{ padding: '16px', color: '#444' }}>
-                          {Array.isArray(product.colors) 
-                            ? product.colors.map(colorId => getColorName(colorId)).join(", ")
+                          {getProductColors(product).length > 0
+                            ? getProductColors(product).map((color, idx) => (
+                                <span key={idx} style={{ display: "inline-flex", alignItems: "center", marginRight: 8 }}>
+                                  <span
+                                    style={{
+                                      display: "inline-block",
+                                      width: 16,
+                                      height: 16,
+                                      borderRadius: "50%",
+                                      background: color.code,
+                                      marginRight: 4,
+                                      border: "1px solid #ccc"
+                                    }}
+                                  />
+                                  {color.name}
+                                </span>
+                              ))
                             : "-"}
                         </td>
                         <td style={{ padding: '16px' }}>

@@ -990,13 +990,18 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         setBrand(data.brand || "");
         setCategoryType(data.categoryType || "");
         setCategory(data.category || "");
-        setGroup(data.group || "");
+        setGroup(data.colorGroup || data.group || ""); // Use colorGroup ID if available
         setProductName(data.name || "");
         setMrp(data.mrp || "");
         setSellingPrice(data.sellingPrice || "");
         setSelectedSizes(data.sizes || []);
         setSizeStocks(data.sizeStocks || {});
-        setSelectedColors(data.colors || []);
+        // Ensure selectedColors is an array of color codes
+        setSelectedColors(
+          Array.isArray(data.colors)
+            ? data.colors.map(c => typeof c === "object" ? c.code : c)
+            : []
+        );
         setMainImagePreview(data.mainImage || null);
         setAdditionalImagePreviews(data.additionalImages || []);
         setProductDescriptionWeb(data.productDescriptionWeb || "");
@@ -1007,7 +1012,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         setSeoUrl(data.seoUrl || "");
         setMetaTitle(data.metaTitle || "");
         setMetaDescription(data.metaDescription || "");
-        setMetaKeywords(data.metaKeywords || "");
+        setMetaKeywords(
+          Array.isArray(data.metaKeywords)
+            ? data.metaKeywords.join(", ")
+            : (data.metaKeywords || "")
+        );
         setTaxClass(data.taxClass || "gst-5");
         setQrSize(data.qrSize || "small");
         setNetWeight(data.netWeight || "");
