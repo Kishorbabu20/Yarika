@@ -2250,3 +2250,24 @@ html, body {
     box-sizing: border-box !important;
   }
 }
+
+@media (max-width: 600px) {
+  .filter-list {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    gap: 0.5rem !important;
+    padding: 0 0.5rem !important;
+    margin-left: 0 !important;
+    scrollbar-width: none; /* Firefox */
+  }
+  .filter-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+  .filter-btn {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+}
