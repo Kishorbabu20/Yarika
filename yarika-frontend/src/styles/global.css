@@ -1708,8 +1708,8 @@ html, body {
   .golden-banner {
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-start !important;
-    overflow-x: auto !important;
+    justify-content: center !important;
+    overflow-x: unset !important;
     white-space: nowrap !important;
     width: 100vw !important;
     max-width: 100vw !important;
@@ -1718,19 +1718,19 @@ html, body {
     right: 50%;
     box-sizing: border-box !important;
     padding: 0.5rem 0.5rem !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    -webkit-overflow-scrolling: unset;
+    scrollbar-width: unset;
   }
   .golden-banner h4 {
     display: flex !important;
     align-items: center !important;
-    flex-wrap: wrap !important;
-    white-space: normal !important;
-    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    justify-content: center !important;
     font-size: 1.1rem !important;
     line-height: 1.2 !important;
     width: 100% !important;
-    min-width: max-content !important;
+    min-width: unset !important;
     padding: 0 8px;
   }
 }
