@@ -2449,3 +2449,37 @@ html, body {
     box-sizing: border-box;
   }
 }
+
+/* Force product card width and prevent overflow */
+.product-card {
+  width: 300px;
+  max-width: 300px;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Clamp product name/text to 2 lines, prevent overflow */
+.product-card h4,
+.product-card .product-name,
+.product-card .product-title {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;      /* Clamp to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Ensure buttons, price, etc. do not overflow */
+.product-card button,
+.product-card .price,
+.product-card .sku {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
