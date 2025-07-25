@@ -281,7 +281,6 @@ const HeroLanding = () => {
           <section ref={blouseRef} className={`category-section scroll-animate ${blouseFade}`}>
             <div className="blouse-section-header">
               <h2 className="blouse-section-title">Readymade Blouse</h2>
-              <Link to="/home/readymade-blouse" className="view-all-btn">View All</Link>
             </div>
             <div className="filter-list">
               {blouseTypes.map((type, idx) => (
@@ -301,10 +300,13 @@ const HeroLanding = () => {
             </div>
             <div className="product-grid">
               <Suspense fallback={<div>Loading...</div>}>
-                {blouseProducts.slice(0, 5).map((p) => (
+                {blouseProducts.slice(0, 10).map((p) => (
                   <ProductCard product={p} key={p._id} />
                 ))}
               </Suspense>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+              <Link to="/home/readymade-blouse" className="view-all-btn">View All</Link>
             </div>
           </section>
 
@@ -312,7 +314,6 @@ const HeroLanding = () => {
           <section ref={leggingsRef} className={`category-section scroll-animate ${leggingsFade}`}>
             <div className="blouse-section-header">
               <h2 className="section-title">Leggings</h2>
-              <Link to="/home/leggings" className="view-all-btn">View All</Link>
             </div>
             <div className="filter-list">
               {leggingsTypes.map((type, idx) => (
@@ -332,10 +333,13 @@ const HeroLanding = () => {
             </div>
             <div className="product-grid">
               <Suspense fallback={<div>Loading...</div>}>
-                {leggingProducts.slice(0, 5).map((p) => (
+                {leggingProducts.slice(0, 10).map((p) => (
                   <ProductCard product={p} key={p._id} />
                 ))}
               </Suspense>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+              <Link to="/home/leggings" className="view-all-btn">View All</Link>
             </div>
           </section>
 
@@ -343,7 +347,6 @@ const HeroLanding = () => {
           <section ref={materialRef} className={`category-section scroll-animate ${materialFade}`}>
             <div className="blouse-section-header">
               <h2 className="section-title">Materials</h2>
-              <Link to="/home/materials" className="view-all-btn">View All</Link>
             </div>
             <div className="filter-list">
               {materialTypes.map((type, idx) => (
@@ -363,10 +366,13 @@ const HeroLanding = () => {
             </div>
             <div className="product-grid">
               <Suspense fallback={<div>Loading...</div>}>
-                {materialProducts.slice(0, 5).map((p) => (
+                {materialProducts.slice(0, 10).map((p) => (
                   <ProductCard product={p} key={p._id} />
                 ))}
               </Suspense>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+              <Link to="/home/materials" className="view-all-btn">View All</Link>
             </div>
           </section>
 

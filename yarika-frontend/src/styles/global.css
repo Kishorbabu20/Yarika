@@ -2162,11 +2162,11 @@ html, body {
 }
 
 @media (min-width: 1200px) {
-  .product-grid {
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 32px !important;
-    padding-left: 0;
-    padding-right: 0;
+  .product-grid,
+  .category-section,
+  .content-section {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
   }
 }
 
@@ -2404,4 +2404,9 @@ html, body {
 .signature-section .product-card,
 .signature-section .product-card * {
   font-family: 'Cormorant', serif !important;
+}
+
+.signature-card, .signature-card .image-frame {
+  background: none !important;
+  box-shadow: none !important;
 }
