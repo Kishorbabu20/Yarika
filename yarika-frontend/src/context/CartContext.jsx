@@ -198,17 +198,19 @@ export const CartProvider = ({ children }) => {
       console.log('Updated cart data:', updatedCart);
 
       // Transform the updated cart data
-      const transformedCart = updatedCart.map(item => ({
-        productId: item.productId._id,
-        name: item.productId.name,
-        price: item.productId.sellingPrice,
-        mrp: item.productId.mrp,
-        image: item.productId.mainImage,
-        size: item.size,
-        color: item.color,
-        qty: item.qty,
-        sku: item.productId.code
-      }));
+      const transformedCart = updatedCart
+        .filter(item => item.productId) // Only include items with a valid product
+        .map(item => ({
+          productId: item.productId._id,
+          name: item.productId.name,
+          price: item.productId.sellingPrice,
+          mrp: item.productId.mrp,
+          image: item.productId.mainImage,
+          size: item.size,
+          color: item.color,
+          qty: item.qty,
+          sku: item.productId.code
+        }));
 
       setCartItems(transformedCart);
       toast.success("Added to cart!");
