@@ -44,11 +44,13 @@ const CartPage = () => {
             }
             try {
                 const res = await api.post('/cart/calculate-tax', {
-                    items: cartItems.map(item => ({
-                        productId: item.productId,
-                        quantity: item.qty,
-                        price: item.price,
-                    })),
+                    items: cartItems
+                        .filter(item => item.productId) // Only valid products
+                        .map(item => ({
+                            productId: item.productId,
+                            quantity: item.qty,
+                            price: item.price,
+                        })),
                 });
                 setTax(res.data.totalTax || 0);
             } catch (err) {
