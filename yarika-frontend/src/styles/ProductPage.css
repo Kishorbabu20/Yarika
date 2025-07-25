@@ -800,11 +800,32 @@
   }
 }
 
+.category-btn.active,
+.category-btn:focus {
+  background: #caa75d;
+  color: #fff;
+  border-color: #caa75d;
+}
+.filter-list .category-btn.active {
+  background: #caa75d !important;
+  color: #fff !important;
+  border-color: #caa75d !important;
+}
+
 
 html, body {
   padding: 0 !important;
   margin: 0 !important;
   overflow-x: hidden !important;
+}
+
+@media (min-width: 1200px) {
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, max-content);
+    justify-content: center;
+    gap: 1.5rem;
+  }
 }
 
 

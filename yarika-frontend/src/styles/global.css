@@ -2164,16 +2164,10 @@ html, body {
 
 @media (min-width: 1200px) {
   .product-grid {
-    grid-template-columns: repeat(5, 1fr) !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    width: 100%;
-    box-sizing: border-box;
-    margin-left: 0 !important;
-    justify-items: start !important;
-  }
-  .product-card {
-    height: 380px !important;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 equal columns */
+    gap: 1.5rem;
+    justify-content: center;
   }
 }
 
