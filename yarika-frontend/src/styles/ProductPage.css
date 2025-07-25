@@ -766,7 +766,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .category-filters {
     display: flex !important;
     flex-direction: row !important;
@@ -785,6 +785,12 @@
   }
   .category-filters::-webkit-scrollbar {
     display: none !important;
+  }
+  .category-btn {
+    min-width: max-content !important;
+    font-size: 1rem !important;
+    padding: 0.6em 1.2em !important;
+    margin: 0 0.3em 0 0 !important;
   }
 }
 

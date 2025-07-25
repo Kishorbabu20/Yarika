@@ -294,7 +294,7 @@ const NavigationBarSection = () => {
               <div className="mobile-menu-icons" style={{marginTop: '18px', alignItems: 'center'}}>
                 <a
                   className="icon-item"
-                  href="https://www.google.com/maps/search/?api=1&query=SF+No.+29%2F18%2C+Onapalayam%2C+Vadavalli+To+Thondamuthur+Road%2C+Coimbatore-641+109%2C+Tamilnadu%2C+India"
+                  href="https://www.google.com/maps/place/Zillion+Threads/@11.011062,76.8626941,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba85f912d3d1dd9:0xdfd0242d8a996267!8m2!3d11.011062!4d76.865269!16s%2Fg%2F11ybt6v8jq?entry=ttu&g_ep=EgoyMDI1MDcyMi4wIKXMDSoASAFQAw%3D%3D"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Store Locator"
@@ -433,7 +433,7 @@ const NavigationBarSection = () => {
         <div className="icon-group">
               <a
                 className="icon-item"
-                href="https://www.google.com/maps/search/?api=1&query=SF+No.+29%2F18%2C+Onapalayam%2C+Vadavalli+To+Thondamuthur+Road%2C+Coimbatore-641+109%2C+Tamilnadu%2C+India"
+                href="https://www.google.com/maps/place/Zillion+Threads/@11.011062,76.8626941,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba85f912d3d1dd9:0xdfd0242d8a996267!8m2!3d11.011062!4d76.865269!16s%2Fg%2F11ybt6v8jq?entry=ttu&g_ep=EgoyMDI1MDcyMi4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Store Locator"
