@@ -2361,3 +2361,11 @@ html, body {
   animation: testimonial-marquee-scroll 40s linear infinite;
   will-change: transform;
 }
+
+/* --- HIDE SCROLLBAR FOR TESTIMONIAL MARQUEE --- */
+.testimonial-marquee .testimonial-cards {
+  scrollbar-width: none !important;
+}
+.testimonial-marquee .testimonial-cards::-webkit-scrollbar {
+  display: none !important;
+}
