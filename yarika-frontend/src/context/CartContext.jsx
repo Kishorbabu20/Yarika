@@ -126,6 +126,14 @@ export const CartProvider = ({ children }) => {
   // Add to cart function
   const addToCart = async (productId, size, qty = 1, color) => {
     try {
+      console.log('=== ADD TO CART DEBUG ===');
+      console.log('productId:', productId);
+      console.log('size:', size);
+      console.log('qty:', qty);
+      console.log('color:', color);
+      console.log('isAuthenticated:', isAuthenticated);
+      console.log('token exists:', !!localStorage.getItem('token'));
+
       if (!productId) {
         toast.error("Invalid product ID");
         return;
@@ -154,6 +162,7 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
+      console.log('=== FETCHING PRODUCT DETAILS ===');
       // Fetch product details and add to backend cart
       const { data: product } = await api.get(`/products/${productId}`);
       
@@ -169,13 +178,24 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
+      console.log('=== MAKING CART ADD API CALL ===');
+      console.log('Request payload:', {
+        productId,
+        size,
+        qty,
+        color: typeof color === 'object' ? (color.name || color.code) : color || product.colors?.[0] || 'Default'
+      });
+
       // Add to backend cart
       const { data: updatedCart } = await api.post("/cart/add", {
         productId,
         size,
         qty,
-        color: color || product.colors?.[0] || 'Default'
+        color: typeof color === 'object' ? (color.name || color.code) : color || product.colors?.[0] || 'Default'
       });
+
+      console.log('=== CART ADD SUCCESS ===');
+      console.log('Updated cart data:', updatedCart);
 
       // Transform the updated cart data
       const transformedCart = updatedCart.map(item => ({
@@ -193,7 +213,14 @@ export const CartProvider = ({ children }) => {
       setCartItems(transformedCart);
       toast.success("Added to cart!");
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.error("=== ADD TO CART ERROR ===");
+      console.error("Error object:", error);
+      console.error("Error message:", error.message);
+      console.error("Error response:", error.response);
+      console.error("Error response data:", error.response?.data);
+      console.error("Error response status:", error.response?.status);
+      console.error("Error response headers:", error.response?.headers);
+      
       if (error.response?.status === 401) {
         handleLogout();
       } else {
