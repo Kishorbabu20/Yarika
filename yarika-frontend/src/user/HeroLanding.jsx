@@ -395,14 +395,16 @@ const HeroLanding = () => {
             <h2 className="testimonial-heading">
               Our Customers <span className="gold">Love us.</span>
             </h2>
-            <div className="testimonial-cards" ref={carouselRef}>
-              {[...testimonials, ...testimonials].map((testimonial, idx) => (
-                <div className="testimonial-card" key={idx}>
-                <span className="testimonial-quote">“</span>
-                  <p>{testimonial.text}</p>
-                  <div className="testimonial-author">~ {testimonial.author}</div>
+            <div className="testimonial-marquee">
+              <div className="testimonial-cards marquee-animate" ref={carouselRef}>
+                {[...testimonials, ...testimonials].map((testimonial, idx) => (
+                  <div className="testimonial-card" key={idx}>
+                    <span className="testimonial-quote">“</span>
+                    <p>{testimonial.text}</p>
+                    <div className="testimonial-author">~ {testimonial.author}</div>
+                  </div>
+                ))}
               </div>
-              ))}
             </div>
           </section>
 

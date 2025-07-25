@@ -2338,3 +2338,26 @@ html, body {
     margin: 0 !important;
   }
 }
+
+/* --- ENSURE TESTIMONIAL CARD PARAGRAPHS WRAP --- */
+.testimonial-card,
+.testimonial-card p {
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+.testimonial-marquee {
+  overflow: hidden;
+  width: 100vw;
+  position: relative;
+}
+
+@keyframes testimonial-marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.testimonial-cards.marquee-animate {
+  animation: testimonial-marquee-scroll 40s linear infinite;
+  will-change: transform;
+}
