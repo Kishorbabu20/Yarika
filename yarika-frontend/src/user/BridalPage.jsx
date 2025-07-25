@@ -7,9 +7,14 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbP
 const BridalPage = () => {
   const filtersRef = useRef(null);
   useEffect(() => {
-    if (filtersRef.current) {
-      filtersRef.current.scrollLeft = 0;
-    }
+    const scrollToStart = () => {
+      if (filtersRef.current) {
+        filtersRef.current.scrollLeft = 0;
+      }
+    };
+    scrollToStart();
+    window.addEventListener('resize', scrollToStart);
+    return () => window.removeEventListener('resize', scrollToStart);
   }, []);
   return (
     <div className="bridal-page">

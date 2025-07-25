@@ -108,9 +108,14 @@ const LeggingsPage = () => {
   }, [sortOption]);
 
   useEffect(() => {
-    if (filtersRef.current) {
-      filtersRef.current.scrollLeft = 0;
-    }
+    const scrollToStart = () => {
+      if (filtersRef.current) {
+        filtersRef.current.scrollLeft = 0;
+      }
+    };
+    scrollToStart();
+    window.addEventListener('resize', scrollToStart);
+    return () => window.removeEventListener('resize', scrollToStart);
   }, []);
 
   const handlePageClick = (page) => {
