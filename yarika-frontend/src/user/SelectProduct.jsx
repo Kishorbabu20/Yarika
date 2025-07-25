@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "../styles/SelectProduct.css";
@@ -13,6 +13,8 @@ import SizeChartModal from './SizeChartModal';
 import ProductImagePopup from './ProductImagePopup';
 import ShippingAddressModal from './ShippingAddressModal';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
+import React, { lazy, Suspense } from "react";
+const ProductCard = lazy(() => import("./ProductCard"));
 
 // Helper function to determine if a color is light
 const isLightColor = (hexColor) => {
@@ -1049,24 +1051,11 @@ const SelectProduct = () => {
             </Link>
           </div>
           <div className="product-grid">
-            {similarProducts.slice(0, 5).map((sp) => (
-              <Link
-                to={`/home/${sp.categoryType || 'products'}/${sp.category || ''}/${sp.seoUrl || sp._id}`}
-                key={sp._id}
-                className="product-card"
-              >
-                <div className="product-image">
-                  <img
-                    src={sp.mainImage}
-                    alt={sp.name}
-                  />
-                </div>
-                <div className="product-info">
-                  <div className="product-name">{sp.name}</div>
-                  <div className="product-price">₹{sp.sellingPrice}</div>
-                </div>
-              </Link>
-            ))}
+            <Suspense fallback={<div>Loading...</div>}>
+              {similarProducts.slice(0, 5).map((sp) => (
+                <ProductCard product={sp} key={sp._id} />
+              ))}
+            </Suspense>
           </div>
         </div>
       )}
