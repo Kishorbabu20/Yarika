@@ -190,30 +190,18 @@ const LeggingsPage = () => {
         <h4 className="section-label">Leggings</h4>
         <h1 className="main-heading">Comfort Meets Style</h1>
         <h2 className="sub-heading">LEGGINGS COLLECTION</h2>
-        <div className="category-filters" ref={filtersRef}>
-          {categories.map((cat, idx) => (
-            <button
-              key={cat.slug}
-              className={`category-btn${idx === 0 ? ' first-btn' : ''} ${activeCategory.slug === cat.slug ? "active" : ""}`}
-              onClick={() => handleCategoryClick(cat)}
-            >
-              {cat.label}
-            </button>
+        <div className="filter-list">
+          {categories.map((cat) => (
+            <span key={cat.slug} className="filter-item-wrapper">
+              <button
+                className={`filter-btn${activeCategory.slug === cat.slug ? " active" : ""}`}
+                onClick={() => setActiveCategory(cat)}
+                type="button"
+              >
+                {cat.label}
+              </button>
+            </span>
           ))}
-
-          {/* Sort By Dropdown */}
-          <select
-            className="sort-dropdown"
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            style={{flex: '0 0 auto', minWidth: '140px', maxWidth: '220px', marginLeft: '0.5em'}}
-          >
-            <option value="">Sort By</option>
-            <option value="new-old">Newest First</option>
-            <option value="old-new">Oldest First</option>
-            <option value="low-high">Price: Low to High</option>
-            <option value="high-low">Price: High to Low</option>
-          </select>
         </div>
       </section>
 
