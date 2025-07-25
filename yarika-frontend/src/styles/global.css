@@ -2416,3 +2416,16 @@ html, body {
   background: none !important;
   box-shadow: none !important;
 }
+
+@media (max-width: 600px) {
+  .bridal-brand {
+    font-size: 1.1rem !important;   /* or your preferred small size */
+  }
+  .bridal-title {
+    font-size: 2rem !important;     /* or your preferred large size */
+  }
+}
+
+.bridal-section .filter-list {
+  justify-content: flex-start !important;
+}
