@@ -2164,8 +2164,8 @@ html, body {
 @media (min-width: 1200px) {
   .product-grid {
     grid-template-columns: repeat(5, 1fr) !important;
-    padding-left: 32px !important;
-    padding-right: 32px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
