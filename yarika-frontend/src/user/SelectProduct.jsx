@@ -13,7 +13,6 @@ import SizeChartModal from './SizeChartModal';
 import ProductImagePopup from './ProductImagePopup';
 import ShippingAddressModal from './ShippingAddressModal';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
-import React, { lazy, Suspense } from "react";
 const ProductCard = lazy(() => import("./ProductCard"));
 
 // Helper function to determine if a color is light
