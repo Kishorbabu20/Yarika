@@ -2163,6 +2163,14 @@ html, body {
 }
 
 @media (min-width: 1200px) {
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 300px);
+    gap: 1.5rem;
+    justify-content: center;
+    width: auto;
+    max-width: none;
+  }
   .product-card {
     width: 300px;
     height: 400px;
@@ -2172,7 +2180,6 @@ html, body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
   }
   .product-card img {
     width: 100%;
@@ -2182,24 +2189,11 @@ html, body {
     margin-bottom: 0.5rem;
     display: block;
   }
-  .product-card .product-info {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-  .product-card h4,
-  .product-card .product-name,
-  .product-card .product-title {
-    text-align: left;
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: break-word;
+  .product-card * {
     max-width: 100%;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
   }
 }
 
