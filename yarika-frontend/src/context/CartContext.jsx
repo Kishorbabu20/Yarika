@@ -97,17 +97,19 @@ export const CartProvider = ({ children }) => {
       if (token) {
         setIsAuthenticated(true);
         const { data } = await api.get("/cart");
-        const transformedData = data.map(item => ({
-          productId: item.productId._id,
-          name: item.productId.name,
-          price: item.productId.sellingPrice,
-          mrp: item.productId.mrp,
-          image: item.productId.mainImage,
-          size: item.size,
-          color: item.color,
-          qty: item.qty,
-          sku: item.productId.code
-        }));
+        const transformedData = data
+          .filter(item => item.productId)
+          .map(item => ({
+            productId: item.productId._id,
+            name: item.productId.name,
+            price: item.productId.sellingPrice,
+            mrp: item.productId.mrp,
+            image: item.productId.mainImage,
+            size: item.size,
+            color: item.color,
+            qty: item.qty,
+            sku: item.productId.code
+          }));
         setCartItems(transformedData);
       } else {
         setIsAuthenticated(false);
