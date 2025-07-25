@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
-const ProductListSection = lazy(() => import("./ProductListSection"));
+const ProductCard = lazy(() => import("./ProductCard"));
 
 const CategoryProductsPage = () => {
   const { dropdown, categoryType, category } = useParams();
@@ -29,11 +29,6 @@ const CategoryProductsPage = () => {
         query.append("_t", Date.now());
 
         const res = await api.get(`/products?${query}`);
-        
-        console.log('CategoryProductsPage - API Response:', res.data);
-        console.log('CategoryProductsPage - First product sample:', res.data[0]);
-        console.log('CategoryProductsPage - First product seoUrl:', res.data[0]?.seoUrl);
-        console.log('CategoryProductsPage - First product full object:', JSON.stringify(res.data[0], null, 2));
         
         if (Array.isArray(res.data)) {
         setProducts(res.data);
@@ -132,9 +127,9 @@ const CategoryProductsPage = () => {
                   <p className="product-code">Loading...</p>
                   <p className="product-price">Loading...</p>
                 </div>
-                      </div>
-                    ))}
-                  </div>
+              </div>
+            ))}
+          </div>
           ) : products.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-xl text-gray-600">No products found in this category.</p>
@@ -144,21 +139,12 @@ const CategoryProductsPage = () => {
             </div>
           ) : (
           <div className="product-grid">
-            {products.map((product) => (
-                  <Suspense key={product._id} fallback={
-                <div className="product-card">
-                  <div className="product-image"></div>
-                  <div className="product-info">
-                    <h3 className="product-name">Loading...</h3>
-                    <p className="product-code">Loading...</p>
-                    <p className="product-price">Loading...</p>
-                  </div>
-                    </div>
-                  }>
-                <ProductListSection product={product} dropdown={dropdown} />
-                  </Suspense>
-                  ))}
-                </div>
+            <Suspense fallback={<div>Loading...</div>}>
+              {products.map((product) => (
+                <ProductCard product={product} key={product._id} />
+              ))}
+            </Suspense>
+          </div>
         )}
       </div>
     </>
