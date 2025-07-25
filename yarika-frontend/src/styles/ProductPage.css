@@ -777,7 +777,8 @@
     gap: 0.5rem !important;
     padding: 0 12px !important;
     box-sizing: border-box !important;
-    scroll-padding-right: 12px !important; /* Ensures last button is not clipped */
+    scroll-padding-left: 12px !important;   /* Ensures first button is not clipped */
+    scroll-padding-right: 12px !important;  /* Ensures last button is not clipped */
     -webkit-overflow-scrolling: touch !important;
   }
   .category-filters > * {
