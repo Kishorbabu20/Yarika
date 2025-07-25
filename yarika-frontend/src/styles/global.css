@@ -2164,10 +2164,9 @@ html, body {
 
 @media (min-width: 1200px) {
   .product-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 equal columns */
-    gap: 1.5rem;
+    grid-template-columns: repeat(5, 300px); /* match your .product-card width */
     justify-content: center;
+    gap: 1.5rem;
   }
 }
 
