@@ -252,9 +252,9 @@ body {
   
   .section-title {
     font-family: 'Cormorant', serif;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
     font-size: 2.5rem;
-    color: #caa75d;
+    color: #000000;
     margin-bottom: 18px;
     text-transform: uppercase;
     text-align: left;

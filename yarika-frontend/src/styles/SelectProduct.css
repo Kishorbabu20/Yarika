@@ -138,9 +138,9 @@
 
 /* Product Info Styles */
 .product-info {
-  padding: 20px 0;
-  text-align: left;
+  align-self: flex-start;
   margin-top: 0;
+  padding-top: 0;
 }
 
 .product-code {
@@ -389,7 +389,7 @@ button.add-to-cart {
   color: #444;
   font-size: 1.1rem;
   line-height: 1.6;
-  max-width: 900px;
+  max-width: 1000px;
   width: 100%;
   margin-left: 0;
   margin-right: 0;
@@ -591,14 +591,14 @@ button.add-to-cart {
   .product-card {
     width: 95vw;
     max-width: 340px;
-    height: 400px;
+    height: 380px;
     margin: 0 auto 16px auto;
   }
 }
 
 @media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
     justify-content: center;
   }
@@ -648,7 +648,7 @@ button.add-to-cart {
 
 .you-may-like-card img {
   width: 100%;
-  height: 140px;
+  height: 380px;
   object-fit: cover;
   border-radius: 6px;
 }
