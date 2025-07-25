@@ -208,7 +208,7 @@ const LeggingsPage = () => {
         <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length} products</p>
         
         {loading ? (
-          <div className="grid-list">
+          <div className="product-grid">
             {Array.from({ length: itemsPerPage }).map((_, i) => (
               <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-80 w-full flex flex-col justify-end p-4">
                 <div className="bg-gray-300 h-48 w-full rounded mb-4"></div>
@@ -219,9 +219,9 @@ const LeggingsPage = () => {
             ))}
           </div>
         ) : filteredProducts.length > 0 ? (
-          <div className="grid-list">
+          <div className="product-grid">
             <Suspense fallback={
-              <div className="grid-list">
+              <div className="product-grid">
                 {Array.from({ length: itemsPerPage }).map((_, i) => (
                   <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-80 w-full flex flex-col justify-end p-4">
                     <div className="bg-gray-300 h-48 w-full rounded mb-4"></div>

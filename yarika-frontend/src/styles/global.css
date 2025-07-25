@@ -2390,3 +2390,18 @@ html, body {
 .footer-section address:last-child {
   margin-bottom: 0 !important;
 }
+
+/* Force Inter font for all product grids and cards */
+.product-grid, .product-card, .product-card * {
+  font-family: 'Inter', Arial, sans-serif !important;
+}
+
+.signature-grid .product-card,
+.signature-grid .product-card * {
+  font-family: 'Cormorant', serif !important;
+}
+
+.signature-section .product-card,
+.signature-section .product-card * {
+  font-family: 'Cormorant', serif !important;
+}

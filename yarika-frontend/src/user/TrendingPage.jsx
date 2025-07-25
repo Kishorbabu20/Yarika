@@ -153,9 +153,9 @@ const TrendingPage = () => {
       {/* Product Grid */}
       <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
         <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
-        <div className="grid-list">
+        <div className="product-grid">
           <Suspense fallback={
-            <div className="grid-list">
+            <div className="product-grid">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-80 w-full flex flex-col justify-end p-4">
                   <div className="bg-gray-300 h-48 w-full rounded mb-4"></div>
