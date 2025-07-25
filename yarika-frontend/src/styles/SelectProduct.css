@@ -634,6 +634,7 @@ button.add-to-cart {
 .you-may-like-card {
   min-width: 180px;
   max-width: 200px;
+  height: 420px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.07);
@@ -648,7 +649,7 @@ button.add-to-cart {
 
 .you-may-like-card img {
   width: 100%;
-  height: 380px;
+  height: 420px;
   object-fit: cover;
   border-radius: 6px;
 }
