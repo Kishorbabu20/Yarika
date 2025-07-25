@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../config/axios";
 import { Link } from "react-router-dom";
 
-const bridalCategories = [
-  { label: "All", slug: "" },
-  { label: "Lehenga", slug: "lehenga" },
-  { label: "Gown", slug: "gown" },
-  // Add more as needed
+const categories = [
+  { label: "Lehenga", value: "bridal-lehenga" },
+  { label: "Gown", value: "bridal-gown" }
 ];
 
 const BridalCollections = () => {
-  const [activeCategory, setActiveCategory] = useState(bridalCategories[0]);
+  const [activeCategory, setActiveCategory] = useState(categories[0]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     api
-      .get(`/products?categoryType=bridal&category=${activeCategory.slug}`)
+      .get(`/products?categoryType=bridal&category=${activeCategory.value}`)
       .then((res) => {
         setProducts(res.data);
         setLoading(false);
@@ -35,10 +33,10 @@ const BridalCollections = () => {
         <h2 className="bridal-title">Bridal Collections</h2>
       </div>
       <div className="bridal-categories">
-        {bridalCategories.map((cat) => (
+        {categories.map((cat) => (
           <button
-            key={cat.slug}
-            className={`bridal-cat-btn${activeCategory.slug === cat.slug ? " active" : ""}`}
+            key={cat.value}
+            className={`bridal-cat-btn${activeCategory.value === cat.value ? " active" : ""}`}
             onClick={() => setActiveCategory(cat)}
           >
             {cat.label}
