@@ -177,12 +177,11 @@ const MaterialsPage = () => {
         <h4 className="section-label">Materials</h4>
         <h1 className="main-heading">Premium Fabrics</h1>
         <h2 className="sub-heading">MATERIALS COLLECTION</h2>
-        <div className="category-filters" ref={filtersRef} style={{overflowX: 'auto', overflowY: 'visible', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap', gap: '0.5rem', padding: '0 12px', boxSizing: 'border-box'}}>
-          {categories.map((cat) => (
+        <div className="category-filters" ref={filtersRef}>
+          {categories.map((cat, idx) => (
             <button
               key={cat.slug}
-              className={`category-btn ${activeCategory.slug === cat.slug ? "active" : ""}`}
-              style={{minWidth: 'max-content', fontSize: '1rem', padding: '0.6em 1.2em', margin: '0 0.3em 0 0', flex: '0 0 auto', whiteSpace: 'nowrap'}}
+              className={`category-btn${idx === 0 ? ' first-btn' : ''} ${activeCategory.slug === cat.slug ? "active" : ""}`}
               onClick={() => setActiveCategory(cat)}
             >
               {cat.label}
