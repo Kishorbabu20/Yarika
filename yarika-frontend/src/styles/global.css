@@ -2166,8 +2166,8 @@ html, body {
   .product-grid {
     display: grid;
     grid-template-columns: repeat(5, 300px);
+    justify-content: start;
     gap: 1.5rem;
-    justify-content: center;
     width: auto;
     max-width: none;
   }
@@ -2180,6 +2180,7 @@ html, body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
   }
   .product-card img {
     width: 100%;
@@ -2200,7 +2201,7 @@ html, body {
 @media (min-width: 1200px) {
   .product-grid {
     grid-template-columns: repeat(5, 300px); /* match your .product-card width */
-    justify-content: center;
+    justify-content: start;
     gap: 1.5rem;
   }
 }
@@ -2517,4 +2518,37 @@ html, body {
   max-width: 100%;
   overflow-wrap: break-word;
   white-space: normal;
+}
+
+/* === 5 Columns × 2 Rows on Desktop (≥1200px) === */
+@media (min-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(5, 1fr) !important; /* 5 equal columns */
+    justify-content: center !important;
+    gap: 1.5rem !important;
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+
+  .product-grid > *:nth-child(n+11) {
+    display: none !important; /* Only first 10 products (2 rows of 5) */
+  }
+
+  .product-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .product-card img {
+    width: 100% !important;
+    height: 240px !important;
+    object-fit: cover !important;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
 }
