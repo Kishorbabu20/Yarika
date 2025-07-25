@@ -766,7 +766,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .category-filters {
     display: flex !important;
     flex-direction: row !important;
