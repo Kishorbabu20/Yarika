@@ -2350,11 +2350,12 @@ html, body {
   overflow: hidden;
   width: 100vw;
   position: relative;
+  padding-right: 420px; /* Ensures last card is fully visible */
 }
 
 @keyframes testimonial-marquee-scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-calc(8 * 420px + 7 * 16px)); }
 }
 
 .testimonial-cards.marquee-animate {
