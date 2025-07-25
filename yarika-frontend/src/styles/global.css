@@ -2168,6 +2168,11 @@ html, body {
     padding-right: 0 !important;
     width: 100%;
     box-sizing: border-box;
+    margin-left: 0 !important;
+    justify-items: start !important;
+  }
+  .product-card {
+    height: 380px !important;
   }
 }
 
