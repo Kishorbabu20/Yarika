@@ -796,4 +796,19 @@
   }
 }
 
+@media (max-width: 600px) {
+  .category-filters {
+    border: 2px solid red !important;
+  }
+  .product-hero, .container {
+    border: 2px solid blue !important;
+  }
+}
+
+html, body {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+}
+
 
