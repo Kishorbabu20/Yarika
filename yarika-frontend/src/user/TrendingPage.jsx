@@ -1,5 +1,5 @@
 // src/user/TrendingPage.jsx
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/ProductPage.css";
@@ -34,6 +34,8 @@ const TrendingPage = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const filtersRef = useRef(null);
 
   const fetchProducts = async () => {
     try {
@@ -85,6 +87,12 @@ const TrendingPage = () => {
     setCurrentPage(1);
   }, [activeCategory, products, sortOption]);
 
+  useEffect(() => {
+    if (filtersRef.current) {
+      filtersRef.current.scrollLeft = 0;
+    }
+  }, []);
+
   const handlePageClick = (page) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
@@ -124,7 +132,7 @@ const TrendingPage = () => {
         <h4 className="section-label">Trending</h4>
         <h1 className="main-heading">Discover What's Hot</h1>
         <h2 className="sub-heading">TRENDING PRODUCTS</h2>
-        <div className="category-filters">
+        <div className="category-filters" ref={filtersRef}>
           {categories.map((cat) => (
             <button
               key={cat.slug}

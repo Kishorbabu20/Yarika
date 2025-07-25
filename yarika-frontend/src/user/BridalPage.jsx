@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import BridalCollections from "./BridalCollections";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 const BridalPage = () => {
+  const filtersRef = useRef(null);
+  useEffect(() => {
+    if (filtersRef.current) {
+      filtersRef.current.scrollLeft = 0;
+    }
+  }, []);
   return (
     <div className="bridal-page">
       <Helmet>
@@ -34,6 +40,7 @@ const BridalPage = () => {
         <h1 className="category-title">Bridal Collections</h1>
         <h2 className="section-label" style={{marginBottom: '2rem'}}>Lehengas & Gowns for Your Special Day</h2>
         {/* Optionally add category-types here if needed */}
+        {/* If you add a .category-filters section here, add ref={filtersRef} to it */}
         <BridalCollections />
       </div>
     </div>
