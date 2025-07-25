@@ -2370,3 +2370,23 @@ html, body {
 .testimonial-marquee .testimonial-cards::-webkit-scrollbar {
   display: none !important;
 }
+
+.footer-section p,
+.footer-section li,
+.footer-section address,
+.footer-section div {
+  margin-bottom: 0.3em !important; /* or adjust as needed */
+  line-height: 1.4 !important;     /* tighter line height */
+}
+
+.footer-section ul {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+}
+
+.footer-section p:last-child,
+.footer-section li:last-child,
+.footer-section address:last-child {
+  margin-bottom: 0 !important;
+}
