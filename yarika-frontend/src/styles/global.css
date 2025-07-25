@@ -2355,7 +2355,7 @@ html, body {
 
 @keyframes testimonial-marquee-scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-calc(8 * 420px + 7 * 16px)); }
+  100% { transform: translateX(-calc(12 * 420px + 11 * 16px)); }
 }
 
 .testimonial-cards.marquee-animate {
