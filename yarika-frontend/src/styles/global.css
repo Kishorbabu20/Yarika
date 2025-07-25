@@ -903,7 +903,7 @@ body {
 }
 
 html, body {
-  overflow-x: hidden !important;
+  min-width: 360px;
 }
 
 @media (max-width: 768px) {
@@ -1333,6 +1333,7 @@ html, body {
     width: 100% !important;
     text-align: center !important;
     margin-bottom: 1.5rem !important;
+    line-height: 1.5 !important;
   }
   .footer-title {
     margin-bottom: 0.7rem !important;
