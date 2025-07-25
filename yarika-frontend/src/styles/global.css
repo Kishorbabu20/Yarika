@@ -1739,44 +1739,17 @@ html, body {
 }
 
 /* --- TESTIMONIAL CARDS GRID LAYOUT --- */
-@media (min-width: 600px) {
-  .testimonial-cards {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1.5rem !important;
-    justify-items: center;
-    align-items: stretch;
-  }
-}
+/* Removed grid-based testimonial-cards styles for all breakpoints. Only flexbox styles remain. */
+
 @media (max-width: 600px) {
   .testimonial-cards {
     display: flex !important;
     flex-direction: row !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 1.5rem !important;
-    padding: 0 32px !important;
-  }
-  .testimonial-card {
-    min-width: 420px !important;
-    max-width: 420px !important;
-    flex: 0 0 420px !important;
-    scroll-snap-align: center !important;
-    margin: 0 auto !important;
-  }
-  .testimonial-cards::-webkit-scrollbar {
-    display: none !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .testimonial-cards {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
     gap: 1rem !important;
-    justify-items: center;
-    align-items: stretch;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    scroll-snap-type: x mandatory !important;
+    padding-bottom: 8px !important;
   }
 }
 
@@ -2281,5 +2254,37 @@ html, body {
   .filter-btn {
     flex: 0 0 auto !important;
     white-space: nowrap !important;
+  }
+}
+
+/* Desktop/Web: Horizontal row, scrollable */
+.testimonial-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+}
+
+.testimonial-card {
+  min-width: 420px;
+  max-width: 420px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  /* Add your card styles here */
+}
+
+/* Mobile: One card at a time, scrollable */
+@media (max-width: 768px) {
+  .testimonial-cards {
+    gap: 0.5rem;
+    padding-bottom: 8px;
+  }
+  .testimonial-card {
+    min-width: 90vw;
+    max-width: 90vw;
+    margin: 0 auto;
   }
 }
