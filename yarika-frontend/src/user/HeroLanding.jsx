@@ -405,10 +405,10 @@ const HeroLanding = () => {
               <div className="testimonial-cards marquee-animate" ref={carouselRef}>
                 {[...testimonials, ...testimonials].map((testimonial, idx) => (
                   <div className="testimonial-card" key={idx}>
-                    <span className="testimonial-quote">“</span>
+                <span className="testimonial-quote">“</span>
                     <p>{testimonial.text}</p>
                     <div className="testimonial-author">~ {testimonial.author}</div>
-                  </div>
+              </div>
                 ))}
               </div>
             </div>

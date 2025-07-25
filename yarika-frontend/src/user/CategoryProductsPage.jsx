@@ -127,9 +127,9 @@ const CategoryProductsPage = () => {
                   <p className="product-code">Loading...</p>
                   <p className="product-price">Loading...</p>
                 </div>
-              </div>
-            ))}
-          </div>
+                      </div>
+                    ))}
+                  </div>
           ) : products.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-xl text-gray-600">No products found in this category.</p>
@@ -140,11 +140,11 @@ const CategoryProductsPage = () => {
           ) : (
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
-              {products.map((product) => (
+            {products.map((product) => (
                 <ProductCard product={product} key={product._id} />
               ))}
-            </Suspense>
-          </div>
+                  </Suspense>
+                </div>
         )}
       </div>
     </>

@@ -1051,7 +1051,7 @@ const SelectProduct = () => {
           </div>
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
-              {similarProducts.slice(0, 5).map((sp) => (
+            {similarProducts.slice(0, 5).map((sp) => (
                 <ProductCard product={sp} key={sp._id} />
               ))}
             </Suspense>

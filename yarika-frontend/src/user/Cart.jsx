@@ -47,10 +47,10 @@ const CartPage = () => {
                     items: cartItems
                         .filter(item => item.productId) // Only valid products
                         .map(item => ({
-                            productId: item.productId,
-                            quantity: item.qty,
-                            price: item.price,
-                        })),
+                        productId: item.productId,
+                        quantity: item.qty,
+                        price: item.price,
+                    })),
                 });
                 setTax(res.data.totalTax || 0);
             } catch (err) {

@@ -172,11 +172,12 @@ const MaterialsPage = () => {
         <h4 className="section-label">Materials</h4>
         <h1 className="main-heading">Premium Fabrics</h1>
         <h2 className="sub-heading">MATERIALS COLLECTION</h2>
-        <div className="category-filters" ref={filtersRef}>
+        <div className="category-filters" ref={filtersRef} style={{overflowX: 'auto', overflowY: 'visible', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap', gap: '0.5rem', padding: '0 12px', boxSizing: 'border-box'}}>
           {categories.map((cat) => (
             <button
               key={cat.slug}
               className={`category-btn ${activeCategory.slug === cat.slug ? "active" : ""}`}
+              style={{minWidth: 'max-content', fontSize: '1rem', padding: '0.6em 1.2em', margin: '0 0.3em 0 0', flex: '0 0 auto', whiteSpace: 'nowrap'}}
               onClick={() => setActiveCategory(cat)}
             >
               {cat.label}
@@ -188,6 +189,7 @@ const MaterialsPage = () => {
             className="sort-dropdown"
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
+            style={{flex: '0 0 auto', minWidth: '140px', maxWidth: '220px', marginLeft: '0.5em'}}
           >
             <option value="">Sort By</option>
             <option value="new-old">Newest First</option>
