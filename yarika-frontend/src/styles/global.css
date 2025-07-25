@@ -788,6 +788,7 @@ body {
     overflow-x: hidden;
   }
 
+  /* This rule will be overridden by a later one for product-grid at 600px */
   .product-grid {
     grid-template-columns: 1fr !important;
     gap: 0.7rem;
@@ -824,33 +825,65 @@ body {
   }
 }
 
+/* MODIFIED PRODUCT GRID AND CARD STYLES FOR MOBILE VIEWS */
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    justify-content: center;
+    grid-template-columns: repeat(2, 1fr) !important; /* Two columns for tablets/larger phones */
+    gap: 16px !important;
+    justify-content: center !important; /* Center the grid items within the container */
+    padding: 0 16px !important; /* Add padding to the grid container itself */
+    margin-left: auto !important; /* Auto margins to center the grid */
+    margin-right: auto !important;
+    max-width: 100% !important; /* Ensure it doesn't overflow */
+    box-sizing: border-box !important; /* Include padding in the element's total width */
   }
   .product-card {
-    width: 95vw;
-    max-width: 340px;
-    height: 400px;
-    margin: 0 auto 16px auto;
+    width: auto !important; /* Let grid determine width */
+    max-width: 100% !important; /* Prevent individual cards from overflowing their grid cell */
+    height: 400px !important; /* Maintain consistent height */
+    margin: 0 !important; /* Remove individual card margins here, gaps handle spacing */
+    box-sizing: border-box !important;
   }
 }
 
 @media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    justify-content: center;
+    grid-template-columns: 1fr !important; /* Single column for smaller phones (like 400px, 360px) */
+    gap: 12px !important;
+    padding: 0 16px !important; /* Adjust padding for smaller screens if needed */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .product-card {
-    width: 98vw;
-    max-width: 360px;
-    height: 400px;
-    margin: 0 auto 12px auto;
+    width: auto !important; /* Let grid determine width */
+    max-width: 100% !important;
+    height: 380px !important; /* Adjust height slightly for very small screens if needed */
+    margin: 0 auto 0 !important; /* Center single card */
+    box-sizing: border-box !important;
   }
 }
+
+/* This rule for 600px should be placed after 768px but before 480px if you want two columns between 601px and 768px, and 1 column below 480px. */
+/* Given existing CSS, it's already structured for this priority. */
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.7rem !important;
+    margin-left: auto !important; /* Ensure centering */
+    margin-right: auto !important;
+    padding-left: 8px !important; /* Add padding for this specific breakpoint */
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+  }
+  .product-card {
+    width: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
 
 .footer-flex {
   display: flex;
@@ -1662,6 +1695,7 @@ html, body {
     gap: 0.3rem;
     padding: 0 0.2rem;
   }
+  /* This rule is overridden by a later one for product-grid at 600px */
   .product-grid {
     grid-template-columns: 1fr;
     gap: 0.7rem;
@@ -1726,11 +1760,12 @@ html, body {
 }
 
 @media (max-width: 600px) {
-  .product-grid {
+  /* This rule is moved and integrated into the combined mobile product-grid rule for clarity and precedence */
+  /* .product-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.7rem !important;
     margin-left: 0 !important;
-  }
+  } */
 }
 
 @media (max-width: 600px) {
