@@ -966,7 +966,7 @@ const SelectProduct = () => {
 
           {/* Product Description */}
           {(product.productDescriptionWeb || product.productDescriptionMobile) && (
-            <div className="product-description" style={{ margin: '18px 0', color: '#444', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: '600px', width: '70%', marginLeft: '0', marginRight: '0' }}>
+            <div className="product-description">
               {product.productDescriptionWeb || product.productDescriptionMobile}
             </div>
           )}

@@ -385,9 +385,14 @@ button.add-to-cart {
 
 /* Product Description */
 .product-description {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #e0e0e0;
+  margin: 18px 0;
+  color: #444;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 900px;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .product-description h3 {
