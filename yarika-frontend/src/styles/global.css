@@ -2030,8 +2030,8 @@ html, body {
   object-fit: cover;
   border-radius: 24px;
   margin-bottom: 18px;
-  box-shadow: none;
-  background: none;
+  box-shadow: none !important;
+  background: none !important;
 }
 .signature-title {
   font-family: 'Cormorant', serif;
@@ -2050,8 +2050,8 @@ html, body {
     object-fit: cover;
     border-radius: 32px;
     margin-bottom: 18px;
-    box-shadow: none;
-    background: none;
+    box-shadow: none !important;
+    background: none !important;
     display: block;
   }
 }
@@ -2166,6 +2166,8 @@ html, body {
     grid-template-columns: repeat(5, 1fr) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 
