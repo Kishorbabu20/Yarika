@@ -40,6 +40,11 @@ import WishlistPage from "./user/WishlistPage";
 import UserProtectedRoute from "./utils/UserProtectedRoute";
 import BridalPage from "./user/BridalPage";
 
+// Policy Pages
+import TermsOfUse from "./pages/TermsOfUse";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ShippingPolicy from "./pages/ShippingPolicy";
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -124,6 +129,11 @@ function App() {
               <Route path="/signup" element={<SignupLoginPage />} />
               {/* Bridal Page Route */}
               <Route path="/home/bridal" element={<><NavigationBarSection /><BridalPage /><Footer /></>} />
+              
+              {/* Policy Pages */}
+              <Route path="/terms-of-use" element={<><NavigationBarSection /><TermsOfUse /></>} />
+              <Route path="/privacy-policy" element={<><NavigationBarSection /><PrivacyPolicy /></>} />
+              <Route path="/shipping-policy" element={<><NavigationBarSection /><ShippingPolicy /></>} />
               
               {/* SEO-friendly product routes - MUST come before fallback route */}
               <Route path="/:dropdown/:categoryType/:category" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />

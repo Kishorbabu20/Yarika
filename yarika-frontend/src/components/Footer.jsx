@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../styles/global.css"; // Create or update this CSS file
 import shipwayLogo from "../assets/shipway-logo.png"; // Place your logo in assets
 import razorpayLogo from "../assets/razorpay-logo.png"; // Place your logo in assets
@@ -31,9 +32,9 @@ const Footer = () => (
       <div className="footer-col">
         <div className="footer-title">POLICIES</div>
         <div>
-          <div>Terms Of Use</div>
-          <div>Privacy Policy</div>
-          <div>Shipping Policy</div>
+          <Link to="/terms-of-use" style={{ color: "#fff", textDecoration: "none" }}>Terms Of Use</Link><br />
+          <Link to="/privacy-policy" style={{ color: "#fff", textDecoration: "none" }}>Privacy Policy</Link><br />
+          <Link to="/shipping-policy" style={{ color: "#fff", textDecoration: "none" }}>Shipping Policy</Link>
         </div>
       </div>
       <div className="footer-col">
