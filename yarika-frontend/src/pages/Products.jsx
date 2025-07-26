@@ -104,8 +104,8 @@ export default function Products() {
     }
   };
 
-  const handleEditProduct = (productId) => {
-    navigate(`/admin/products/edit/${productId}`);
+  const handleEditProduct = (product) => {
+    setEditProduct(product);
   };
 
   const getStatusColor = (status) => {
@@ -346,7 +346,7 @@ export default function Products() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              onClick={() => handleEditProduct(product._id)}
+                              onClick={() => handleEditProduct(product)}
                               style={{ color: '#b19049' }}
                             >
                               <Edit size={16} />
