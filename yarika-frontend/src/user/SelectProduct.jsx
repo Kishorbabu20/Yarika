@@ -2,7 +2,6 @@ import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "../styles/SelectProduct.css";
-import "../styles/ProductPage.css";
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import Footer from "../components/Footer";
