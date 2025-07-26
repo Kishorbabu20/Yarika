@@ -2304,4 +2304,41 @@ html, body {
   }
 }
 
+/* --- HERO LANDING PAGE SECTIONS GRID LAYOUT --- */
+/* Desktop: 2 rows with 5 columns */
+.category-section .product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tablet: 3 columns */
+@media (max-width: 1200px) {
+  .category-section .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, auto);
+  }
+}
+
+/* Mobile: 2 columns with 2 rows */
+@media (max-width: 768px) {
+  .category-section .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, auto);
+    gap: 1rem;
+  }
+}
+
+/* Small mobile: 2 columns with 2 rows */
+@media (max-width: 600px) {
+  .category-section .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, auto);
+    gap: 0.8rem;
+  }
+}
+
 
