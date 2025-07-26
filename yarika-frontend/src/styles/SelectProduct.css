@@ -11,7 +11,8 @@
 .select-product-page {
   width: 100%;
   padding: 0;
-  margin-top: 0; /* Remove top spacing */
+  margin-top: 0 !important;
+  padding-top: 0 !important;
   margin-bottom: 40px; /* Add bottom gap */
 }
 
@@ -20,7 +21,8 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 2rem;
-  margin-top: 0 !important; /* Ensure no top margin */
+  margin-top: 0 !important;
+  padding-top: 0 !important;
   margin-bottom: 40px; /* Add bottom gap */
 }
 
@@ -28,7 +30,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 20px; /* Add minimal top padding for breadcrumb */
-  margin-top: 0 !important; /* Ensure no top margin */
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 .product-container {
@@ -37,8 +40,10 @@
   gap: 40px;
   max-width: 1200px;
   margin: 0;
-  padding: 0 0 40px 0; /* Remove left padding */
+  padding: 0 0 40px 0 !important;
   align-items: flex-start;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 .product-gallery-wrapper, .product-info {
   height: 100%;
