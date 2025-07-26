@@ -850,4 +850,10 @@ html, body {
   }
 }
 
+@media (min-width: 769px) {
+  .breadcrumb {
+    padding-top: 60px !important;
+  }
+}
+
 
