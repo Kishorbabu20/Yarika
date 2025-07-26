@@ -174,9 +174,9 @@ const TrendingPage = () => {
                   <p className="product-code">Loading...</p>
                   <p className="product-price">Loading...</p>
                 </div>
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-xl text-gray-600">No products found in this category.</p>
@@ -188,14 +188,14 @@ const TrendingPage = () => {
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
               {filteredProducts.map((product) => (
-                <ProductCard product={product} key={product._id} />
-              ))}
-            </Suspense>
-          </div>
+              <ProductCard product={product} key={product._id} />
+            ))}
+          </Suspense>
+        </div>
         )}
 
         {totalPages > 1 && (
-          <div className="pagination">
+        <div className="pagination">
             <button 
               className="page-btn" 
               disabled={currentPage === 1} 
@@ -203,15 +203,15 @@ const TrendingPage = () => {
             >
               ←
             </button>
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
-                onClick={() => handlePageClick(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
+              onClick={() => handlePageClick(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
             <button 
               className="page-btn" 
               disabled={currentPage === totalPages} 
@@ -219,9 +219,9 @@ const TrendingPage = () => {
             >
               →
             </button>
-          </div>
+        </div>
         )}
-      </div>
+    </div>
     </>
   );
 };

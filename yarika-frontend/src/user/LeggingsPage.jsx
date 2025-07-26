@@ -169,7 +169,7 @@ const LeggingsPage = () => {
       </Helmet>
 
       <div className="content-section">
-        <div className="breadcrumb">
+      <div className="breadcrumb">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -185,7 +185,7 @@ const LeggingsPage = () => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-        </div>
+</div>
         {/* Category Title */}
         <h1 className="category-title">Leggings</h1>
         <h4 className="section-label">Comfort Meets Style</h4>
@@ -215,7 +215,7 @@ const LeggingsPage = () => {
             <option value="high-low">Price: High to Low</option>
           </select>
         </div>
-
+        
         {/* Products Grid */}
         {loading ? (
           <div className="product-grid">
@@ -275,7 +275,7 @@ const LeggingsPage = () => {
             </button>
           </div>
         )}
-      </div>
+    </div>
     </>
   );
 };
