@@ -131,7 +131,7 @@ const LeggingsPage = () => {
   };
 
   return (
-    <div className="product-page">
+    <>
       <Helmet>
         <title>
           {activeCategory.slug === "" 
@@ -168,27 +168,27 @@ const LeggingsPage = () => {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {/* Hero */}
-      <section className="content-section">
-      <div className="breadcrumb">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/home/leggings">Leggings</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-</div>
-        <h4 className="section-label">Leggings</h4>
-        <h1 className="main-heading">Comfort Meets Style</h1>
+      <div className="content-section">
+        <div className="breadcrumb">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/home/leggings">Leggings</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        {/* Category Title */}
+        <h1 className="category-title">Leggings</h1>
+        <h4 className="section-label">Comfort Meets Style</h4>
         <h2 className="sub-heading">LEGGINGS COLLECTION</h2>
         <div className="filter-list" ref={filtersRef}>
           {categories.map((cat, idx) => (
@@ -215,12 +215,7 @@ const LeggingsPage = () => {
             <option value="high-low">Price: High to Low</option>
           </select>
         </div>
-      </section>
 
-      {/* Product Grid */}
-      <section className="product-grid-container">
-        <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length} products</p>
-        
         {/* Products Grid */}
         {loading ? (
           <div className="product-grid">
@@ -280,8 +275,8 @@ const LeggingsPage = () => {
             </button>
           </div>
         )}
-      </section>
-    </div>
+      </div>
+    </>
   );
 };
 
