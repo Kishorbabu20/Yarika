@@ -729,7 +729,7 @@ body {
 
 @media (min-width: 769px) {
   .main-content, .hero-landing-container {
-    margin-top: 64px; /* or your navbar height */
+    margin-top: 64px !important; /* or your navbar height */
   }
 }
 
@@ -2581,5 +2581,80 @@ html, body {
   .product-card .price {
     font-size: 0.8rem !important;          /* Smaller price text */
     margin: 1px 0 !important;
+  }
+}
+
+/* === Desktop View: 5 Columns × 2 Rows (≥1200px) === */
+@media (min-width: 1200px) {
+  .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    justify-content: center !important;
+    gap: 1.5rem !important;
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+  }
+
+  .product-grid > *:nth-child(n+11) {
+    display: none !important; /* Show only first 10 items */
+  }
+
+  .product-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .product-card img {
+    width: 100% !important;
+    height: 240px !important;
+    object-fit: cover !important;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-card h4,
+  .product-card p {
+    font-size: 16px;
+  }
+}
+
+/* === Mobile View: 2 Columns with Shrunk Cards (≤600px) === */
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
+    justify-items: center;
+    padding: 8px;
+  }
+
+  .product-card {
+    width: 100%;
+    max-width: 180px;
+    min-height: 280px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    margin-bottom: 8px;
+  }
+
+  .product-card h4,
+  .product-card p {
+    font-size: 14px;
   }
 }
