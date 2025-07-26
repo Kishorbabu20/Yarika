@@ -171,11 +171,13 @@ const TrendingPage = () => {
           <Suspense fallback={
             <div className="product-grid">
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-80 w-full flex flex-col justify-end p-4">
-                  <div className="bg-gray-300 h-48 w-full rounded mb-4"></div>
-                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                <div key={i} className="product-card">
+                  <div className="product-image"></div>
+                  <div className="product-info">
+                    <h3 className="product-name">Loading...</h3>
+                    <p className="product-code">Loading...</p>
+                    <p className="product-price">Loading...</p>
+                  </div>
                 </div>
               ))}
             </div>
