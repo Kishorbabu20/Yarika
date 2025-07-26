@@ -1030,6 +1030,28 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     }
   }, [id]);
 
+  // Normalize fields for edit mode
+  useEffect(() => {
+    if (isEditMode && product) {
+      // Normalize selectedColors: always array of color codes (strings)
+      if (Array.isArray(product.colors)) {
+        setSelectedColors(product.colors.map(c => (typeof c === "string" ? c : c.code)));
+      }
+      // Normalize metaKeywords: always a comma-separated string
+      if (Array.isArray(product.metaKeywords)) {
+        setMetaKeywords(product.metaKeywords.join(", "));
+      } else if (typeof product.metaKeywords === "string") {
+        setMetaKeywords(product.metaKeywords);
+      }
+      // Normalize group: use group name or ID if object
+      if (typeof product.group === "object" && product.group !== null) {
+        setGroup(product.group.name || product.group._id || "");
+      } else if (typeof product.group === "string") {
+        setGroup(product.group);
+      }
+    }
+  }, [isEditMode, product]);
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
