@@ -26,6 +26,7 @@ const MaterialsPage = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -207,26 +208,36 @@ const MaterialsPage = () => {
       {/* Product Grid */}
       <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
         <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
-        <div className="product-grid">
-          <Suspense fallback={
-            <div className="product-grid">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="product-card">
-                  <div className="product-image"></div>
-                  <div className="product-info">
-                    <h3 className="product-name">Loading...</h3>
-                    <p className="product-code">Loading...</p>
-                    <p className="product-price">Loading...</p>
-                  </div>
+        {/* Products Grid */}
+        {loading ? (
+          <div className="product-grid">
+            {[1, 2, 3, 4].map((_, i) => (
+              <div key={i} className="product-card">
+                <div className="product-image"></div>
+                <div className="product-info">
+                  <h3 className="product-name">Loading...</h3>
+                  <p className="product-code">Loading...</p>
+                  <p className="product-price">Loading...</p>
                 </div>
-              ))}
-            </div>
-          }>
-            {currentItems.map((product) => (
-              <ProductCard product={product} key={product._id} />
+              </div>
             ))}
-          </Suspense>
-        </div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-xl text-gray-600">No products found in this category.</p>
+            <Link to="/" className="text-gold hover:underline mt-6 inline-block">
+              Return to Home
+            </Link>
+          </div>
+        ) : (
+          <div className="product-grid">
+            <Suspense fallback={<div>Loading...</div>}>
+              {currentItems.map((product) => (
+                <ProductCard product={product} key={product._id} />
+              ))}
+            </Suspense>
+          </div>
+        )}
 
         <div className="pagination">
           <button className="page-btn" disabled={currentPage === 1} onClick={() => handlePageClick(currentPage - 1)}>←</button>
