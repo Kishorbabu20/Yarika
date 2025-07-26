@@ -1725,13 +1725,7 @@ html, body {
   }
 }
 
-@media (max-width: 600px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.7rem !important;
-    margin-left: 0 !important;
-  }
-}
+
 
 @media (max-width: 600px) {
   .hide-on-mobile {
@@ -2537,4 +2531,16 @@ html, body {
   max-width: 100%;
   overflow-wrap: break-word;
   white-space: normal;
+}
+
+/* === FORCE MOBILE IMAGE SHRINKING (≤600px) === */
+@media (max-width: 600px) {
+  .product-card img {
+    height: 100px !important;               /* Force small height */
+    max-height: 100px !important;           /* Prevent larger height */
+    width: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin-bottom: 4px !important;
+  }
 }
