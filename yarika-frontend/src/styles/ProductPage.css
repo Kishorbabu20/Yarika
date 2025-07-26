@@ -67,11 +67,11 @@
 
 /* HERO SECTION */
 .product-hero {
-  padding: 3rem 1.5rem 2rem;
-  
+  padding: 0 1.5rem 2rem; /* Remove top padding */
   text-align: center;
   background: #fff;
   border-bottom: 1px solid #eee;
+  margin-top: 0 !important; /* Ensure no top margin */
 }
 
 .breadcrumb {
@@ -79,6 +79,8 @@
   color: #999;
   text-align: left;
   margin-bottom: 1rem;
+  padding-top: 20px; /* Add minimal top padding for breadcrumb */
+  margin-top: 0 !important; /* Ensure no top margin */
 }
 .breadcrumb span { color: #000; }
 
@@ -585,16 +587,19 @@
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 0;
+  margin-bottom: 40px; /* Add bottom gap */
 }
 
 .page-container {
-  padding-top: 80px;
+  padding-top: 0; /* Remove top spacing */
+  margin-bottom: 40px; /* Add bottom gap */
 }
 
 .content-section {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 2rem;
+  margin-bottom: 40px; /* Add bottom gap */
 }
 
 .loading-state {
@@ -633,7 +638,8 @@
   .category-products-page,
   .product-page,
   .container {
-    margin-top: 64px !important; /* Adjust to your navbar height */
+    margin-top: 0 !important; /* Remove top spacing */
+    margin-bottom: 30px !important; /* Add bottom gap */
   }
 }
 @media (max-width: 600px) {
@@ -641,7 +647,8 @@
   .category-products-page,
   .product-page,
   .container {
-    margin-top: 56px !important; /* Adjust to your mobile navbar height */
+    margin-top: 0 !important; /* Remove top spacing */
+    margin-bottom: 20px !important; /* Add bottom gap */
   }
 }
 
