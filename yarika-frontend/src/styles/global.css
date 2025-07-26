@@ -2395,31 +2395,6 @@ html, body {
   word-break: break-word;
 }
 
-.testimonial-marquee {
-  overflow: hidden;
-  width: 100vw;
-  position: relative;
-  padding-right: 420px; /* Ensures last card is fully visible */
-}
-
-@keyframes testimonial-marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-calc(12 * 420px + 11 * 16px)); }
-}
-
-.testimonial-cards.marquee-animate {
-  animation: testimonial-marquee-scroll 40s linear infinite;
-  will-change: transform;
-}
-
-/* --- HIDE SCROLLBAR FOR TESTIMONIAL MARQUEE --- */
-.testimonial-marquee .testimonial-cards {
-  scrollbar-width: none !important;
-}
-.testimonial-marquee .testimonial-cards::-webkit-scrollbar {
-  display: none !important;
-}
-
 .footer-section p,
 .footer-section li,
 .footer-section address,
