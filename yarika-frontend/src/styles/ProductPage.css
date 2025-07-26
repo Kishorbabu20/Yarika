@@ -193,6 +193,7 @@
 .product-grid-container {
   padding: 2rem 1.5rem;
   font-family: 'Segoe UI', sans-serif;
+  margin-bottom: 40px; /* Add bottom gap */
 }
 
 /* Ensure full page height */
@@ -421,7 +422,7 @@
   color: #777;
 }
 
-/* Category Title */
+/* Category Title - Match CategoryProductsPage */
 .category-title {
   color: #B4975A;
   font-size: 32px;
@@ -431,7 +432,7 @@
   font-family: 'Cormorant';
 }
 
-/* Category Types */
+/* Category Types - Match CategoryProductsPage */
 .category-types {
   margin-bottom: 30px;
   font-family: 'Inter';
@@ -451,6 +452,14 @@
   content: "/";
   color: #666;
   margin-left: 15px;
+}
+
+/* Content Section - Match CategoryProductsPage */
+.content-section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  margin-bottom: 40px; /* Add bottom gap */
 }
 
 /* --- UNIFIED PRODUCT GRID FOR ALL MAIN PAGES --- */
@@ -595,13 +604,6 @@
   margin-bottom: 40px; /* Add bottom gap */
 }
 
-.content-section {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  margin-bottom: 40px; /* Add bottom gap */
-}
-
 .loading-state {
   text-align: center;
   padding: 2rem;
@@ -637,7 +639,8 @@
   .search-results-page,
   .category-products-page,
   .product-page,
-  .container {
+  .container,
+  .content-section {
     margin-top: 0 !important; /* Remove top spacing */
     margin-bottom: 30px !important; /* Add bottom gap */
   }
@@ -646,7 +649,8 @@
   .search-results-page,
   .category-products-page,
   .product-page,
-  .container {
+  .container,
+  .content-section {
     margin-top: 0 !important; /* Remove top spacing */
     margin-bottom: 20px !important; /* Add bottom gap */
   }
