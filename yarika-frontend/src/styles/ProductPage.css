@@ -777,6 +777,17 @@
   }
 }
 
+@media (min-width: 769px) {
+  .category-products-page {
+    margin-top: 40px;
+  }
+}
+@media (max-width: 768px) {
+  .category-products-page {
+    margin-top: 16px; /* or 0, or a smaller value */
+  }
+}
+
 @media (max-width: 600px) {
   .category-filters {
     display: flex !important;
