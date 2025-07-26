@@ -56,7 +56,6 @@ export default function Products() {
   const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [colorGroups, setColorGroups] = useState([]);
 
   const navigate = useNavigate();
 
@@ -77,6 +76,18 @@ export default function Products() {
       if (status !== "all") query.append("status", status);
       if (category !== "all") query.append("categoryType", category); // <-- use categoryType
       const res = await api.get(`/products?${query.toString()}`);
+      console.log('Fetched products:', res.data);
+      
+      // Debug: Check color data for first few products
+      res.data.slice(0, 3).forEach((product, index) => {
+        console.log(`Product ${index + 1} (${product.name}):`, {
+          colors: product.colors,
+          colorsType: typeof product.colors,
+          isArray: Array.isArray(product.colors),
+          colorsLength: product.colors ? product.colors.length : 0
+        });
+      });
+      
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -114,9 +125,31 @@ export default function Products() {
   };
 
   const getProductColors = (product) => {
-    if (!product.colorGroup) return [];
-    const group = colorGroups.find(g => g._id === product.colorGroup || g._id === product.colorGroupId);
-    return group ? group.colors : [];
+    // The backend already populates colors as an array of objects with name and code
+    if (product.colors && Array.isArray(product.colors)) {
+      console.log('Product colors:', product.colors);
+      
+      // Handle both object format (from backend population) and string format (fallback)
+      return product.colors.map(color => {
+        if (typeof color === 'object' && color.name && color.code) {
+          return color; // Already in correct format
+        } else if (typeof color === 'string') {
+          // Fallback: if color is a string, try to get from COLOR_MAP
+          return {
+            name: getColorName(color),
+            code: color
+          };
+        } else {
+          // Unknown format, return as is
+          return {
+            name: String(color),
+            code: String(color)
+          };
+        }
+      });
+    }
+    console.log('No colors found for product:', product.name);
+    return [];
   };
 
   const { data: stats, refetch } = useQuery({
@@ -124,18 +157,6 @@ export default function Products() {
     queryFn: fetchStats,
     refetchInterval: 5000,
   });
-
-  useEffect(() => {
-    const fetchColorGroups = async () => {
-      try {
-        const res = await api.get("/color-groups");
-        setColorGroups(res.data);
-      } catch (err) {
-        console.error("Failed to fetch color groups", err);
-      }
-    };
-    fetchColorGroups();
-  }, []);
 
   useEffect(() => {
     fetchProducts();

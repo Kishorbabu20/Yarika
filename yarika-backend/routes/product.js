@@ -533,12 +533,25 @@ router.get("/", async (req, res, next) => {
     // Populate color names for each product
     for (let product of serializedProducts) {
       if (product.colors && Array.isArray(product.colors)) {
+        console.log(`Populating colors for product ${product.name}:`, product.colors);
+        
+        // Test: Check if Color model is working
+        const allColors = await Color.find({});
+        console.log(`Total colors in database: ${allColors.length}`);
+        if (allColors.length > 0) {
+          console.log('Sample colors:', allColors.slice(0, 3).map(c => ({ name: c.name, code: c.code })));
+        }
+        
         product.colors = await Promise.all(
           product.colors.map(async (code) => {
             const colorObj = await Color.findOne({ code });
+            console.log(`Color lookup for code ${code}:`, colorObj);
             return colorObj ? { name: colorObj.name, code: colorObj.code } : { name: code, code };
           })
         );
+        console.log(`Final colors for product ${product.name}:`, product.colors);
+      } else {
+        console.log(`No colors found for product ${product.name}:`, product.colors);
       }
     }
 
