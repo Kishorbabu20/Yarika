@@ -41,10 +41,13 @@ const MaterialsPage = () => {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const res = await api.get("/products");
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to fetch products", err);
+    } finally {
+      setLoading(false);
     }
   };
 

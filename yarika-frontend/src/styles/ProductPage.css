@@ -856,4 +856,9 @@ html, body {
   }
 }
 
+/* Enforce Inter font for all product grids, cards, and images on ProductPage and related pages */
+.product-grid, .product-card, .product-card *, .product-card img {
+  font-family: 'Inter', Arial, sans-serif !important;
+}
+
 

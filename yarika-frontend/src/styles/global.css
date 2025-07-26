@@ -2315,11 +2315,21 @@ html, body {
   margin: 0 auto;
 }
 
+/* Hide products beyond the first 10 in desktop view */
+.category-section .product-grid > *:nth-child(n+11) {
+  display: none !important;
+}
+
 /* Tablet: 3 columns */
 @media (max-width: 1200px) {
   .category-section .product-grid {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, auto);
+  }
+  
+  /* Hide products beyond the first 12 in tablet view */
+  .category-section .product-grid > *:nth-child(n+13) {
+    display: none !important;
   }
 }
 
@@ -2330,14 +2340,24 @@ html, body {
     grid-template-rows: repeat(2, auto);
     gap: 1rem;
   }
+  
+  /* Hide products beyond the first 4 in mobile view */
+  .category-section .product-grid > *:nth-child(n+5) {
+    display: none !important;
+  }
 }
 
 /* Small mobile: 2 columns with 2 rows */
 @media (max-width: 600px) {
   .category-section .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(5, auto);
+    grid-template-rows: repeat(2, auto);
     gap: 0.8rem;
+  }
+  
+  /* Hide products beyond the first 4 in mobile view */
+  .category-section .product-grid > *:nth-child(n+5) {
+    display: none !important;
   }
 }
 
@@ -2450,6 +2470,11 @@ html, body {
 .footer-col a:hover {
   color: #caa75d !important;
   text-decoration: underline !important;
+}
+
+/* Enforce Inter font for all product grids, cards, and images */
+.product-grid, .product-card, .product-card *, .product-card img {
+  font-family: 'Inter', Arial, sans-serif !important;
 }
 
 

@@ -991,3 +991,8 @@ html, body {
   margin: 0 !important;
   overflow-x: hidden !important;
 } 
+
+/* Enforce Inter font for all product grids, cards, and images on SelectProduct page */
+.product-grid, .product-card, .product-card *, .product-card img {
+  font-family: 'Inter', Arial, sans-serif !important;
+} 

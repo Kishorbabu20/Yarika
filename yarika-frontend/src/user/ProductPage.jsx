@@ -44,12 +44,15 @@ const ProductPage = () => {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const res = await api.get("/products");
       console.log('ProductPage - API Response:', res.data);
       console.log('ProductPage - First product sample:', res.data[0]);
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to fetch products", err);
+    } finally {
+      setLoading(false);
     }
   };
 
