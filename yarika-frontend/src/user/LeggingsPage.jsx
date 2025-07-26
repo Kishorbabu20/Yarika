@@ -240,7 +240,7 @@ const LeggingsPage = () => {
         ) : (
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
-              {currentItems.map((product) => (
+              {filteredProducts.map((product) => (
                 <ProductCard product={product} key={product._id} />
               ))}
             </Suspense>

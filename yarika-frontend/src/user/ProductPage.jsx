@@ -143,7 +143,7 @@ const ProductPage = () => {
   const [occasionRef, occasionFade] = useScrollFade();
 
   return (
-    <div className="product-page" style={{marginTop: 0, paddingTop: 0}}>
+    <>
       <Helmet>
         <title>
           {activeCategory.slug === "" 
@@ -180,8 +180,7 @@ const ProductPage = () => {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {/* Hero */}
-      <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
+      <div className="content-section">
         <div className="breadcrumb">
           <Breadcrumb>
             <BreadcrumbList>
@@ -199,8 +198,9 @@ const ProductPage = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <h4 className="section-label">Readymade Blouse</h4>
-        <h1 className="main-heading">Elegance awaits you</h1>
+        {/* Category Title */}
+        <h1 className="category-title">Readymade Blouse</h1>
+        <h4 className="section-label">Elegance awaits you</h4>
         <h2 className="sub-heading">READYMADE BLOUSE</h2>
         <div className="filter-list" ref={filtersRef}>
           {categories.map((cat, idx) => (
@@ -227,11 +227,7 @@ const ProductPage = () => {
             <option value="high-low">Price: High to Low</option>
           </select>
         </div>
-      </section>
 
-      {/* Product Grid */}
-      <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
-        <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
         {/* Products Grid */}
         {loading ? (
           <div className="product-grid">
@@ -256,79 +252,42 @@ const ProductPage = () => {
         ) : (
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
-              {currentItems.map((product) => {
-                console.log('ProductPage - Passing to ProductCard:', {
-                  name: product.name,
-                  seoUrl: product.seoUrl,
-                  categoryType: product.categoryType,
-                  category: product.category,
-                  _id: product._id
-                });
-                return <ProductCard product={product} key={product._id} />;
-              })}
+              {filteredProducts.map((product) => (
+                <ProductCard product={product} key={product._id} />
+              ))}
             </Suspense>
           </div>
         )}
 
-        <div className="pagination">
-          <button className="page-btn" disabled={currentPage === 1} onClick={() => handlePageClick(currentPage - 1)}>←</button>
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
-              onClick={() => handlePageClick(i + 1)}
-              disabled
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button 
+              className="page-btn" 
+              disabled={currentPage === 1} 
+              onClick={() => handlePageClick(currentPage - 1)}
             >
-              {i + 1}
+              ←
             </button>
-          ))}
-          <button className="page-btn" disabled={currentPage === totalPages} onClick={() => handlePageClick(currentPage + 1)}>→</button>
-        </div>
-      </section>
-
-      {/* Occasion Section
-      <section ref={occasionRef} className={`occasion-section scroll-animate ${occasionFade}`}>
-        <h2 className="occasion-title"><span>—</span> Shop Blouses by Occasion <span>—</span></h2>
-        <div className="occasion-grid">
-          {occasions.map((occasion, idx) => (
-            <div
-              className="occasion-card"
-              key={idx}
-              onClick={() => handleOccasionClick(occasion)}
-              style={{ cursor: "pointer" }}
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
+                onClick={() => handlePageClick(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button 
+              className="page-btn" 
+              disabled={currentPage === totalPages} 
+              onClick={() => handlePageClick(currentPage + 1)}
             >
-              <div className="occasion-image">
-                <img 
-                  src={occasion.image} 
-                  alt={occasion.name}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "8px"
-                  }}
-                />
-              </div>
-              <p className="occasion-label">{occasion.name}</p>
-              <p className="occasion-description" style={{
-                fontSize: "0.9rem",
-                color: "#666",
-                marginTop: "0.5rem",
-                textAlign: "center"
-              }}>{occasion.description}</p>
-            </div>
-          ))}
-        </div>
-      </section> */}
-
-      {/* Offer Banner
-      <div className="offer-banner">
-        <p className="offer-text">get 10% off for your<br />first product</p>
-        <button className="offer-button">ORDER NOW</button>
-      </div> */}
-
-     
-    </div>
+              →
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -119,7 +119,7 @@ const MaterialsPage = () => {
   const [gridRef, gridFade] = useScrollFade();
 
   return (
-    <div className="product-page">
+    <>
       <Helmet>
         <title>
           {activeCategory.slug === "" 
@@ -156,8 +156,7 @@ const MaterialsPage = () => {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      {/* Hero */}
-      <section ref={heroRef} className={`product-hero scroll-animate ${heroFade}`}>
+      <div className="content-section">
         <div className="breadcrumb">
           <Breadcrumb>
             <BreadcrumbList>
@@ -175,8 +174,9 @@ const MaterialsPage = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <h4 className="section-label">Materials</h4>
-        <h1 className="main-heading">Premium Fabrics</h1>
+        {/* Category Title */}
+        <h1 className="category-title">Materials</h1>
+        <h4 className="section-label">Premium Fabrics</h4>
         <h2 className="sub-heading">MATERIALS COLLECTION</h2>
         <div className="filter-list" ref={filtersRef}>
           {categories.map((cat, idx) => (
@@ -203,11 +203,7 @@ const MaterialsPage = () => {
             <option value="high-low">Price: High to Low</option>
           </select>
         </div>
-      </section>
 
-      {/* Product Grid */}
-      <section ref={gridRef} className={`product-grid-container scroll-animate ${gridFade}`}>
-        <p className="showing-text">Showing {currentItems.length} of {filteredProducts.length}</p>
         {/* Products Grid */}
         {loading ? (
           <div className="product-grid">
@@ -232,29 +228,42 @@ const MaterialsPage = () => {
         ) : (
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
-              {currentItems.map((product) => (
+              {filteredProducts.map((product) => (
                 <ProductCard product={product} key={product._id} />
               ))}
             </Suspense>
           </div>
         )}
 
-        <div className="pagination">
-          <button className="page-btn" disabled={currentPage === 1} onClick={() => handlePageClick(currentPage - 1)}>←</button>
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
-              onClick={() => handlePageClick(i + 1)}
-              disabled={currentPage === i + 1}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button 
+              className="page-btn" 
+              disabled={currentPage === 1} 
+              onClick={() => handlePageClick(currentPage - 1)}
             >
-              {i + 1}
+              ←
             </button>
-          ))}
-          <button className="page-btn" disabled={currentPage === totalPages} onClick={() => handlePageClick(currentPage + 1)}>→</button>
-        </div>
-      </section>
-    </div>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
+                onClick={() => handlePageClick(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button 
+              className="page-btn" 
+              disabled={currentPage === totalPages} 
+              onClick={() => handlePageClick(currentPage + 1)}
+            >
+              →
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
