@@ -2211,7 +2211,6 @@ html, body {
     min-height: 280px;
     padding: 10px;
     box-sizing: border-box;
-    background-color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2219,11 +2218,12 @@ html, body {
   }
 
   .product-card img {
-    width: 100%;
-    height: auto;
-    max-height: 200px;
-    object-fit: cover;
-    margin-bottom: 8px;
+    height: 100px !important;               /* Force small height */
+    max-height: 100px !important;           /* Prevent larger height */
+    width: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin-bottom: 4px !important;
   }
 
   .product-card h4,
@@ -2232,6 +2232,7 @@ html, body {
     font-family: 'Inter', sans-serif;
   }
 }
+
 
 @media (min-width: 601px) {
   .content-section {
