@@ -29,9 +29,13 @@
 .breadcrumb {
   max-width: 1200px;
   margin: 0 auto;
-  padding-top: 20px; /* Add minimal top padding for breadcrumb */
   margin-top: 0 !important;
-  padding-top: 0 !important;
+}
+
+@media (min-width: 769px) {
+  .breadcrumb {
+    padding-top: 20px !important;
+  }
 }
 
 .product-container {
