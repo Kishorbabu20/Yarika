@@ -169,7 +169,7 @@ const LeggingsPage = () => {
       </Helmet>
 
       {/* Hero */}
-      <section className="product-hero">
+      <section className="content-section">
       <div className="breadcrumb">
         <Breadcrumb>
           <BreadcrumbList>
