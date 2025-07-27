@@ -247,7 +247,9 @@ body {
   
   /* Category Sections */
   .category-section {
-    padding: 2rem 1rem;
+    padding: 2rem 2rem;
+    max-width: 1440px;
+    margin: 0 auto;
   }
   
   .section-title {
@@ -725,6 +727,75 @@ body {
   .footer-bottom {
     font-size: 0.95rem !important;
     padding: 0.5rem 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .about-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .testimonial-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .testimonial-heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .footer-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .footer-top {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .footer-bottom {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .bridal-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .bridal-heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .category-section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .section-title {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .stats-bar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .blouse-section-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .blouse-section-title {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .footer-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .footer-col {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
@@ -1552,9 +1623,9 @@ html, body {
   /* Remove extra margin/padding from container */
   .hero-landing-container {
     margin-top: 56px;
-    padding: 0;
+    padding: 0 1rem;
   }
-  /* Edge-to-edge banners and stats */
+  /* Edge-to-edge banners and stats - keep slide banner full width */
   .main-banner,
   .golden-banner,
   .stats-bar {
@@ -1570,10 +1641,10 @@ html, body {
     padding-left: 0;
     padding-right: 0;
   }
-  /* Centered signature section and grid */
+  /* Centered signature section and grid with spacing */
   .signature-section {
     margin: 0 auto;
-    padding: 10px 0;
+    padding: 10px 1rem;
     width: 100%;
     max-width: 420px;
   }
@@ -1584,12 +1655,12 @@ html, body {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  /* Compact filter list and product grid */
+  /* Compact filter list and product grid with spacing */
   .filter-list {
     margin-left: 0;
     justify-content: flex-start;
     gap: 0.3rem;
-    padding: 0 0.2rem;
+    padding: 0 1rem;
   }
 
   /* Golden banner text wrapping */
@@ -1663,13 +1734,22 @@ html, body {
 
 @media (max-width: 600px) {
   .testimonial-cards {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 1rem !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    scroll-snap-type: x mandatory !important;
-    padding-bottom: 8px !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 1rem 8px 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+  .testimonial-card {
+    min-width: 90vw;
+    max-width: 90vw;
+    margin: 0 auto;
   }
 }
 
@@ -2096,46 +2176,46 @@ html, body {
 
 @media (max-width: 600px) {
   .signature-section {
-    margin: 0 !important;
-    padding: 10px 0 !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    box-sizing: border-box !important;
-}
+    margin: 0 auto;
+    padding: 10px 1rem;
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+  }
   .signature-grid {
-    margin: 0 !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-    box-sizing: border-box !important;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 420px;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    box-sizing: border-box;
   }
   .signature-simple-card {
-    width: calc(100vw - 32px) !important;
-    max-width: 100vw !important;
-    margin: 0 auto 1rem auto !important;
-    box-sizing: border-box !important;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 1rem auto;
+    box-sizing: border-box;
   }
 }
 
 @media (max-width: 600px) {
   .filter-list {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    gap: 0.5rem !important;
-    padding: 0 0.5rem !important;
-    margin-left: 0 !important;
-    scrollbar-width: none; /* Firefox */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    margin-left: 0;
+    scrollbar-width: none;
   }
   .filter-list::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none;
   }
   .filter-btn {
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 }
 
@@ -2295,69 +2375,83 @@ html, body {
 
 
 @media (max-width: 600px) {
-  .category-section,
-  .content-section,
-  .signature-section {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    box-sizing: border-box;
+  .category-section {
+    padding: 2rem 1rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .category-section {
+    padding: 1rem 0.5rem;
+    max-width: 100%;
   }
 }
 
 /* --- HERO LANDING PAGE SECTIONS GRID LAYOUT --- */
-/* Desktop: 2 rows with 5 columns */
+/* Desktop: Fixed 5 columns per row */
 .category-section .product-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, auto);
-  gap: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 2.5rem;
+  width: 100%;
+  margin: 0;
 }
 
-/* Hide products beyond the first 10 in desktop view */
-.category-section .product-grid > *:nth-child(n+11) {
+/* Remove the fixed row limit to allow natural expansion */
+/* .category-section .product-grid > *:nth-child(n+11) {
   display: none !important;
-}
+} */
 
-/* Tablet: 3 columns */
+/* Tablet: 4 columns */
 @media (max-width: 1200px) {
   .category-section .product-grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, auto);
-  }
-  
-  /* Hide products beyond the first 12 in tablet view */
-  .category-section .product-grid > *:nth-child(n+13) {
-    display: none !important;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 
-/* Mobile: 2 columns with 2 rows */
+/* Mobile: 3 columns */
 @media (max-width: 768px) {
   .category-section .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, auto);
-    gap: 1rem;
-  }
-  
-  /* Hide products beyond the first 4 in mobile view */
-  .category-section .product-grid > *:nth-child(n+5) {
-    display: none !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 
-/* Small mobile: 2 columns with 2 rows */
+/* Small mobile: 2 columns */
 @media (max-width: 600px) {
   .category-section .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, auto);
-    gap: 0.8rem;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1.2rem;
+    padding: 0 4px !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
   
-  /* Hide products beyond the first 4 in mobile view */
+  /* Limit to exactly 4 products (2x2 grid) */
   .category-section .product-grid > *:nth-child(n+5) {
     display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .category-section,
+  .hero-landing-container,
+  .content-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
   }
 }
 
@@ -2475,6 +2569,212 @@ html, body {
 /* Enforce Inter font for all product grids, cards, and images */
 .product-grid, .product-card, .product-card *, .product-card img {
   font-family: 'Inter', Arial, sans-serif !important;
+}
+
+/* Mobile spacing for HeroLanding page - except slide banner */
+@media (max-width: 600px) {
+  .hero-landing-container {
+    padding: 0 1rem;
+    margin-bottom: 0;
+  }
+  .signature-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0 !important;
+    padding-bottom: 0;
+  }
+  .signature-heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+  }
+  .about-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .about-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .testimonial-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .testimonial-heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+  }
+  .footer-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .footer-top {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .footer-bottom {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .bridal-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0 !important;
+    padding-bottom: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  .bridal-heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    margin-top: 0 !important;
+  }
+  .category-section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .section-title {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+  }
+  .filter-list {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .stats-bar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .blouse-section-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+  }
+  .blouse-section-title {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+  }
+  .footer-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .footer-col {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .signature-grid {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .signature-card {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .testimonial-cards {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .testimonial-card {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .bridal-grid {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  .bridal-card {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .category-section .product-grid {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .product-card {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  /* Remove any potential gaps from any element between signature and bridal */
+  .signature-section + * {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  .signature-section ~ .bridal-section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  /* Force remove any spacing from signature section end */
+  .signature-section::after {
+    content: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Force remove any spacing from bridal section start */
+  .bridal-section::before {
+    content: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+.category-section .product-grid {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 1200px) {
+  .category-section .product-grid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-section .product-grid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .category-section .product-grid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }
 
 

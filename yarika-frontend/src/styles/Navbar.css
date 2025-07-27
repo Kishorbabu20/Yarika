@@ -225,15 +225,17 @@
 }
 
 .dropdown-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
   font-family: 'Inter', sans-serif !important;
 }
 
 .dropdown-column li {
   margin-bottom: 0.75rem;
   font-family: 'Inter', sans-serif !important;
+  list-style: none !important;
+  list-style-type: none !important;
 }
 
 .dropdown-column a {
@@ -243,6 +245,8 @@
   transition: color 0.2s;
   display: block;
   font-family: 'Inter', sans-serif !important;
+  list-style: none !important;
+  list-style-type: none !important;
 }
 
 .dropdown-column a:hover {
@@ -472,7 +476,12 @@ body {
   flex-direction: column;
   gap: 18px;
   margin-top: 40px;
-  /* No margin-bottom, let icons push to bottom */
+  font-family: 'Inter', sans-serif !important;
+  list-style: none !important;
+  list-style-type: none !important;
+  list-style-image: none !important;
+  padding: 0 !important;
+  margin-top: 40px;
 }
 
 .mobile-menu-links a {
@@ -480,6 +489,10 @@ body {
   font-size: 1.1rem;
   text-decoration: none;
   font-weight: 500;
+  font-family: 'Inter', sans-serif !important;
+  list-style: none !important;
+  list-style-type: none !important;
+  list-style-image: none !important;
 }
 
 .mobile-menu-icons {
@@ -499,4 +512,124 @@ body {
   align-items: center;
   gap: 10px;
   cursor: pointer;
+}
+
+/* Mobile submenu scrolling */
+.mobile-submenu {
+  max-height: 50vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: thin !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.mobile-submenu ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.mobile-submenu li {
+  list-style: none !important;
+  list-style-type: none !important;
+  list-style-image: none !important;
+  font-family: 'Inter', sans-serif !important;
+  margin-bottom: 0.75rem;
+}
+
+.mobile-submenu span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif !important;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-submenu a {
+  text-decoration: none;
+  color: #666;
+  font-size: 14px;
+  transition: color 0.2s;
+  display: block;
+  font-family: 'Inter', sans-serif !important;
+  padding: 4px 0;
+}
+
+.mobile-submenu a:hover {
+  color: #caa75d;
+}
+
+.mobile-submenu .highlight {
+  color: #caa75d;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.mobile-dropdown-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.1rem;
+  text-decoration: none;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif !important;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.mobile-dropdown-btn:hover {
+  color: #caa75d;
+}
+
+/* Mobile specific overrides */
+@media (max-width: 768px) {
+  .dropdown-column ul,
+  .dropdown-column li,
+  .dropdown-column a,
+  .mobile-menu-links,
+  .mobile-menu-links a,
+  .mobile-menu-links li {
+    list-style: none !important;
+    list-style-type: none !important;
+    list-style-image: none !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  
+  .dropdown-menu {
+    min-width: auto !important;
+    width: 90vw !important;
+    max-width: 90vw !important;
+    max-height: 60vh !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+    position: fixed !important;
+    top: 64px !important;
+    left: 5vw !important;
+    right: 5vw !important;
+    z-index: 1001 !important;
+  }
+  
+  .dropdown-content {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+  }
+  
+  .dropdown-column {
+    min-width: auto !important;
+    width: 100% !important;
+  }
 }
