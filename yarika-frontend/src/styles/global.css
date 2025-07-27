@@ -2393,6 +2393,7 @@ html, body {
 .category-section .product-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 2.5rem;
   width: 100%;
   margin: 0;
