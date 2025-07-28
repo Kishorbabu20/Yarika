@@ -34,7 +34,10 @@ const Footer = () => (
         <div>
           <Link to="/terms-of-use" style={{ color: "#fff", textDecoration: "none" }}>Terms Of Use</Link><br />
           <Link to="/privacy-policy" style={{ color: "#fff", textDecoration: "none" }}>Privacy Policy</Link><br />
-          <Link to="/shipping-policy" style={{ color: "#fff", textDecoration: "none" }}>Shipping Policy</Link>
+          <Link to="/shipping-policy" style={{ color: "#fff", textDecoration: "none" }}>Shipping Policy</Link><br />
+          <Link to="/cancellation-refund-policy" style={{ color: "#fff", textDecoration: "none" }}>Cancellation & Refund Policy</Link><br />
+          <Link to="/contact-us" style={{ color: "#fff", textDecoration: "none" }}>Contact Us</Link><br />
+          <Link to="/about-us" style={{ color: "#fff", textDecoration: "none" }}>About Us</Link>
         </div>
       </div>
       <div className="footer-col">

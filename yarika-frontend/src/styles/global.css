@@ -1526,19 +1526,24 @@ html, body {
 }
 .bridal-cat-btn {
   background: #fff;
-  border: 1.5px solid #caa75d;
-  color: #181818;
+  border: 2px solid #caa75d;
+  color: #caa75d;
   font-family: 'Cormorant', serif;
-  font-size: 1rem;
-  border-radius: 4px;
-  padding: 0.3rem 1.2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 10px 32px;
+  margin: 0 12px 12px 0;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  outline: none;
+  box-shadow: none;
 }
 .bridal-cat-btn.active,
 .bridal-cat-btn:hover {
   background: #caa75d;
   color: #fff;
+  border-color: #caa75d;
 }
 .bridal-grid {
   display: grid;
@@ -2178,9 +2183,9 @@ html, body {
   .signature-section {
     margin: 0 auto;
     padding: 10px 1rem;
-    width: 100%;
+  width: 100%;
     max-width: 420px;
-    box-sizing: border-box;
+  box-sizing: border-box;
   }
   .signature-grid {
     margin: 0 auto;

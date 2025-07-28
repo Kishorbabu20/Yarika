@@ -44,6 +44,9 @@ const BridalPage = lazy(() => import("./user/BridalPage"));
 const TermsOfUse = lazy(() => import("./pages/TermsOfUse"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
+const CancellationRefundPolicy = lazy(() => import("./pages/CancellationRefundPolicy"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
 
 const queryClient = new QueryClient();
 
@@ -238,6 +241,21 @@ function App() {
               <Route path="/shipping-policy" element={
                 <Suspense fallback={<PageLoader />}>
                   <><NavigationBarSection /><ShippingPolicy /></>
+                </Suspense>
+              } />
+              <Route path="/contact-us" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><ContactUs /></>
+                </Suspense>
+              } />
+              <Route path="/cancellation-refund-policy" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><CancellationRefundPolicy /></>
+                </Suspense>
+              } />
+              <Route path="/about-us" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><AboutUs /></>
                 </Suspense>
               } />
               
