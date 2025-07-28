@@ -567,10 +567,12 @@ button:not(.basic-info-select),
     background: #fff;
     outline: none;
     transition: border 0.15s;
+    box-sizing: border-box;
   }
   
   input:focus, select:focus, textarea:focus {
   border-color: #c6aa62;
+  box-sizing: border-box;
 }
 
 /* Override for Basic Information section - ensure gray borders */
@@ -581,6 +583,9 @@ button:not(.basic-info-select),
   textarea {
     min-height: 48px;
     resize: vertical;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   
   .ap-chips {
@@ -1151,7 +1156,7 @@ button[type="button"].secondary:hover,
 
 /* --- Textareas --- */
 .form-textarea {
-  width: 100%;
+  width: 100% !important;
   min-height: 120px;
   padding: 8px 12px;
   font-size: 1rem;
@@ -1160,9 +1165,15 @@ button[type="button"].secondary:hover,
   background: #fff;
   resize: vertical;
   transition: border 0.15s;
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
 }
 .form-textarea:focus {
   border-color: #c6aa62;
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
 }
 
 /* --- Misc --- */
@@ -1225,7 +1236,7 @@ button[type="button"].secondary:hover,
 
 /* Pricing & Information Section - Textareas only */
 .pricing-info-section textarea.form-textarea {
-  width: 400px !important;
+  width: 100% !important;
   min-height: 120px !important;
   border: 1.2px solid #d1d1d1 !important;
   border-radius: 8px !important;
@@ -1234,6 +1245,9 @@ button[type="button"].secondary:hover,
   background: #fff !important;
   resize: vertical !important;
   transition: border 0.15s !important;
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
 }
 
 /* All other textareas in other sections */
@@ -1248,6 +1262,9 @@ button[type="button"].secondary:hover,
   background: #fff !important;
   resize: vertical !important;
   transition: border 0.15s !important;
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
 }
 
 /* All dropdowns in More Info section */

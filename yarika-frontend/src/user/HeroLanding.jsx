@@ -26,7 +26,7 @@ import BridalBannerMobile from "../assets/Bridalbannermobile.png";
 import { useRef } from "react";
 import BridalCollections from "./BridalCollections";
 import { useScrollFade } from "../hooks/useScrollFade";
-import LeggingsBanner from "../assets/Leggingsbanner.png";
+import LeggingsBanner from "../assets/Leggingsbanner.jpg";
 import LeggingsBannerMobile from "../assets/Leggingsbannermobile.png";
 import { useAutoCarousel } from "../hooks/useAutoCarousel";
 
