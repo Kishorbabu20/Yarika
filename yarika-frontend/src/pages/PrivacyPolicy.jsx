@@ -12,7 +12,6 @@ const PrivacyPolicy = () => {
         <meta name="description" content="Privacy Policy for Yarika - Premium Ethnic Wear. Learn how we collect, use, and protect your personal information." />
       </Helmet>
       
-      <NavigationBarSection />
       
       <div className="policy-page">
         <div className="policy-container">

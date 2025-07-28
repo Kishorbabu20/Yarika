@@ -12,7 +12,7 @@ const TermsOfUse = () => {
         <meta name="description" content="Terms of Use for Yarika - Premium Ethnic Wear. Read our terms and conditions for using our services." />
       </Helmet>
       
-      <NavigationBarSection />
+      
       
       <div className="policy-page">
         <div className="policy-container">

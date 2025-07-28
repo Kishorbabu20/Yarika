@@ -2437,7 +2437,7 @@ html, body {
     margin-right: 0 !important;
   }
   
-  /* Limit to exactly 4 products (2x2 grid) */
+  /* Limit to exactly 4 products (2x2 grid) for HeroLanding */
   .category-section .product-grid > *:nth-child(n+5) {
     display: none !important;
   }

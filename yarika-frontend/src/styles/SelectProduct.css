@@ -922,11 +922,6 @@ html, body {
     padding-left: 2rem;
     padding-right: 2rem;
   }
-  
-  /* Limit to exactly 5 products in desktop view */
-  .product-grid > *:nth-child(n+6) {
-    display: none !important;
-  }
 }
 
 @media (max-width: 1200px) {
@@ -956,8 +951,9 @@ html, body {
     padding-right: 0.5rem;
   }
   
-  /* Limit to exactly 4 products (2x2 grid) */
-  .product-grid > *:nth-child(n+5) {
+  /* Limit to exactly 4 products (2x2 grid) for SelectProduct page only */
+  .select-product-page .product-grid > *:nth-child(n+5),
+  .you-may-like-section .product-grid > *:nth-child(n+5) {
     display: none !important;
   }
 }

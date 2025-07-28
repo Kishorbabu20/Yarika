@@ -12,7 +12,6 @@ const ShippingPolicy = () => {
         <meta name="description" content="Shipping Policy for Yarika - Premium Ethnic Wear. Learn about our shipping methods, delivery times, and shipping costs." />
       </Helmet>
       
-      <NavigationBarSection />
       
       <div className="policy-page">
         <div className="policy-container">

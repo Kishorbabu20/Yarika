@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 import api from "../config/axios";
 import YarikaLogo from "../assets/YarikaLogo1.png";
 import { useCart } from "../context/CartContext";
-import { Heart, Check } from 'lucide-react';
+import { Heart, Check, ArrowLeft } from 'lucide-react';
 import SizeChartModal from './SizeChartModal';
 import ProductImagePopup from './ProductImagePopup';
 import ShippingAddressModal from './ShippingAddressModal';
@@ -127,6 +127,51 @@ const SelectProduct = () => {
   const capitalizeDropdown = (dropdownName) => {
     return dropdownName ? dropdownName.charAt(0).toUpperCase() + dropdownName.slice(1) : '';
   };
+
+  // Function to handle back navigation to category page
+  const handleBackNavigation = () => {
+    let targetUrl;
+    if (isDropdownPattern) {
+      // From dropdown pattern: /{dropdown}/{categoryType}/{category}/{productSlug}
+      targetUrl = `/${dropdown}/${categoryType}/${category}`;
+    } else if (isHomePattern) {
+      // From home pattern: /home/{categoryType}/{category}/{productSlug}
+      targetUrl = `/home/${categoryType}/${category}`;
+    } else {
+      // Fallback to products page
+      targetUrl = '/products';
+    }
+    
+    // Use replace to avoid adding to history stack
+    window.history.replaceState(null, '', targetUrl);
+    navigate(targetUrl);
+  };
+
+  // Handle browser back button and set up proper history
+  useEffect(() => {
+    // Add the category page to history when component mounts
+    let categoryUrl;
+    if (isDropdownPattern) {
+      categoryUrl = `/${dropdown}/${categoryType}/${category}`;
+    } else if (isHomePattern) {
+      categoryUrl = `/home/${categoryType}/${category}`;
+    } else {
+      categoryUrl = '/products';
+    }
+    
+    // Push the category page to history so back button works correctly
+    window.history.pushState(null, '', categoryUrl);
+    window.history.pushState(null, '', window.location.pathname);
+    
+    const handlePopState = (event) => {
+      // Prevent default back behavior and navigate to category
+      event.preventDefault();
+      handleBackNavigation();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [dropdown, categoryType, category]);
 
   // All useEffect hooks at the top
   useEffect(() => {
