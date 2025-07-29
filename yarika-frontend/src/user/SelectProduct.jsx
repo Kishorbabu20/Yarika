@@ -116,6 +116,14 @@ const SelectProduct = () => {
   const [isShippingAddressModalOpen, setIsShippingAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
 
+  // Available colors for the category
+  const [availableColors, setAvailableColors] = useState([]);
+  const [selectedFilterColor, setSelectedFilterColor] = useState('');
+
+  // Get color parameter from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const colorFromUrl = urlParams.get('color');
+
   // Determine which parameter to use for fetching product
   const productIdentifier = productSlug || id;
 
@@ -222,12 +230,44 @@ const SelectProduct = () => {
         setProduct(productRes.data);
         setSelectedImage(productRes.data.mainImage);
         setAllImages([productRes.data.mainImage, ...(productRes.data.additionalImages || [])]);
-        if (productRes.data.colors?.length > 0) {
-        setSelectedColor(productRes.data.colors[0]);
+        
+        // Handle color selection from URL parameter
+        if (colorFromUrl) {
+          // Check if the product has this color
+          const hasColor = productRes.data.colors?.some(c => {
+            if (typeof c === 'string') return c === colorFromUrl;
+            if (typeof c === 'object' && c.code) return c.code === colorFromUrl;
+            return false;
+          });
+          
+          if (hasColor) {
+            setSelectedColor(colorFromUrl);
+            console.log('Pre-selected color from URL:', colorFromUrl);
+          } else {
+            // If product doesn't have this color, set the first available color
+            if (productRes.data.colors?.length > 0) {
+              const firstColor = typeof productRes.data.colors[0] === 'string' 
+                ? productRes.data.colors[0] 
+                : productRes.data.colors[0].code;
+              setSelectedColor(firstColor);
+            }
+          }
+        } else {
+          // Default behavior - set first color
+          if (productRes.data.colors?.length > 0) {
+            setSelectedColor(productRes.data.colors[0]);
+          }
         }
+        
         if (productRes.data.sizes?.length > 0) {
           setSelectedSize(productRes.data.sizes[0]);
         }
+        
+        // Fetch available colors for this category
+        if (productRes.data.categoryType && productRes.data.category) {
+          fetchAvailableColors(productRes.data.categoryType, productRes.data.category);
+        }
+        
         // Fetch similar products
         const similarRes = await api.get(`/products`, {
           params: {
@@ -263,8 +303,128 @@ const SelectProduct = () => {
       }
     };
 
+  const fetchAvailableColors = async (categoryType, category) => {
+    try {
+      console.log('=== FETCHING AVAILABLE COLORS ===');
+      console.log('Category Type:', categoryType);
+      console.log('Category:', category);
+      
+      const query = new URLSearchParams();
+      if (categoryType) {
+        query.append("categoryType", categoryType);
+      }
+      if (category) {
+        query.append("category", category);
+      }
+      
+      const response = await api.get(`/products?${query}`);
+      
+      console.log('Products response:', response.data);
+      console.log('Number of products found:', response.data.length);
+      
+      // Extract unique colors from products in this category
+      const colors = new Set();
+      response.data.forEach((product, index) => {
+        console.log(`Product ${index + 1}:`, {
+          name: product.name,
+          colors: product.colors,
+          colorsType: typeof product.colors,
+          isArray: Array.isArray(product.colors)
+        });
+        
+        if (product.colors && Array.isArray(product.colors)) {
+          product.colors.forEach(color => {
+            if (color) {
+              let colorCode;
+              if (typeof color === 'string') {
+                colorCode = color;
+              } else if (typeof color === 'object' && color.code) {
+                colorCode = color.code;
+              } else {
+                return; // Skip invalid color
+              }
+              
+              if (colorCode) {
+                colors.add(colorCode);
+                console.log('Added color:', colorCode);
+              }
+            }
+          });
+        }
+      });
+      
+      const availableColorsArray = Array.from(colors);
+      console.log('Available colors found:', availableColorsArray);
+      setAvailableColors(availableColorsArray);
+    } catch (error) {
+      console.error('Error fetching available colors:', error);
+      setAvailableColors([]);
+    }
+  };
+
   const handleColorSelect = (color) => {
     setSelectedColor(color);
+  };
+
+  const handleColorFilter = async (color) => {
+    setSelectedFilterColor(color);
+    
+    try {
+      // Find a product with this color in the same category
+      const query = new URLSearchParams();
+      if (product?.categoryType) {
+        query.append("categoryType", product.categoryType);
+      }
+      if (product?.category) {
+        query.append("category", product.category);
+      }
+      
+      const response = await api.get(`/products?${query}`);
+      
+      // Find a product that has this color
+      const productWithColor = response.data.find(product => {
+        if (product.colors && Array.isArray(product.colors)) {
+          return product.colors.some(c => {
+            if (typeof c === 'string') return c === color;
+            if (typeof c === 'object' && c.code) return c.code === color;
+            return false;
+          });
+        }
+        return false;
+      });
+      
+      if (productWithColor) {
+        // Navigate to the product page with the color pre-selected
+        let productUrl;
+        if (productWithColor.seoUrl && productWithColor.categoryType && productWithColor.category) {
+          // Use SEO URL if available
+          productUrl = `/home/${productWithColor.categoryType}/${productWithColor.category}/${productWithColor.seoUrl}?color=${color}`;
+        } else {
+          // Fallback to ID-based URL
+          productUrl = `/product/${productWithColor._id}?color=${color}`;
+        }
+        navigate(productUrl);
+      } else {
+        // If no product found with this color, navigate to category page
+        const categoryUrl = isDropdownPattern 
+          ? `/${dropdown}/${product.categoryType}/${product.category}?color=${color}`
+          : isHomePattern 
+          ? `/home/${product.categoryType}/${product.category}?color=${color}`
+          : `/products?color=${color}`;
+        navigate(categoryUrl);
+      }
+    } catch (error) {
+      console.error('Error finding product with color:', error);
+      // Fallback to category page
+      if (product && product.categoryType && product.category) {
+        const categoryUrl = isDropdownPattern 
+          ? `/${dropdown}/${product.categoryType}/${product.category}?color=${color}`
+          : isHomePattern 
+          ? `/home/${product.categoryType}/${product.category}?color=${color}`
+          : `/products?color=${color}`;
+        navigate(categoryUrl);
+      }
+    }
   };
 
   const handleSizeSelect = (size) => {
@@ -681,9 +841,30 @@ const SelectProduct = () => {
   };
 
   const renderColorOptions = () => {
-    if (!product?.colors?.length) {
+    if (!product?.colors?.length && !availableColors.length) {
       return null;
     }
+
+    // Combine product colors and available colors, removing duplicates
+    const allColors = new Set();
+    
+    // Add product colors first
+    if (product?.colors?.length) {
+      product.colors.forEach(color => {
+        if (typeof color === 'string') {
+          allColors.add(color);
+        } else if (typeof color === 'object' && color.code) {
+          allColors.add(color.code);
+        }
+      });
+    }
+    
+    // Add available colors from category
+    availableColors.forEach(color => {
+      allColors.add(color);
+    });
+    
+    const uniqueColors = Array.from(allColors);
 
     return (
       <div className="color-section">
@@ -691,11 +872,17 @@ const SelectProduct = () => {
         <div style={{ 
           display: 'flex', 
           gap: '12px',
-          padding: '8px'
+          padding: '8px',
+          flexWrap: 'wrap'
         }}>
-          {product.colors.map((color, index) => {
+          {uniqueColors.map((color, index) => {
             const colorValue = getColorValue(color);
             const isLight = isLightColor(colorValue);
+            const isProductColor = product?.colors?.some(c => {
+              if (typeof c === 'string') return c === color;
+              if (typeof c === 'object' && c.code) return c.code === color;
+              return false;
+            });
             
             // Create a filled div for the color
             const colorFill = {
@@ -722,20 +909,28 @@ const SelectProduct = () => {
               margin: 0,
               outline: 'none',
               background: '#ffffff', // White background
-              overflow: 'hidden' // Ensure color fill stays within bounds
+              overflow: 'hidden', // Ensure color fill stays within bounds
+              opacity: isProductColor ? 1 : 0.6 // Dim colors not available for this product
             };
             
             return (
               <button
                 key={color}
-                onClick={() => handleColorSelect(color)}
+                onClick={() => {
+                  if (isProductColor) {
+                    handleColorSelect(color);
+                  } else {
+                    // Navigate to category page with color filter
+                    handleColorFilter(color);
+                  }
+                }}
                 style={buttonStyles}
-                title={getColorName(color)}
+                title={`${getColorName(color)}${!isProductColor ? ' (View all products in this color)' : ''}`}
                 type="button"
-                aria-label={`Select ${getColorName(color)} color`}
+                aria-label={`${isProductColor ? 'Select' : 'View'} ${getColorName(color)} color`}
               >
                 <div style={colorFill}></div>
-                {selectedColor === color && (
+                {selectedColor === color && isProductColor && (
                   <span style={{
                     position: 'absolute',
                     top: '50%',
@@ -754,14 +949,38 @@ const SelectProduct = () => {
             );
           })}
         </div>
+        {availableColors.length > 0 && (
+          <p style={{
+            fontSize: '0.8rem',
+            color: '#666',
+            margin: '8px 0 0 0',
+            fontStyle: 'italic'
+          }}>
+            * Dimmed colors show other available colors in this category. Click to view all products in that color.
+          </p>
+        )}
         {selectedColor && (
-          <div>
-            Selected: {selectedColor.name || getColorName(selectedColor.code || selectedColor)}
+          <div style={{
+            marginTop: '12px',
+            padding: '8px 12px',
+            backgroundColor: '#f8f8f8',
+            borderRadius: '6px',
+            border: '1px solid #e5e5e5'
+          }}>
+            <span style={{
+              fontSize: '0.9rem',
+              color: '#333',
+              fontWeight: '500'
+            }}>
+              Selected Color: <span style={{ color: '#C5A56F', fontWeight: '600' }}>
+                {getColorName(selectedColor)}
+              </span>
+            </span>
           </div>
         )}
       </div>
     );
-    };
+  };
     
   const renderSizeOptions = () => {
     if (!product?.sizes?.length) {
@@ -1017,31 +1236,6 @@ const SelectProduct = () => {
             </div>
           )}
 
-          {/* Stock Status */}
-          <div style={{
-            marginTop: '16px',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            backgroundColor: product.totalStock > 0 ? '#f0f9f0' : '#fff0f0',
-            color: product.totalStock > 0 ? '#2c7a2c' : '#cc0000',
-            display: 'inline-block',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>
-            {product.totalStock > 0 ? (
-              <>
-                In Stock ({product.totalStock} items available)
-                {selectedSize && (
-                  <span style={{ marginLeft: '8px', color: '#666' }}>
-                    • Size {selectedSize}: {product.sizeStocks[selectedSize] || 0} available
-                  </span>
-                )}
-              </>
-            ) : (
-              'Out of Stock'
-            )}
-          </div>
-
           {/* Rest of the existing code */}
           {renderColorOptions()}
           {renderSizeOptions()}
@@ -1080,6 +1274,11 @@ const SelectProduct = () => {
         onAddressSelect={handleAddressSelect}
       />
       <Toaster position="bottom-center" />
+
+      {/* Debug info */}
+      {console.log('Available colors state:', availableColors)}
+      {console.log('Product category:', product?.category)}
+      {console.log('Product categoryType:', product?.categoryType)}
 
       {/* You may like section */}
       {similarProducts && similarProducts.length > 0 && (

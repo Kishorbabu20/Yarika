@@ -26,20 +26,6 @@
   right: 0;
   bottom: 0;
   width: 100vw;
-  min-height: 100vh !important;
-  overflow: hidden;
-}
-
-/* Remove any white spacing at the bottom of the page */
-html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100vh !important;
-  overflow: hidden;
-}
-
-body {
-  background: #111;
 }
 
 .admin-login-box {
