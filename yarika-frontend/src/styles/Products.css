@@ -1,31 +1,3 @@
-.products-container {
-    display: flex;
-    height: 100vh;
-    font-family: "Segoe UI", sans-serif;
-  }
-  
-  /* Sidebar stays on the left */
-  .sidebar {
-    width: 220px;
-    background-color: #1e1e1e;
-    color: #fff;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 0px 10px 10px 0px;
-  }
-  
-  /* Main content fills remaining space */
-  .main-content {
-    flex-grow: 1;
-    background: #f8f8f8;
-    padding: 0 30px 30px 30px;
-    overflow-y: auto;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-  }
-  
 .yarika-card {
     background: #fff;
     padding: 24px;
@@ -141,12 +113,7 @@
     color: #1f2937;
   }
 
-  .dashboard-container {
-    display: flex;
-    height: 100vh;
-  }
-  
-.products-header-row {
+  .products-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -405,6 +372,8 @@
   height: 80px;
   margin-top: 0 !important;
   padding-top: 0 !important;
+  position: relative;
+  z-index: 1;
 }
 .products-header-title {
   font-size: 28px;
@@ -479,6 +448,41 @@
 .status-badge.discontinued {
   background-color: #f3f4f6;
   color: #374151;
+}
+  
+/* === Products Page Layout Fixes === */
+/* Ensure proper spacing for admin dashboard layout */
+.dashboard-container .main-content {
+  padding: 0 32px 32px 32px;
+  margin-left: 180px;
+  transition: margin-left 0.3s ease;
+  background: #faf9f6;
+  min-height: 100vh;
+}
+
+.dashboard-container:has(.sidebar.collapsed) .main-content {
+  margin-left: 70px;
+}
+
+/* Ensure products content doesn't get hidden */
+.products-section-row,
+.products-stats-row,
+.products-filters-row,
+.products-table-section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix for mobile responsiveness */
+@media (max-width: 768px) {
+  .dashboard-container .main-content {
+    margin-left: 0;
+    padding: 0 16px 16px 16px;
+  }
+  
+  .dashboard-container:has(.sidebar.collapsed) .main-content {
+    margin-left: 70px;
+  }
 }
   
   

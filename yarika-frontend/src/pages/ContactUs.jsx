@@ -54,7 +54,7 @@ const ContactUs = () => {
             <div className="policy-section">
               <h2>Address</h2>
               <p><strong>Yarika Ethnic Wear</strong><br />
-              SF No. 29/18, Onapalayam,<br />
+              SF No. 29/1b, Onapalayam,<br />
               Vadavalli To Thondamuthur Road,<br /> 
               Coimbatore-641 109, Tamilnadu, India.</p>
             </div>

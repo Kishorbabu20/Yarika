@@ -10,7 +10,7 @@ import axios from "../config/axios";
 import "../styles/ManageMaster.css";
 import { QRCodeCanvas } from "qrcode.react";
 import html2canvas from "html2canvas";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Eye, Download, Pencil, Trash2, X } from "lucide-react";
 
 const TABS = ["Colors", "Sizes", "Color Grouping", "Group Size", "Batch & Products"];
@@ -286,12 +286,10 @@ export default function ManageMaster() {
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div className="dashboard-container">
       <Sidebar />
-      <div style={{ flex: 1, background: "#fff" }}>
-        <div style={{ padding: '0 40px' }}>
-          <Header title="Manage Master" />
-        </div>
+      <div className="main-content">
+        <Header title="Manage Master" />
         <div className="manage-master-container">
           <h1 className="manage-master-title">Manage Master</h1>
           <div className="manage-master-subtitle">

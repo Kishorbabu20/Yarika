@@ -180,7 +180,7 @@ const OrderDetails = () => {
             <div class="section">
               <div class="section-title" style="color: #b19049;">From Yarika</div>
               <p style="margin: 0; color: #222; line-height: 1.7;">
-                SF No. 29/18, Onapalayam,<br/>
+                SF No. 29/1b, Onapalayam,<br/>
                 Vadavalli To Thondamuthur Road,<br/>
                 Coimbatore-641 109, Tamilnadu, India.
               </p>
@@ -373,7 +373,7 @@ const OrderDetails = () => {
           <div className="info-section" style={{ background: '#fff', padding: 24, borderRadius: 12, border: '1.5px solid #e5d7b8' }}>
             <h3 style={{ fontSize: 20, fontWeight: 600, color: '#b19049', marginTop: 0, marginBottom: 16 }}>Admin Address</h3>
             <div style={{ fontSize: 16, color: '#222', lineHeight: 1.7 }}>
-              SF No. 29/18, Onapalayam,<br/>
+              SF No. 29/1b, Onapalayam,<br/>
               Vadavalli To Thondamuthur Road,<br/>
               Coimbatore-641 109, Tamilnadu, India.
             </div>

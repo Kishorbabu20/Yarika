@@ -16,7 +16,7 @@ const Footer = () => (
           rel="noopener noreferrer"
           style={{ color: "#fff", textDecoration: "none" }}
         >
-          SF No. 29/18, Onapalayam,<br />
+          SF No. 29/1b, Onapalayam,<br />
           Vadavalli To Thondamuthur Road,<br />
           Coimbatore-641 109, Tamilnadu, India.
         </a>
@@ -24,8 +24,8 @@ const Footer = () => (
       <div className="footer-col">
         <div className="footer-title">CONTACT</div>
         <div>
-          +91 94890 4226<br />
-          +91 94890 4223<br />
+          +91 94890 42226<br />
+          +91 94890 42223<br />
           info@zillionthreads.com
         </div>
         </div>

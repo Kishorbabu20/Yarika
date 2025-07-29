@@ -177,7 +177,7 @@ function App() {
             {!cssLoaded ? (
               <PageLoader />
             ) : (
-              <Routes>
+            <Routes>
               {/* User Routes - All with NavigationBarSection */}
               <Route path="/" element={
                 <Suspense fallback={<PageLoader />}>
@@ -201,10 +201,10 @@ function App() {
               } />
               <Route path="/profile" element={
                 <Suspense fallback={<PageLoader />}>
-                  <UserProtectedRoute>
-                    <NavigationBarSection />
-                    <UserProfile />
-                  </UserProtectedRoute>
+                <UserProtectedRoute>
+                  <NavigationBarSection />
+                  <UserProfile />
+                </UserProtectedRoute>
                 </Suspense>
               } />
               <Route path="/wishlist" element={
