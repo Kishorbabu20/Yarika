@@ -7,6 +7,29 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster, toast } from "react-hot-toast";
 import NavigationBarSection from './user/NavigationBarSection';
 
+// Ensure CSS is loaded
+const ensureCSSLoaded = () => {
+  return new Promise((resolve) => {
+    // Check if all critical CSS is loaded
+    const checkCSS = () => {
+      const styleSheets = Array.from(document.styleSheets);
+      const hasGlobalCSS = styleSheets.some(sheet => 
+        sheet.href && (sheet.href.includes('global.css') || sheet.href.includes('index.css'))
+      );
+      
+      // Also check if DOM is ready
+      if (hasGlobalCSS || document.readyState === 'complete') {
+        // Add a small delay to ensure all styles are applied
+        setTimeout(resolve, 100);
+      } else {
+        setTimeout(checkCSS, 50);
+      }
+    };
+    
+    checkCSS();
+  });
+};
+
 // Lazy load all page components
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -87,8 +110,14 @@ function ScrollToTop() {
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cssLoaded, setCssLoaded] = useState(false);
 
   useEffect(() => {
+    // Ensure CSS is loaded before rendering
+    ensureCSSLoaded().then(() => {
+      setCssLoaded(true);
+    });
+
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
     
@@ -145,7 +174,10 @@ function App() {
           <ScrollToTop />
           <div className="App">
             <Toaster position="top-right" />
-            <Routes>
+            {!cssLoaded ? (
+              <PageLoader />
+            ) : (
+              <Routes>
               {/* User Routes - All with NavigationBarSection */}
               <Route path="/" element={
                 <Suspense fallback={<PageLoader />}>
@@ -345,6 +377,7 @@ function App() {
                 </Suspense>
               } />
             </Routes>
+            )}
           </div>
         </BrowserRouter>
       </CartProvider>

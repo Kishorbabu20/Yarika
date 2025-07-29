@@ -1,17 +1,47 @@
+/* Override global padding for auth pages */
 .auth-container {
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .auth-form {
-    flex: 1;
-    padding: 40px 60px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  margin-top: -64px; /* Remove the global padding-top */
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Ensure the auth container takes full height */
+.auth-container,
+.auth-form,
+.auth-image {
+  min-height: 100vh !important;
+  height: 100vh !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.auth-form {
+  flex: 1;
+  padding: 40px 60px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Remove bottom margins from form elements */
+.auth-form .brand,
+.auth-form .tagline,
+.auth-form .form-section,
+.auth-form .divider,
+.auth-form .btn {
+  margin-bottom: 0 !important;
+}
+
+.auth-form .tagline {
+  margin-bottom: 20px !important; /* Keep some spacing for readability */
+}
   
   .brand {
     text-align: center;
