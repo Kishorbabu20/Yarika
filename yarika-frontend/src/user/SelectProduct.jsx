@@ -992,16 +992,6 @@ const SelectProduct = () => {
             );
           })}
         </div>
-        {availableColors.length > 0 && (
-          <p style={{
-            fontSize: '0.8rem',
-            color: '#666',
-            margin: '8px 0 0 0',
-            fontStyle: 'italic'
-          }}>
-            * Dimmed colors show other available colors in this category. Click to view all products in that color.
-          </p>
-        )}
         {selectedColor && (
           <div style={{
             marginTop: '12px',
