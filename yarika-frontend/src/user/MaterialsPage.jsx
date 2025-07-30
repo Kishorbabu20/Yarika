@@ -30,7 +30,7 @@ const MaterialsPage = () => {
 
   const navigate = useNavigate();
 
-  const itemsPerPage = 12;
+  const itemsPerPage = 60;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const currentItems = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
@@ -238,11 +238,11 @@ const MaterialsPage = () => {
         </div>
         )}
 
-        {totalPages > 1 && (
+        {(totalPages > 1 || (loading && filteredProducts.length > 0)) && (
         <div className="pagination">
             <button 
               className="page-btn" 
-              disabled={currentPage === 1} 
+              disabled={currentPage === 1 || loading} 
               onClick={() => handlePageClick(currentPage - 1)}
             >
               ←
@@ -252,13 +252,14 @@ const MaterialsPage = () => {
               key={i}
               className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
               onClick={() => handlePageClick(i + 1)}
+              disabled={loading}
             >
               {i + 1}
             </button>
           ))}
             <button 
               className="page-btn" 
-              disabled={currentPage === totalPages} 
+              disabled={currentPage === totalPages || loading} 
               onClick={() => handlePageClick(currentPage + 1)}
             >
               →
