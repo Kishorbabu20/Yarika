@@ -1117,9 +1117,9 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   }, [isEditMode, product]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="dashboard-container">
       <Sidebar />
-      <div style={{ flex: 1, background: '#fff' }}>
+      <div className="main-content">
         <Header title="Add New Product" />
         <div className="add-product-form-container">
           {/* Breadcrumb and Back Button */}

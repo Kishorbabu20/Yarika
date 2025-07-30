@@ -377,6 +377,14 @@
     margin-top: 6px;
   }
   
+  .stock-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px 12px;
+    align-items: center;
+    margin-top: 6px;
+  }
+  
   .stock-size-input {
     background: #f7f7f7;
     text-align: center;
@@ -396,6 +404,9 @@
       grid-column: 1 / -1;
     }
     .stock-by-size-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stock-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
@@ -999,6 +1010,28 @@ select.form-select {
   color: #caa75d;
   font-weight: 500;
 }
+.breadcrumb ul,
+.breadcrumb ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb li {
+  list-style: none;
+  display: inline;
+}
+
+.breadcrumb::before,
+.breadcrumb::after {
+  content: none;
+}
+
+.breadcrumb *::before,
+.breadcrumb *::after {
+  content: none;
+}
+
 .add-product-header-row {
   display: flex;
   align-items: center;
@@ -1009,12 +1042,18 @@ select.form-select {
 /* --- Form Container --- */
 .add-product-form-container {
   max-width: 1200px;
-  margin: 32px auto;
+  margin: 0 auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 24px rgba(0,0,0,0.08);
   padding: 32px 20px 24px 20px;
   width: 100%;
+}
+
+/* Add proper spacing for AddProductForm in main-content */
+.main-content .add-product-form-container {
+  margin: 32px auto;
+  padding: 32px 20px 24px 20px;
 }
 
 /* --- Section Headers --- */
@@ -1189,6 +1228,28 @@ button[type="button"].secondary:hover,
   color: #caa75d;
   font-weight: 500;
 }
+.breadcrumb ul,
+.breadcrumb ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb li {
+  list-style: none;
+  display: inline;
+}
+
+.breadcrumb::before,
+.breadcrumb::after {
+  content: none;
+}
+
+.breadcrumb *::before,
+.breadcrumb *::after {
+  content: none;
+}
+
 .add-product-header-row {
   display: flex;
   align-items: center;
