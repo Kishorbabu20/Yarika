@@ -1,12 +1,12 @@
 /* General container for the wishlist page */
-.wishlist-page-container {
+.profile-page-container {
     min-height: 100vh;
     background-color: #F5F5F5;
     padding: 120px 64px 40px;
 }
 
 /* Left Sidebar */
-.wishlist-sidebar {
+.profile-sidebar {
     position: fixed;
     width: 280px;
     background-color: #111111;
@@ -19,18 +19,7 @@
     overflow-y: auto;
 }
 
-/* Main Content Area */
-.wishlist-content {
-    flex: 1;
-    padding: 40px;
-    background-color: #ffffff;
-    border-radius: 16px;
-    margin-left: calc(280px + 96px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #E5E5E5;
-}
-
-.wishlist-header {
+.profile-header {
     text-align: left;
     margin-bottom: 50px;
     display: flex;
@@ -38,7 +27,7 @@
     gap: 15px;
 }
 
-.wishlist-avatar-placeholder {
+.profile-avatar-placeholder {
     width: 96px;
     height: 96px;
     background-color: #4A4A4A;
@@ -48,66 +37,87 @@
     justify-content: center;
 }
 
-.wishlist-name h2 {
-    font-size: 20px;
-    margin: 0;
-    font-weight: 400;
-    color: #FFFFFF;
-}
-
-.wishlist-name h3 {
-    font-size: 20px;
-    margin: 0;
-    font-weight: 400;
-    color: #FFFFFF;
-}
-
-.wishlist-navigation {
-    flex-grow: 1;
+.profile-name {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
+}
+
+.profile-name h2 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.profile-name h3 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.profile-navigation {
+    flex-grow: 1;
     margin-bottom: 32px;
 }
 
-.wishlist-navigation .nav-button {
-    background: none !important;
+.profile-navigation .nav-button {
+    background: none;
     border: none;
-    color: #FFFFFF !important;
+    color: #FFFFFF;
     font-size: 14px;
-    padding: 12px 16px;
+    padding: 10px 14px;
+    width: 100%;
     text-align: left;
     cursor: pointer;
-    border-radius: 8px;
     transition: background-color 0.2s;
-    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 8px;
 }
 
-.wishlist-navigation .nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+.profile-navigation .nav-button.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+    font-weight: normal;
 }
 
-.wishlist-navigation .nav-button.active {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #FFFFFF !important;
-    font-weight: 500;
+.profile-navigation .nav-button:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .logout-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     background: none !important;
     border: none;
     color: #caa75d !important;
     font-size: 14px;
-    padding: 12px 16px;
+    padding: 0;
+    width: 100%;
+    text-align: left;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-top: auto;
 }
 
+.logout-button svg {
+    color: #caa75d !important;
+}
+
 .logout-button:hover {
-    color: #8B6B4A !important;
+    opacity: 0.8;
+}
+
+/* Right Content Area */
+.profile-page-container .profile-content {
+    flex: 1;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    margin-left: calc(280px + 96px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #E5E5E5;
 }
 
 /* Wishlist Table Header */
@@ -293,78 +303,51 @@
 }
 
 @media (max-width: 768px) {
-  .wishlist-page-container {
-    padding: 80px 4vw 24px 4vw !important;
-  }
-  .wishlist-sidebar {
-    position: static !important;
-    width: 100% !important;
-    border-radius: 12px !important;
-    padding: 20px 8px !important;
-    margin-bottom: 18px !important;
-    height: auto !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    overflow: visible !important;
-    margin-top: 300px !important;
-  }
-  .wishlist-content {
-    margin-left: 0 !important;
-    padding: 16px 4px !important;
-    border-radius: 12px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .wishlist-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
-    margin-bottom: 24px !important;
-  }
-  .wishlist-avatar-placeholder {
-    width: 64px !important;
-    height: 64px !important;
-  }
-  .wishlist-table-header, .wishlist-item {
-    grid-template-columns: 1fr !important;
-    padding: 0.75rem 0.25rem !important;
-    gap: 8px !important;
-  }
-  .item-details {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.5rem !important;
-  }
-  .item-image {
-    width: 80vw !important;
-    max-width: 220px !important;
-    height: 80vw !important;
-    max-height: 220px !important;
-    margin: 0 auto 8px auto !important;
-  }
-  .item-info {
-    width: 100% !important;
-    text-align: left !important;
-  }
-  .item-actions {
-    flex-direction: row !important;
-    gap: 8px !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    width: 100% !important;
-  }
-  .wishlist-navigation {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    text-align: center !important;
-  }
-  .wishlist-navigation .nav-button {
-    text-align: center !important;
-    width: 100% !important;
-  }
+    .profile-page-container {
+        padding: 0 4vw 24px 4vw !important;
+        margin-top: 0 !important;
+    }
+    .profile-sidebar {
+        position: static !important;
+        width: 100% !important;
+        border-radius: 12px !important;
+        padding: 20px 8px !important;
+        margin-bottom: 18px !important;
+        height: auto !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        overflow: visible !important;
+        margin-top: 0 !important;
+    }
+    .profile-page-container .profile-content {
+        margin-left: 0 !important;
+        padding: 16px 4px !important;
+        border-radius: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .profile-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        margin-bottom: 24px !important;
+    }
+    .profile-avatar-placeholder {
+        width: 64px !important;
+        height: 64px !important;
+    }
+    .profile-navigation {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+    .profile-navigation .nav-button {
+        text-align: center !important;
+        width: 100% !important;
+    }
 }
 

@@ -97,16 +97,16 @@ const MyOrders = () => {
 
     if (loading) {
         return (
-            <div className="orders-page-container">
-                <div className="orders-sidebar">
-                    <div className="orders-header">
-                        <div className="orders-avatar-placeholder">
+            <div className="profile-page-container">
+                <div className="profile-sidebar">
+                    <div className="profile-header">
+                        <div className="profile-avatar-placeholder">
                             <User size={48} color="#fff" />
                         </div>
-                        <div className="orders-name">Loading...</div>
+                        <div className="profile-name">Loading...</div>
                     </div>
                 </div>
-                <div className="orders-content">
+                <div className="profile-content">
                     <div className="loading-container">
                         <div className="loading-spinner"></div>
                         <p>Loading your orders...</p>

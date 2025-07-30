@@ -255,7 +255,10 @@ const SelectProduct = () => {
         } else {
           // Default behavior - set first color
           if (productRes.data.colors?.length > 0) {
-            setSelectedColor(productRes.data.colors[0]);
+            const firstColor = typeof productRes.data.colors[0] === 'string' 
+              ? productRes.data.colors[0] 
+              : productRes.data.colors[0].code;
+            setSelectedColor(firstColor);
           }
         }
         
@@ -341,21 +344,21 @@ const SelectProduct = () => {
               } else if (typeof color === 'object' && color.code) {
                 colorCode = color.code;
               } else {
-                return; // Skip invalid color
+                return; // Skip invalid colors
               }
-              
-              if (colorCode) {
-                colors.add(colorCode);
-                console.log('Added color:', colorCode);
-              }
+              colors.add(colorCode);
             }
           });
         }
       });
       
-      const availableColorsArray = Array.from(colors);
-      console.log('Available colors found:', availableColorsArray);
-      setAvailableColors(availableColorsArray);
+      const uniqueColors = Array.from(colors);
+      setAvailableColors(uniqueColors);
+      
+      // Auto-select first available color if no color is currently selected
+      if (!selectedColor && uniqueColors.length > 0) {
+        setSelectedColor(uniqueColors[0]);
+      }
     } catch (error) {
       console.error('Error fetching available colors:', error);
       setAvailableColors([]);
@@ -779,14 +782,17 @@ const SelectProduct = () => {
 
   const getColorName = (color) => {
     if (!color) return "Unknown Color";
+    
     if (typeof color === "object") {
       // If color is an object with a name property, use it
       return color.name || color.code || "Unknown Color";
     }
+    
     if (typeof color === "string" && color.startsWith('#')) {
       const expanded = expandHex(color.toLowerCase());
-      return HEX_TO_COLOR_NAME[expanded] || color;
+      return HEX_TO_COLOR_NAME[expanded] || getColorNameFromHex(expanded);
     }
+    
     // Otherwise, treat as ID or name string
     const COLOR_NAMES = {
       "4": "Black",
@@ -815,7 +821,44 @@ const SelectProduct = () => {
       "102": "Gold",
       "103": "Silver"
     };
-    return COLOR_NAMES[color] || HEX_TO_COLOR_NAME[color?.toLowerCase?.()] || "Unknown Color";
+    
+    return COLOR_NAMES[color] || HEX_TO_COLOR_NAME[color?.toLowerCase?.()] || getColorNameFromHex(color) || "Unknown Color";
+  };
+
+  // Helper function to generate color name from hex code
+  const getColorNameFromHex = (hex) => {
+    if (!hex || !hex.startsWith('#')) return "Unknown Color";
+    
+    // Convert hex to RGB
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    
+    // Simple color detection based on RGB values
+    if (r === g && g === b) {
+      if (r === 0) return "Black";
+      if (r === 255) return "White";
+      if (r < 128) return "Dark Grey";
+      return "Light Grey";
+    }
+    
+    // Detect basic colors
+    if (r > 200 && g < 100 && b < 100) return "Red";
+    if (r < 100 && g > 200 && b < 100) return "Green";
+    if (r < 100 && g < 100 && b > 200) return "Blue";
+    if (r > 200 && g > 200 && b < 100) return "Yellow";
+    if (r > 200 && g < 100 && b > 200) return "Magenta";
+    if (r < 100 && g > 200 && b > 200) return "Cyan";
+    if (r > 200 && g > 100 && g < 200 && b < 100) return "Orange";
+    if (r > 150 && g < 100 && b < 100) return "Dark Red";
+    if (r < 100 && g > 150 && b < 100) return "Dark Green";
+    if (r < 100 && g < 100 && b > 150) return "Dark Blue";
+    
+    // If no specific color detected, return a descriptive name
+    const brightness = (r + g + b) / 3;
+    if (brightness < 85) return "Dark Color";
+    if (brightness > 170) return "Light Color";
+    return "Medium Color";
   };
 
   const isColorAvailable = (color) => {
@@ -910,7 +953,7 @@ const SelectProduct = () => {
               outline: 'none',
               background: '#ffffff', // White background
               overflow: 'hidden', // Ensure color fill stays within bounds
-              opacity: isProductColor ? 1 : 0.6 // Dim colors not available for this product
+              opacity: 1 // Remove dimming effect - all colors are now fully visible
             };
             
             return (
@@ -925,7 +968,7 @@ const SelectProduct = () => {
                   }
                 }}
                 style={buttonStyles}
-                title={`${getColorName(color)}${!isProductColor ? ' (View all products in this color)' : ''}`}
+                title={`${getColorName(color)}`}
                 type="button"
                 aria-label={`${isProductColor ? 'Select' : 'View'} ${getColorName(color)} color`}
               >
@@ -1051,19 +1094,6 @@ const SelectProduct = () => {
                 title={isAvailable ? `Size ${size} - ${sizeStock} in stock` : `Size ${size} - Out of stock`}
               >
                 {size}
-                {isAvailable && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '-20px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    fontSize: '10px',
-                    color: '#666',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    ({sizeStock})
-                  </div>
-                )}
               </button>
             );
           })}
