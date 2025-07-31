@@ -27,7 +27,7 @@
 
 @media (max-width: 600px) {
   .select-product-page {
-    padding: 0 0.5rem;
+    padding: 0 0.8rem;
   }
 }
 
@@ -49,7 +49,7 @@
 
 @media (max-width: 600px) {
   .content-section {
-    padding: 0 0.5rem;
+    padding: 0 0.8rem;
   }
 }
 
@@ -74,7 +74,7 @@
 
 @media (max-width: 600px) {
   .breadcrumb {
-    padding: 0 0.5rem;
+    padding: 0 0.8rem;
   }
 }
 
@@ -98,7 +98,7 @@
 
 @media (max-width: 600px) {
   .product-container {
-    padding: 0 0.5rem 40px 0.5rem !important;
+    padding: 0 0.8rem 40px 0.8rem !important;
   }
 }
 .product-gallery-wrapper, .product-info {
@@ -1011,39 +1011,77 @@ html, body {
   .select-product-page {
     margin-top: 0 !important; /* Remove top spacing */
     margin-bottom: 20px !important; /* Add bottom gap */
-    padding: 0 1rem;
+    padding: 0 0.8rem;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .product-container {
     padding-top: 0 !important;
     margin-top: 0 !important;
     padding-bottom: 20px !important; /* Add bottom gap */
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .breadcrumb {
     margin-top: 0 !important;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .you-may-like-header {
     margin: 18px 0 10px 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .you-may-like-section {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .search-results-page {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .content-section {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
   }
   .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem; /* Back to equal padding */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+  }
+  
+  /* Hide scrollbars but keep functionality */
+  .select-product-page::-webkit-scrollbar,
+  .product-container::-webkit-scrollbar,
+  .breadcrumb::-webkit-scrollbar,
+  .you-may-like-section::-webkit-scrollbar,
+  .search-results-page::-webkit-scrollbar,
+  .content-section::-webkit-scrollbar,
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* For Firefox */
+  .select-product-page,
+  .product-container,
+  .breadcrumb,
+  .you-may-like-section,
+  .search-results-page,
+  .content-section,
+  .container {
+    scrollbar-width: none;
   }
 } 

@@ -288,9 +288,10 @@
     background: #fff;
     height: 64px;
     padding: 0 1rem;
-    width: 100vw;
+    width: 100%;
     position: relative;
     z-index: 100;
+    box-sizing: border-box;
   }
   .menu-icon {
     background: none;
@@ -299,6 +300,7 @@
     margin-right: 0.5rem;
     display: flex;
     align-items: center;
+    min-width: 28px;
   }
   .navbar-logo {
     display: flex;
@@ -306,6 +308,7 @@
     align-items: center;
     flex: 1 1 auto;
     min-width: 0;
+    max-width: 60%;
   }
   .logo-text {
     font-family: 'Cormorant', serif;
@@ -336,6 +339,8 @@
     display: flex;
     align-items: center;
     gap: 0.7rem;
+    min-width: 80px;
+    justify-content: flex-end;
   }
   .navbar-icon {
     background: none;
@@ -344,6 +349,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    min-width: 24px;
   }
   /* Hide the desktop nav */
   .nav-wrapper, .navigation-bar {

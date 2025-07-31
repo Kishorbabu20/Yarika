@@ -3,7 +3,6 @@
 /* Add these styles at the beginning of the file */
 body {
   margin: 0;
-  padding-top: 64px; /* Match the navigation bar height */
   font-family: 'Cormorant', serif;
   overflow-x: hidden;
 }
@@ -1256,6 +1255,7 @@ html, body {
   max-width: 1200px;
   margin: 0 auto;
   gap: 2rem;
+  padding: 0 2rem 0 2rem;
 }
 
 .footer-col {
@@ -1326,7 +1326,7 @@ html, body {
     flex-direction: column !important;
     align-items: center !important;
     gap: 2.2rem !important;
-    padding: 0 0.5rem;
+    padding: 0 0.5rem !important;
   }
   .footer-col {
     min-width: 0 !important;
@@ -1697,34 +1697,11 @@ html, body {
 
 @media (max-width: 600px) {
   .golden-banner {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin-left: -50vw !important;
-    left: 50%;
-    right: 50%;
-    box-sizing: border-box !important;
-    padding: 0.5rem 0.5rem !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-  .golden-banner h4 {
-    display: flex !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-    white-space: nowrap !important;
-    justify-content: flex-start !important;
-    font-size: 1.1rem !important;
-    line-height: 1.2 !important;
-    width: auto !important;
-    min-width: max-content !important;
-    padding: 0 8px;
+    display: none !important;
   }
 }
+
+
 
 
 
@@ -2683,8 +2660,8 @@ html, body {
     margin-bottom: 0;
   }
   .footer-content {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
     margin-bottom: 0;
     padding-bottom: 0;
   }
