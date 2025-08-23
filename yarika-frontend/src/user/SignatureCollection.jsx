@@ -1,38 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Leggings from '../assets/Leggings.png';
-import Lehenga from '../assets/Lehenga.png';
-import Blouse from '../assets/Blouse.png';
+import Lehengha from '../assets/Lehengha.png';
+import Blouses from '../assets/Blouses.png';
 import LeggingsMobile from '../assets/Leggingsmobile.png';
 import LehengaMobile from '../assets/Lehengasmobile.png';
 import BlouseMobile from '../assets/Blousemobile.png';
 
 const desktopImages = [
-  Leggings,
-  Lehenga,
-  Blouse
+  Lehengha,
+  Blouses
 ];
 const mobileImages = [
-  LeggingsMobile,
   LehengaMobile,
   BlouseMobile
 ];
 
-const signatureBlouses = [
+const featuredItems = [
   {
     id: 1,
-    title: "Leggings",
-    link: "/home/leggings"
+    title: "Lehanga",
+    subtitle: "Your Style & Comfort",
+    link: "/home/bridal",
+    image: Lehengha,
+    mobileImage: LehengaMobile
   },
   {
     id: 2,
-    title: "Lehanga",
-    link: "/home/bridal"
-  },
-  {
-    id: 3,
     title: "Readymade Blouse",
-    link: "/home/readymade-blouse"
+    subtitle: "Your Style & Comfort",
+    link: "/home/readymade-blouse",
+    image: Blouses,
+    mobileImage: BlouseMobile
   }
 ];
 
@@ -47,14 +46,20 @@ const SignatureCollection = () => {
 
   return (
     <section className="signature-section">
-      <h2 className="signature-heading">BEST SELLERS</h2>
+      <h2 className="signature-heading">Featured</h2>
       <div className="signature-row">
-        {signatureBlouses.map((item, idx) => (
-          <div key={item.id} className="signature-simple-card">
-            <Link to={item.link} className="signature-link">
-              <img src={isMobile ? mobileImages[idx] : desktopImages[idx]} alt={item.title + ' page'} className="signature-simple-img" />
-              <div className="signature-title">{item.title}</div>
-            </Link>
+        {featuredItems.map((item) => (
+          <div key={item.id} className="signature-simple-card" style={{cursor: 'pointer'}} onClick={() => window.location.href = item.link}>
+            <img 
+              src={isMobile ? item.mobileImage : item.image} 
+              alt={item.title} 
+              className="signature-simple-img" 
+            />
+            <div className="signature-overlay">
+              <div className="overlay-subtitle">{item.subtitle}</div>
+              <div className="overlay-title">{item.title}</div>
+              <div className="featured shop-now-btn">Shop Now</div>
+            </div>
           </div>
         ))}
       </div>

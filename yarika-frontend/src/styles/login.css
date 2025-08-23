@@ -29,7 +29,7 @@
   margin-bottom: 1.5rem;
   font-size: 2rem;
   font-weight: 600;
-  color: #caa75d;
+  color: #deb33f;
 }
 
 .close-button {
@@ -64,7 +64,7 @@ input {
 }
 
 .gold-btn {
-  background-color: #caa75d !important;
+  background-color: #deb33f !important;
   color: white !important;
   font-weight: 600;
   transition: background 0.2s ease;
@@ -105,7 +105,7 @@ input {
 }
 
 .link {
-  color: #caa75d;
+  color: #deb33f;
   cursor: pointer;
   font-weight: bold;
 }

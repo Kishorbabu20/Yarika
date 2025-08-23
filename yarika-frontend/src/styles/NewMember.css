@@ -55,7 +55,7 @@
 
 .modal-content input:focus,
 .modal-content select:focus {
-    border-color: #caa75d;
+    border-color: #deb33f;
 }
 
 .modal-content .flex.gap-2 {
@@ -224,7 +224,7 @@ button[variant="outline"]:hover, .modal-content button[variant="outline"]:hover 
 }
 
 .add-member-btn {
-  background: #caa75d !important;
+  background: #deb33f !important;
   color: #fff !important;
   font-weight: 600;
   border-radius: 8px;

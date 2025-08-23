@@ -99,6 +99,10 @@ const productSchema = new mongoose.Schema({
   additionalImages: [String],
   additionalImageAlts: [String],
   seoUrl: { type: String, required: true, unique: true },
+  // SEO Meta fields
+  metaTitle: String,
+  metaDescription: String,
+  metaKeywords: String,
   productDescriptionWeb: String,
   productDescriptionMobile: String,
   shortDescriptionWeb: String,
@@ -141,6 +145,23 @@ const productSchema = new mongoose.Schema({
   maxOrderQuantity: {
     type: String,
     required: true,
+    trim: true
+  },
+  // Key Highlights fields
+  fabric: {
+    type: String,
+    trim: true
+  },
+  neck: {
+    type: String,
+    trim: true
+  },
+  sleeveStyling: {
+    type: String,
+    trim: true
+  },
+  sleeveLength: {
+    type: String,
     trim: true
   },
   qrCodeDataUrl: {

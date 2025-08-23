@@ -1,7 +1,14 @@
 import axios from "axios";
 
+// Prefer env variable; fall back to localhost in development
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:5001/api'
+    : 'https://yarika.in/api');
+
 const api = axios.create({
-  baseURL: "https://yarika.in/api"
+  baseURL: API_BASE_URL
 });
 
 // Custom event for unauthorized responses
@@ -63,6 +70,7 @@ api.interceptors.request.use(
     console.log('Request interceptor:', {
       url: config.url,
       method: config.method,
+      baseURL: config.baseURL,
       needsAdminAuth,
       hasToken: !!token
     });
@@ -91,6 +99,7 @@ api.interceptors.response.use(
       config: {
         url: error.config?.url,
         method: error.config?.method,
+        baseURL: error.config?.baseURL,
         headers: error.config?.headers
       }
     });

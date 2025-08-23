@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import AdminLogin from "./AdminLogin";
 import AdminDashboard from "./AdminDashboard";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import ServiceHighlights from "./components/ServiceHighlights";
 
 function App() {
   const [role, setRole] = useState(localStorage.getItem("role"));
@@ -17,6 +18,9 @@ function App() {
         <Route path="/admin" element={role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />} />
         <Route path="/admin/analytics" element={role === "admin" ? <AdminAnalytics /> : <Navigate to="/admin-login" />} />
       </Routes>
+      
+      {/* Service Highlights - appears on every page */}
+      <ServiceHighlights />
     </Router>
   );
 }

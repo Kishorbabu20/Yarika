@@ -402,7 +402,7 @@ export default function ManageMaster() {
                                   display: "block",
                                   width: 28,
                                   height: 16,
-                                  background: color.status ? "#caa75d" : "#eee",
+                                  background: color.status ? "#deb33f" : "#eee",
                                   borderRadius: 999,
                                   transition: "background 0.2s"
                                 }}
@@ -529,7 +529,7 @@ export default function ManageMaster() {
                                   display: "block",
                                   width: 28,
                                   height: 16,
-                                  background: size.status ? "#caa75d" : "#eee",
+                                  background: size.status ? "#deb33f" : "#eee",
                                   borderRadius: 999,
                                   transition: "background 0.2s"
                                 }}
@@ -754,7 +754,7 @@ export default function ManageMaster() {
                             <Eye size={18} />
                           </button>
                           <button className="action-btn" title="Download" onClick={() => handleDownloadLabel(item)}>
-                            <Download size={18} color="#caa75d" />
+                            <Download size={18} color="#deb33f" />
                           </button>
                         </td>
                       </tr>

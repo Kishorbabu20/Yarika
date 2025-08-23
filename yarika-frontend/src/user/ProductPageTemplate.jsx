@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import NavigationBarSection from "./NavigationBarSection";
 import { Mail, Phone, MessageSquare } from "lucide-react";
-import "../styles/ProductPage.css";
+import "../styles/ProductPageTemplate.css";
 import api from "../config/axios";
 import YarikaLogo from "../assets/YarikaLogo1.png";
 
@@ -17,8 +17,28 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(true);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedFabrics, setSelectedFabrics] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
 
   const navigate = useNavigate();
+
+  // Normalizers for potentially object-shaped attributes
+  const normalizeColor = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object") return value.name || value.code || JSON.stringify(value);
+    return String(value);
+  };
+  
+  const normalizeSize = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object") return value.name || value.code || JSON.stringify(value);
+    return String(value);
+  };
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -56,8 +76,57 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
     fetchProducts();
   }, [filterType, filterValue]);
 
+  // Helper to read a product's subcategory, excluding umbrella categoryType
+  const getSubcategory = (p) => {
+    const candidate = p.categorySlug || p.category || p.subcategory || p.subCategory;
+    if (!candidate) return null;
+    if (p.categoryType && candidate === p.categoryType) return null;
+    return candidate;
+  };
+  // Build unique values for sidebar filters
+  const allCategories = [...new Set(products.map(getSubcategory).filter(Boolean))];
+  const allColors = [
+    ...new Set(
+      products
+        .flatMap((p) => (p.colors || []).map(normalizeColor))
+        .filter(Boolean)
+    ),
+  ];
+  const allFabrics = [...new Set(products.map((p) => p.fabric).filter(Boolean))];
+  const allSizes = [
+    ...new Set(
+      products
+        .flatMap((p) => (p.sizes || []).map(normalizeSize))
+        .filter(Boolean)
+    ),
+  ];
+
+  const hasActiveFilters = selectedCategories.length > 0 || selectedColors.length > 0 || selectedFabrics.length > 0 || selectedSizes.length > 0;
+
   useEffect(() => {
     let updated = [...products];
+
+    // Apply sidebar filters
+          if (selectedCategories.length > 0) {
+        updated = updated.filter(p => selectedCategories.includes(p.categoryType));
+      }
+    if (selectedColors.length > 0) {
+      updated = updated.filter((p) => {
+        if (!p.colors || p.colors.length === 0) return false;
+        const normalized = p.colors.map(normalizeColor);
+        return normalized.some((c) => selectedColors.includes(c));
+      });
+    }
+    if (selectedFabrics.length > 0) {
+      updated = updated.filter(p => p.fabric && selectedFabrics.includes(p.fabric));
+    }
+    if (selectedSizes.length > 0) {
+      updated = updated.filter((p) => {
+        if (!p.sizes || p.sizes.length === 0) return false;
+        const normalized = p.sizes.map(normalizeSize);
+        return normalized.some((s) => selectedSizes.includes(s));
+      });
+    }
 
     // Apply sorting
     switch (sortOption) {
@@ -79,7 +148,7 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
 
     setFilteredProducts(updated);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [products, sortOption]);
+  }, [products, sortOption, selectedCategories, selectedColors, selectedFabrics, selectedSizes]);
 
   const handlePageClick = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -115,11 +184,157 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
             <h2 className="text-3xl font-bold text-center">{title}</h2>
         </div>
 
-          {/* Sort and Results Count */}
-          <div className="flex justify-between items-center mb-8">
-            <p className="text-gray-600">
-              Showing {currentItems.length} of {filteredProducts.length} products
-            </p>
+          <div className="product-listing-container">
+            {/* Left Sidebar - Filters */}
+            <div className={`filters-sidebar ${showFilters ? 'show' : 'hide'}`}>
+              <div className="filter-status">
+                {hasActiveFilters ? (
+                  <span className="filters-applied">Filters Applied</span>
+                ) : (
+                  <span className="no-filters">No Filter Applied</span>
+                )}
+              </div>
+              <div className="filters-header">
+                <h3>Filters</h3>
+                {hasActiveFilters && (
+                  <button onClick={() => { setSelectedCategories([]); setSelectedColors([]); setSelectedFabrics([]); setSelectedSizes([]); }} className="clear-all-btn">
+                    Clear All
+                  </button>
+                )}
+              </div>
+
+              {/* Categories Filter */}
+              <div className="filter-section">
+                <div className="filter-section-header">
+                  <h4>Categories</h4>
+                  <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="filter-options">
+                  {allCategories.map(category => (
+                    <label key={category} className="filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedCategories.includes(category)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedCategories([...selectedCategories, category]);
+                          } else {
+                            setSelectedCategories(selectedCategories.filter(c => c !== category));
+                          }
+                        }}
+                      />
+                      <span>{category}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colors Filter */}
+              <div className="filter-section">
+                <div className="filter-section-header">
+                  <h4>Colors</h4>
+                  <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="filter-options">
+                  {allColors.map(color => (
+                    <label key={color} className="filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedColors.includes(color)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedColors([...selectedColors, color]);
+                          } else {
+                            setSelectedColors(selectedColors.filter(c => c !== color));
+                          }
+                        }}
+                      />
+                      <span>{color}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fabric Filter */}
+              <div className="filter-section">
+                <div className="filter-section-header">
+                  <h4>Fabric</h4>
+                  <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="filter-options">
+                  {allFabrics.map(fabric => (
+                    <label key={fabric} className="filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedFabrics.includes(fabric)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedFabrics([...selectedFabrics, fabric]);
+                          } else {
+                            setSelectedFabrics(selectedFabrics.filter(f => f !== fabric));
+                          }
+                        }}
+                      />
+                      <span>{fabric}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Size Filter */}
+              <div className="filter-section">
+                <div className="filter-section-header">
+                  <h4>Size</h4>
+                  <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="filter-options">
+                  {allSizes.map(size => (
+                    <label key={size} className="filter-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedSizes.includes(size)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedSizes([...selectedSizes, size]);
+                          } else {
+                            setSelectedSizes(selectedSizes.filter(s => s !== size));
+                          }
+                        }}
+                      />
+                      <span>{size}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Main Content */}
+            <div className="main-content">
+              {/* Top Controls */}
+              <div className="top-controls">
+                <div className="controls-group">
+                  <button 
+                    className="toggle-filters-btn"
+                    onClick={() => setShowFilters(!showFilters)}
+                  >
+                    {showFilters ? 'Hide Filters' : 'Show Filters'}
+                    <svg className="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 4h18v2.172a2 2 0 0 1-.586 1.414l-4.702 4.702a2 2 0 0 0-.586 1.414V20l-4-2v-6.172a2 2 0 0 0-.586-1.414L4.586 7.586A2 2 0 0 1 4 6.172V4z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  <div className="sort-control">
+                    <span className="sort-label">Sort By</span>
+                    <svg className="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
           <select
             className="sort-dropdown"
               value={sortOption}
@@ -131,6 +346,15 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
             <option value="low-high">Price: Low to High</option>
             <option value="high-low">Price: High to Low</option>
           </select>
+                  </div>
+                </div>
+              </div>
+
+                            {/* Sort and Results Count */}
+              <div className="flex justify-between items-center mb-8">
+                <p className="text-gray-600">
+                  Showing {currentItems.length} of {filteredProducts.length} products
+                </p>
         </div>
 
         {/* Product Grid */}
@@ -207,6 +431,8 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
               </Link>
             </div>
             )}
+            </div>
+          </div>
           </div>
       </main>
     </div>

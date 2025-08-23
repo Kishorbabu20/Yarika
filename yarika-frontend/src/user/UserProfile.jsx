@@ -483,7 +483,7 @@ const UserProfile = () => {
                     <div style={{ marginTop: '40px', borderTop: '1px solid #e0e0e0', paddingTop: '30px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <MapPin size={24} color="#caa75d" />
+                                <MapPin size={24} color="#deb33f" />
                                 Shipping Addresses
                             </h2>
                             <button 
@@ -526,7 +526,7 @@ const UserProfile = () => {
                                                 position: 'absolute',
                                                 top: '10px',
                                                 right: '10px',
-                                                backgroundColor: '#caa75d',
+                                                backgroundColor: '#deb33f',
                                                 color: 'white',
                                                 padding: '4px 8px',
                                                 borderRadius: '4px',
@@ -551,9 +551,9 @@ const UserProfile = () => {
                                                 onClick={() => openAddressForm(address)}
                                                 style={{
                                                     padding: '8px 12px',
-                                                    border: '1px solid #caa75d',
+                                                    border: '1px solid #deb33f',
                                                     backgroundColor: 'transparent',
-                                                    color: '#caa75d',
+                                                    color: '#deb33f',
                                                     borderRadius: '4px',
                                                     cursor: 'pointer',
                                                     display: 'flex',

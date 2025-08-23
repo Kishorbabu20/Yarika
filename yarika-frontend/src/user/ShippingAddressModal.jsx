@@ -174,7 +174,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <MapPin size={24} color="#caa75d" />
+                        <MapPin size={24} color="#deb33f" />
                         Select Shipping Address
                     </h2>
                     <button
@@ -293,7 +293,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                     disabled={loading}
                                     style={{
                                         padding: '10px 20px',
-                                        backgroundColor: '#caa75d',
+                                        backgroundColor: '#deb33f',
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '4px',
@@ -331,7 +331,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                 onClick={() => openAddressForm()}
                                 style={{
                                     padding: '8px 16px',
-                                    backgroundColor: '#caa75d',
+                                    backgroundColor: '#deb33f',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '4px',
@@ -353,7 +353,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                     width: '40px',
                                     height: '40px',
                                     border: '4px solid #f3f3f3',
-                                    borderTop: '4px solid #caa75d',
+                                    borderTop: '4px solid #deb33f',
                                     borderRadius: '50%',
                                     animation: 'spin 1s linear infinite',
                                     margin: '0 auto 20px'
@@ -379,7 +379,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                         key={address._id}
                                         style={{
                                             border: '2px solid',
-                                            borderColor: currentSelectedAddressId === address._id ? '#caa75d' : '#e0e0e0',
+                                            borderColor: currentSelectedAddressId === address._id ? '#deb33f' : '#e0e0e0',
                                             borderRadius: '8px',
                                             padding: '15px',
                                             backgroundColor: currentSelectedAddressId === address._id ? '#f0f8ff' : '#fff',
@@ -393,7 +393,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                                 position: 'absolute',
                                                 top: '10px',
                                                 right: '10px',
-                                                backgroundColor: '#caa75d',
+                                                backgroundColor: '#deb33f',
                                                 color: 'white',
                                                 borderRadius: '50%',
                                                 width: '24px',
@@ -439,9 +439,9 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                                 }}
                                                 style={{
                                                     padding: '6px 10px',
-                                                    border: '1px solid #caa75d',
+                                                    border: '1px solid #deb33f',
                                                     backgroundColor: 'transparent',
-                                                    color: '#caa75d',
+                                                    color: '#deb33f',
                                                     borderRadius: '4px',
                                                     cursor: 'pointer',
                                                     display: 'flex',
@@ -487,7 +487,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                     disabled={!currentSelectedAddressId}
                                     style={{
                                         padding: '10px 20px',
-                                        backgroundColor: currentSelectedAddressId ? '#caa75d' : '#ccc',
+                                        backgroundColor: currentSelectedAddressId ? '#deb33f' : '#ccc',
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '4px',

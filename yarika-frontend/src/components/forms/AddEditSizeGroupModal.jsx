@@ -83,11 +83,11 @@ const AddEditSizeGroupModal = ({
                   checked={selectedSizes.includes(size.name)}
                   onChange={() => handleToggleSize(size.name)}
                   style={{
-                    accentColor: selectedSizes.includes(size.name) ? '#caa75d' : '#eee',
+                    accentColor: selectedSizes.includes(size.name) ? '#deb33f' : '#eee',
                     width: 18,
                     height: 18,
                     borderRadius: 4,
-                    border: '2px solid #caa75d',
+                    border: '2px solid #deb33f',
                     marginRight: 6,
                     cursor: 'pointer'
                   }}
@@ -117,7 +117,7 @@ const AddEditSizeGroupModal = ({
           <button
             type="submit"
             style={{
-              background: "#caa75d",
+              background: "#deb33f",
               color: "#fff",
               fontWeight: 600,
               borderRadius: 8,

@@ -264,7 +264,7 @@ const CartPage = () => {
                     email: localStorage.getItem('userEmail') || '',
                 },
                 theme: {
-                    color: "#caa75d",
+                    color: "#deb33f",
                 },
                 modal: {
                     ondismiss: function() {
@@ -323,6 +323,20 @@ const CartPage = () => {
         navigate(`/product/${productId}`);
     };
 
+    const goToProduct = (productId) => {
+        navigate(`/product/${productId}`);
+    };
+
+    const addToWishlist = async (productId) => {
+        try {
+            await api.post('/wishlist/add', { productId });
+            toast.success('Added to wishlist');
+        } catch (err) {
+            const msg = err.response?.data?.error || 'Failed to add to wishlist';
+            toast.error(msg);
+        }
+    };
+
     // Filter out invalid cart items (missing productId)
     const validCartItems = cartItems?.filter(item => item.productId && item.productId !== "");
 
@@ -350,7 +364,7 @@ const CartPage = () => {
                     <meta name="keywords" content="empty cart, shopping, Yarika, ethnic wear" />
                 </Helmet>
                 <div className="empty-cart">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="empty-cart-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -405,28 +419,28 @@ const CartPage = () => {
                     {validCartItems?.map((item, index) => (
                         <div className="cart-item" key={index}>
                                         <div className="product-image">
-                                <img src={item.image || `https://placehold.co/273x273/f5f5f5/cccccc?text=Product`} alt={item.name} />
+                                <img onClick={() => goToProduct(item.productId)} style={{cursor:'pointer'}} src={item.image || `https://placehold.co/273x273/f5f5f5/cccccc?text=Product`} alt={item.name} />
                                         </div>
                             <div className="product-details">
                                 <div className="product-header">
                                         <div className="product-info">
-                                        <h3>{item.name || "Kalamkari Print Blouse"}</h3>
+                                        <h3 onClick={() => goToProduct(item.productId)} style={{cursor:'pointer'}}>{item.name || "Kalamkari Print Blouse"}</h3>
                                         <span className="product-id">{item.sku || "BL.DW.KK.00075"}</span>
                                                 </div>
                                     <div className="product-actions">
                                         <button 
                                             className="icon-btn"
-                                            onClick={() => handleEditProduct(item.productId)}
-                                            title="Edit Product"
+                                            onClick={() => addToWishlist(item.productId)}
+                                            title="Add to Wishlist"
                                         >
-                                            <img src={process.env.PUBLIC_URL + "/edit-icon.svg"} alt="Edit" />
+                                            <img className="wishlist-icon" src={process.env.PUBLIC_URL + "/wishlist-icon.svg"} alt="Wishlist" />
                                         </button>
                                         <button 
                                             className="icon-btn" 
                                             onClick={() => removeFromCart(item.productId, item.size)}
                                             title="Remove from Cart"
                                         >
-                                            <img src={process.env.PUBLIC_URL + "/delete-icon.svg"} alt="Delete" />
+                                            <img className="delete-icon" src={process.env.PUBLIC_URL + "/delete-icon.svg"} alt="Delete" />
                                         </button>
                                                 </div>
                                             </div>
@@ -555,6 +569,8 @@ const CartPage = () => {
                 onAddressSelect={handleAddressSelect}
                 selectedAddressId={selectedAddress?._id}
             />
+
+            
         </div>
     );
 };

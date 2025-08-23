@@ -6,9 +6,10 @@ import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import Footer from "../components/Footer";
 import api from "../config/axios";
+import razorpay_logo from "../assets/razorpay_logo.png";
 import YarikaLogo from "../assets/YarikaLogo1.png";
 import { useCart } from "../context/CartContext";
-import { Heart, Check } from 'lucide-react';
+import { Heart, Check, Share2 } from 'lucide-react';
 import SizeChartModal from './SizeChartModal';
 import ProductImagePopup from './ProductImagePopup';
 import ShippingAddressModal from './ShippingAddressModal';
@@ -55,7 +56,7 @@ const COLOR_MAP = {
   "20": "#088f8f", // Ramar Blue
   "36": "#e5902c", // Mustard
   "101": "#FF007F", // Rose Pink
-  "102": "#FFD700", // Gold
+  "102": "#deb33f", // Gold
   "103": "#C0C0C0" // Silver
 };
 
@@ -83,7 +84,7 @@ const HEX_TO_COLOR_NAME = {
   "#088f8f": "Ramar Blue",
   "#e5902c": "Mustard",
   "#ff007f": "Rose Pink",
-  "#ffd700": "Gold",
+  "#deb33f": "Gold",
   "#c0c0c0": "Silver",
   "#111111": "Black"
 };
@@ -115,6 +116,37 @@ const SelectProduct = () => {
   const [isInPaymentFlow, setIsInPaymentFlow] = useState(false);
   const [isShippingAddressModalOpen, setIsShippingAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showAllSpecs, setShowAllSpecs] = useState(false);
+
+  // Available colors for the category
+  const [availableColors, setAvailableColors] = useState([]);
+  const [selectedFilterColor, setSelectedFilterColor] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  // Get color parameter from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const colorFromUrl = urlParams.get('color');
+
+  const getSelectedSizeStock = () => {
+    if (!product?.sizeStocks || !selectedSize) return 0;
+    return product.sizeStocks[selectedSize] || 0;
+  };
+ 
+  const decrementQuantity = () => {
+    setQuantity((prev) => Math.max(1, prev - 1));
+  };
+ 
+  const incrementQuantity = () => {
+    const available = getSelectedSizeStock();
+    setQuantity((prev) => {
+      const next = prev + 1;
+      if (available && next > available) {
+        toast.error(`Only ${available} available for size ${selectedSize}`);
+        return prev;
+      }
+      return next;
+    });
+  };
 
   // Determine which parameter to use for fetching product
   const productIdentifier = productSlug || id;
@@ -127,6 +159,51 @@ const SelectProduct = () => {
   const capitalizeDropdown = (dropdownName) => {
     return dropdownName ? dropdownName.charAt(0).toUpperCase() + dropdownName.slice(1) : '';
   };
+
+  // Function to handle back navigation to category page
+  const handleBackNavigation = () => {
+    let targetUrl;
+    if (isDropdownPattern) {
+      // From dropdown pattern: /{dropdown}/{categoryType}/{category}/{productSlug}
+      targetUrl = `/${dropdown}/${categoryType}/${category}`;
+    } else if (isHomePattern) {
+      // From home pattern: /home/{categoryType}/{category}/{productSlug}
+      targetUrl = `/home/${categoryType}/${category}`;
+    } else {
+      // Fallback to products page
+      targetUrl = '/products';
+    }
+    
+    // Use replace to avoid adding to history stack
+    window.history.replaceState(null, '', targetUrl);
+    navigate(targetUrl);
+  };
+
+  // Handle browser back button and set up proper history
+  useEffect(() => {
+    // Add the category page to history when component mounts
+    let categoryUrl;
+    if (isDropdownPattern) {
+      categoryUrl = `/${dropdown}/${categoryType}/${category}`;
+    } else if (isHomePattern) {
+      categoryUrl = `/home/${categoryType}/${category}`;
+      } else {
+      categoryUrl = '/products';
+    }
+    
+    // Push the category page to history so back button works correctly
+    window.history.pushState(null, '', categoryUrl);
+    window.history.pushState(null, '', window.location.pathname);
+    
+    const handlePopState = (event) => {
+      // Prevent default back behavior and navigate to category
+      event.preventDefault();
+      handleBackNavigation();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [dropdown, categoryType, category]);
 
   // All useEffect hooks at the top
   useEffect(() => {
@@ -177,12 +254,47 @@ const SelectProduct = () => {
         setProduct(productRes.data);
         setSelectedImage(productRes.data.mainImage);
         setAllImages([productRes.data.mainImage, ...(productRes.data.additionalImages || [])]);
+        
+        // Handle color selection from URL parameter
+        if (colorFromUrl) {
+          // Check if the product has this color
+          const hasColor = productRes.data.colors?.some(c => {
+            if (typeof c === 'string') return c === colorFromUrl;
+            if (typeof c === 'object' && c.code) return c.code === colorFromUrl;
+            return false;
+          });
+          
+          if (hasColor) {
+            setSelectedColor(colorFromUrl);
+            console.log('Pre-selected color from URL:', colorFromUrl);
+          } else {
+            // If product doesn't have this color, set the first available color
         if (productRes.data.colors?.length > 0) {
-        setSelectedColor(productRes.data.colors[0]);
+              const firstColor = typeof productRes.data.colors[0] === 'string' 
+                ? productRes.data.colors[0] 
+                : productRes.data.colors[0].code;
+              setSelectedColor(firstColor);
+            }
+          }
+        } else {
+          // Default behavior - set first color
+          if (productRes.data.colors?.length > 0) {
+            const firstColor = typeof productRes.data.colors[0] === 'string' 
+              ? productRes.data.colors[0] 
+              : productRes.data.colors[0].code;
+            setSelectedColor(firstColor);
+          }
         }
+        
         if (productRes.data.sizes?.length > 0) {
           setSelectedSize(productRes.data.sizes[0]);
         }
+        
+        // Fetch available colors for this category
+        if (productRes.data.categoryType && productRes.data.category) {
+          fetchAvailableColors(productRes.data.categoryType, productRes.data.category);
+        }
+        
         // Fetch similar products
         const similarRes = await api.get(`/products`, {
           params: {
@@ -218,8 +330,128 @@ const SelectProduct = () => {
       }
     };
 
+  const fetchAvailableColors = async (categoryType, category) => {
+    try {
+      console.log('=== FETCHING AVAILABLE COLORS ===');
+      console.log('Category Type:', categoryType);
+      console.log('Category:', category);
+      
+      const query = new URLSearchParams();
+      if (categoryType) {
+        query.append("categoryType", categoryType);
+      }
+      if (category) {
+        query.append("category", category);
+      }
+      
+      const response = await api.get(`/products?${query}`);
+      
+      console.log('Products response:', response.data);
+      console.log('Number of products found:', response.data.length);
+      
+      // Extract unique colors from products in this category
+      const colors = new Set();
+      response.data.forEach((product, index) => {
+        console.log(`Product ${index + 1}:`, {
+          name: product.name,
+          colors: product.colors,
+          colorsType: typeof product.colors,
+          isArray: Array.isArray(product.colors)
+        });
+        
+        if (product.colors && Array.isArray(product.colors)) {
+          product.colors.forEach(color => {
+            if (color) {
+              let colorCode;
+              if (typeof color === 'string') {
+                colorCode = color;
+              } else if (typeof color === 'object' && color.code) {
+                colorCode = color.code;
+              } else {
+                return; // Skip invalid colors
+              }
+              colors.add(colorCode);
+            }
+          });
+        }
+      });
+      
+      const uniqueColors = Array.from(colors);
+      setAvailableColors(uniqueColors);
+      
+      // Auto-select first available color if no color is currently selected
+      if (!selectedColor && uniqueColors.length > 0) {
+        setSelectedColor(uniqueColors[0]);
+      }
+    } catch (error) {
+      console.error('Error fetching available colors:', error);
+      setAvailableColors([]);
+      }
+    };
+
   const handleColorSelect = (color) => {
     setSelectedColor(color);
+  };
+
+  const handleColorFilter = async (color) => {
+    setSelectedFilterColor(color);
+    
+    try {
+      // Find a product with this color in the same category
+      const query = new URLSearchParams();
+      if (product?.categoryType) {
+        query.append("categoryType", product.categoryType);
+      }
+      if (product?.category) {
+        query.append("category", product.category);
+      }
+      
+      const response = await api.get(`/products?${query}`);
+      
+      // Find a product that has this color
+      const productWithColor = response.data.find(product => {
+        if (product.colors && Array.isArray(product.colors)) {
+          return product.colors.some(c => {
+            if (typeof c === 'string') return c === color;
+            if (typeof c === 'object' && c.code) return c.code === color;
+            return false;
+          });
+        }
+        return false;
+      });
+      
+      if (productWithColor) {
+        // Navigate to the product page with the color pre-selected
+        let productUrl;
+        if (productWithColor.seoUrl && productWithColor.categoryType && productWithColor.category) {
+          // Use SEO URL if available
+          productUrl = `/home/${productWithColor.categoryType}/${productWithColor.category}/${productWithColor.seoUrl}?color=${color}`;
+        } else {
+          // Fallback to ID-based URL
+          productUrl = `/product/${productWithColor._id}?color=${color}`;
+        }
+        navigate(productUrl);
+      } else {
+        // If no product found with this color, navigate to category page
+        const categoryUrl = isDropdownPattern 
+          ? `/${dropdown}/${product.categoryType}/${product.category}?color=${color}`
+          : isHomePattern 
+          ? `/home/${product.categoryType}/${product.category}?color=${color}`
+          : `/products?color=${color}`;
+        navigate(categoryUrl);
+      }
+    } catch (error) {
+      console.error('Error finding product with color:', error);
+      // Fallback to category page
+      if (product && product.categoryType && product.category) {
+        const categoryUrl = isDropdownPattern 
+          ? `/${dropdown}/${product.categoryType}/${product.category}?color=${color}`
+          : isHomePattern 
+          ? `/home/${product.categoryType}/${product.category}?color=${color}`
+          : `/products?color=${color}`;
+        navigate(categoryUrl);
+      }
+    }
   };
 
   const handleSizeSelect = (size) => {
@@ -239,7 +471,8 @@ const SelectProduct = () => {
     }
 
     try {
-      addToCart(product._id, selectedSize, 1, selectedColor);
+      const safeQty = Math.max(1, Number(quantity) || 1);
+      addToCart(product._id, selectedSize, safeQty, selectedColor);
       toast.success("Added to cart successfully!");
     } catch (err) {
       console.error("Failed to add to cart:", err);
@@ -247,7 +480,7 @@ const SelectProduct = () => {
     }
   };
 
-  const handleShopNow = async () => {
+  const handleBuyNow = async () => {
     if (!selectedSize || !selectedColor) {
       toast.error("Please select both size and color");
       return;
@@ -299,7 +532,8 @@ const SelectProduct = () => {
         totalStock: product.totalStock,
         sizeStocks: product.sizeStocks,
         selectedSize,
-        selectedColor
+        selectedColor,
+        quantity
       });
 
       setLoading(true);
@@ -311,11 +545,11 @@ const SelectProduct = () => {
         console.log('Timestamp:', new Date().toISOString());
         console.log('Stock check parameters:', {
           productId: product._id,
-          quantity: 1,
+          quantity: quantity,
           size: selectedSize
         });
         
-        const stockCheck = await api.get(`/products/${product._id}/check-stock?quantity=1&size=${selectedSize}`);
+        const stockCheck = await api.get(`/products/${product._id}/check-stock?quantity=${quantity}&size=${selectedSize}`);
         
         console.log('Stock check API response:', stockCheck.data);
         
@@ -339,6 +573,7 @@ const SelectProduct = () => {
         size: selectedSize,
         color: selectedColor,
         price: product.sellingPrice,
+        quantity,
         product: {
           name: product.name,
           code: product.code,
@@ -397,10 +632,10 @@ const SelectProduct = () => {
           productId: product._id,
           size: selectedSize,
           color: selectedColor,
-          quantity: 1,
+          quantity: quantity,
           price: product.sellingPrice,
         }],
-        totalAmount: product.sellingPrice,
+        totalAmount: product.sellingPrice * quantity,
         shippingAddress: {
           street: shippingAddress.street,
           city: shippingAddress.city,
@@ -412,7 +647,7 @@ const SelectProduct = () => {
       console.log('Making API call to create Razorpay order...');
       // Create Razorpay order first (no database order yet)
       const razorpayRes = await api.post("/payment/create-order", {
-        amount: product.sellingPrice,
+        amount: product.sellingPrice * quantity,
         receipt: `order_${Date.now()}` // Use timestamp as receipt
       });
 
@@ -434,7 +669,7 @@ const SelectProduct = () => {
       console.log('Setting up Razorpay options...');
       const options = {
           key: razorpayKeyId,
-          amount: product.sellingPrice * 100, // Convert to paise
+          amount: product.sellingPrice * quantity * 100, // Convert to paise
         currency: "INR",
         name: "Yarika",
         description: "Purchase Payment",
@@ -466,7 +701,7 @@ const SelectProduct = () => {
             email: localStorage.getItem('userEmail') || '',
           },
           theme: {
-            color: "#caa75d",
+            color: "#deb33f",
           },
           modal: {
             ondismiss: function() {
@@ -560,6 +795,27 @@ const SelectProduct = () => {
     }
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: product?.name || 'Product',
+      text: product?.shortDescriptionWeb || product?.name || 'Check this product',
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        toast.success('Link copied to clipboard');
+      }
+    } catch (e) {
+      // ignore user cancel, show minimal error for others
+      if (e && e.name !== 'AbortError') {
+        toast.error('Could not share. Please try again.');
+      }
+    }
+  };
+
   const getColorValue = (color) => {
     if (!color) return "#000000";
     if (typeof color === "object") {
@@ -574,14 +830,17 @@ const SelectProduct = () => {
 
   const getColorName = (color) => {
     if (!color) return "Unknown Color";
+    
     if (typeof color === "object") {
       // If color is an object with a name property, use it
       return color.name || color.code || "Unknown Color";
     }
+    
     if (typeof color === "string" && color.startsWith('#')) {
       const expanded = expandHex(color.toLowerCase());
-      return HEX_TO_COLOR_NAME[expanded] || color;
+      return HEX_TO_COLOR_NAME[expanded] || getColorNameFromHex(expanded);
     }
+    
     // Otherwise, treat as ID or name string
     const COLOR_NAMES = {
       "4": "Black",
@@ -610,7 +869,44 @@ const SelectProduct = () => {
       "102": "Gold",
       "103": "Silver"
     };
-    return COLOR_NAMES[color] || HEX_TO_COLOR_NAME[color?.toLowerCase?.()] || "Unknown Color";
+    
+    return COLOR_NAMES[color] || HEX_TO_COLOR_NAME[color?.toLowerCase?.()] || getColorNameFromHex(color) || "Unknown Color";
+  };
+
+  // Helper function to generate color name from hex code
+  const getColorNameFromHex = (hex) => {
+    if (!hex || !hex.startsWith('#')) return "Unknown Color";
+    
+    // Convert hex to RGB
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    
+    // Simple color detection based on RGB values
+    if (r === g && g === b) {
+      if (r === 0) return "Black";
+      if (r === 255) return "White";
+      if (r < 128) return "Dark Grey";
+      return "Light Grey";
+    }
+    
+    // Detect basic colors
+    if (r > 200 && g < 100 && b < 100) return "Red";
+    if (r < 100 && g > 200 && b < 100) return "Green";
+    if (r < 100 && g < 100 && b > 200) return "Blue";
+    if (r > 200 && g > 200 && b < 100) return "Yellow";
+    if (r > 200 && g < 100 && b > 200) return "Magenta";
+    if (r < 100 && g > 200 && b > 200) return "Cyan";
+    if (r > 200 && g > 100 && g < 200 && b < 100) return "Orange";
+    if (r > 150 && g < 100 && b < 100) return "Dark Red";
+    if (r < 100 && g > 150 && b < 100) return "Dark Green";
+    if (r < 100 && g < 100 && b > 150) return "Dark Blue";
+    
+    // If no specific color detected, return a descriptive name
+    const brightness = (r + g + b) / 3;
+    if (brightness < 85) return "Dark Color";
+    if (brightness > 170) return "Light Color";
+    return "Medium Color";
   };
 
   const isColorAvailable = (color) => {
@@ -636,72 +932,67 @@ const SelectProduct = () => {
   };
 
   const renderColorOptions = () => {
-    if (!product?.colors?.length) {
+    if (!product?.colors?.length && !availableColors.length) {
       return null;
     }
+
+    // Combine product colors and available colors, removing duplicates
+    const allColors = new Set();
+    
+    // Add product colors first
+    if (product?.colors?.length) {
+      product.colors.forEach(color => {
+        if (typeof color === 'string') {
+          allColors.add(color);
+        } else if (typeof color === 'object' && color.code) {
+          allColors.add(color.code);
+        }
+      });
+    }
+    
+    // Add available colors from category
+    availableColors.forEach(color => {
+      allColors.add(color);
+    });
+    
+    const uniqueColors = Array.from(allColors);
 
     return (
       <div className="color-section">
         <h3>Select Color</h3>
-        <div style={{ 
-          display: 'flex', 
-          gap: '12px',
-          padding: '8px'
-        }}>
-          {product.colors.map((color, index) => {
+        <div className="color-options-container">
+          {uniqueColors.map((color, index) => {
             const colorValue = getColorValue(color);
             const isLight = isLightColor(colorValue);
+            const isProductColor = product?.colors?.some(c => {
+              if (typeof c === 'string') return c === color;
+              if (typeof c === 'object' && c.code) return c.code === color;
+              return false;
+            });
             
-            // Create a filled div for the color
-            const colorFill = {
-              position: 'absolute',
-              top: '2px',
-              left: '2px',
-              right: '2px',
-              bottom: '2px',
-              backgroundColor: colorValue,
-              borderRadius: '2px'
-            };
 
-            const buttonStyles = {
-              width: '40px',
-              height: '40px',
-              borderRadius: '4px',
-              border: selectedColor === color ? '2px solid #C5A56F' : '1px solid #C5A56F',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 0,
-              margin: 0,
-              outline: 'none',
-              background: '#ffffff', // White background
-              overflow: 'hidden' // Ensure color fill stays within bounds
-            };
+
+
             
             return (
               <button
                 key={color}
-                onClick={() => handleColorSelect(color)}
-                style={buttonStyles}
-                title={getColorName(color)}
+                onClick={() => {
+                  if (isProductColor) {
+                    handleColorSelect(color);
+                  } else {
+                    // Navigate to category page with color filter
+                    handleColorFilter(color);
+                  }
+                }}
+                className={`color-button ${selectedColor === color ? 'selected' : ''}`}
+                title={`${getColorName(color)}`}
                 type="button"
-                aria-label={`Select ${getColorName(color)} color`}
+                aria-label={`${isProductColor ? 'Select' : 'View'} ${getColorName(color)} color`}
               >
-                <div style={colorFill}></div>
-                {selectedColor === color && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    pointerEvents: 'none',
-                    zIndex: 1
-                  }}>
+                <div className="color-fill" style={{backgroundColor: colorValue}}></div>
+                {selectedColor === color && isProductColor && (
+                  <span className="color-check-icon">
                     <Check size={14} color={isLight ? '#000000' : '#FFFFFF'} strokeWidth={2.5} />
                   </span>
                 )}
@@ -710,8 +1001,12 @@ const SelectProduct = () => {
           })}
         </div>
         {selectedColor && (
-          <div>
-            Selected: {selectedColor.name || getColorName(selectedColor.code || selectedColor)}
+          <div className="selected-color-info">
+            <span className="selected-color-text">
+              Selected Color: <span className="selected-color-name">
+                {getColorName(selectedColor)}
+              </span>
+            </span>
           </div>
         )}
       </div>
@@ -725,35 +1020,15 @@ const SelectProduct = () => {
 
     return (
       <div className="size-section">
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '16px'
-        }}>
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: '600',
-            color: '#333'
-          }}>Select Size</h3>
+        <div className="size-section-header">
+          <h3>Select Size</h3>
           <button 
             onClick={() => setIsSizeChartOpen(true)}
-            style={{
-              border: 'none',
-              background: 'none',
-              color: '#C5A56F',
-              fontSize: '14px',
-              cursor: 'pointer',
-              padding: '4px 8px'
-            }}>
+            className="size-chart-button">
             Size Chart
           </button>
         </div>
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          flexWrap: 'wrap'
-        }}>
+        <div className="size-options-container">
           {product.sizes.map((size) => {
             const isSelected = selectedSize === size;
             const isAvailable = isSizeAvailable(size);
@@ -763,23 +1038,7 @@ const SelectProduct = () => {
               <button
                 key={size}
                 onClick={() => isAvailable && handleSizeSelect(size)}
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '4px',
-                  border: isSelected ? '2px solid #C5A56F' : '1px solid #C5A56F',
-                  backgroundColor: isAvailable ? (isSelected ? '#FDF9F3' : '#FFFFFF') : '#f5f5f5',
-                  color: isAvailable ? (isSelected ? '#C5A56F' : '#333333') : '#999999',
-                  fontSize: '14px',
-                  fontWeight: isSelected ? '600' : '400',
-                  cursor: isAvailable ? 'pointer' : 'not-allowed',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s ease-in-out',
-                  outline: 'none',
-                  position: 'relative'
-                }}
+                className={`size-btn ${isSelected ? 'selected' : ''} ${!isAvailable ? 'disabled' : ''}`}
                 type="button"
                 aria-label={`Select size ${size}`}
                 aria-pressed={isSelected}
@@ -787,19 +1046,6 @@ const SelectProduct = () => {
                 title={isAvailable ? `Size ${size} - ${sizeStock} in stock` : `Size ${size} - Out of stock`}
               >
                 {size}
-                {isAvailable && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '-20px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    fontSize: '10px',
-                    color: '#666',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    ({sizeStock})
-                  </div>
-                )}
               </button>
             );
           })}
@@ -808,13 +1054,60 @@ const SelectProduct = () => {
     );
   };
 
+  const renderKeyHighlights = () => {
+    const taxLabel = product?.taxClass === 'gst-12' ? 'GST @ 12%' : (product?.taxClass === 'gst-5' ? 'GST @ 5%' : product?.taxClass);
+    
+    // Key highlights fields (show first)
+    const keyHighlights = [
+      product?.fabric ? { label: 'Fabric', value: product.fabric } : null,
+      product?.neck ? { label: 'Neck', value: product.neck } : null,
+      product?.sleeveStyling ? { label: 'Sleeve Styling', value: product.sleeveStyling } : null,
+      product?.sleeveLength ? { label: 'Sleeve Length', value: product.sleeveLength } : null,
+    ].filter(Boolean);
+
+    // Additional specs (show only when expanded)
+    const additionalSpecs = [
+      product?.netWeight ? { label: 'Net Weight', value: product.netWeight } : null,
+      product?.grossWeight ? { label: 'Gross Weight', value: product.grossWeight } : null,
+      product?.maxOrderQuantity ? { label: 'Max Order Quantity', value: product.maxOrderQuantity } : null,
+      product?.taxClass ? { label: 'Tax', value: taxLabel } : null,
+      product?.code ? { label: 'Product Code', value: product.code } : null,
+      product?.brand ? { label: 'Brand', value: product.brand } : null,
+    ].filter(Boolean);
+
+    const allSpecs = [...keyHighlights, ...additionalSpecs];
+
+    if (allSpecs.length === 0) return null;
+
+    const visible = showAllSpecs ? allSpecs : keyHighlights;
+
+    return (
+      <div className="key-highlights-section">
+        <h3 className="product-section-title">Key Highlights</h3>
+        <div className="spec-grid">
+          {visible.map((spec, idx) => (
+            <div className="spec-item" key={`${spec.label}-${idx}`}>
+              <div className="spec-label">{spec.label}</div>
+              <div className="spec-value">{spec.value || '-'}</div>
+            </div>
+          ))}
+        </div>
+        {allSpecs.length > 4 && (
+          <button type="button" className="show-more-specs" onClick={() => setShowAllSpecs(!showAllSpecs)}>
+            {showAllSpecs ? 'Show Less' : 'Show More'}
+          </button>
+        )}
+      </div>
+    );
+  };
+
   // All early returns after hooks and function declarations
   if (!productIdentifier || productIdentifier === 'undefined') {
-    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>Invalid product URL. Please select a product from the list.</div>;
+    return <div className="error-message">Invalid product URL. Please select a product from the list.</div>;
   }
   if (loading || !product) return <div>Loading...</div>;
   if (!loading && !product) {
-    return <div style={{padding: 40, textAlign: 'center', color: 'red'}}>This product is no longer available.</div>;
+    return <div className="error-message">This product is no longer available.</div>;
   }
 
   return (
@@ -845,13 +1138,13 @@ const SelectProduct = () => {
                     <Link to={`/${dropdown}/${categoryType}`}>{categoryType}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link to={`/${dropdown}/${categoryType}/${category}`}>{category}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbPage>{product?.name}</BreadcrumbPage>
                 </BreadcrumbItem>
@@ -863,19 +1156,19 @@ const SelectProduct = () => {
                     <Link to="/">Home</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link to={`/home/${categoryType}`}>{categoryType}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link to={`/home/${categoryType}/${category}`}>{category}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbPage>{product?.name}</BreadcrumbPage>
                 </BreadcrumbItem>
@@ -887,13 +1180,13 @@ const SelectProduct = () => {
                     <Link to="/">Home</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link to="/products">Products</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbPage>{product?.name}</BreadcrumbPage>
                 </BreadcrumbItem>
@@ -924,24 +1217,8 @@ const SelectProduct = () => {
               <div 
                 className="zoom-container"
                 onClick={() => setShowImagePopup(true)}
-                style={{ cursor: 'zoom-in' }}
               >
                 <img src={selectedImage} alt={product?.name} />
-              </div>
-              <div 
-                className={`heart-icon-container ${isInWishlist ? 'active' : ''} ${wishlistLoading ? 'loading' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleWishlist();
-                }}
-                title={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-              >
-                <Heart 
-                  size={24} 
-                  fill={isInWishlist ? "#C5A56F" : "none"}
-                  color={isInWishlist ? "#C5A56F" : "#666666"}
-                  strokeWidth={1.5}
-                />
               </div>
               </div>
             </div>
@@ -949,59 +1226,65 @@ const SelectProduct = () => {
 
         {/* Right side - Product Info */}
           <div className="product-info">
-          <h1 className="product-title">
-            {product.name}
-          </h1>
+          <div className="title-row">
+            <div className="title-text">
+              <h1 className="product-title">{product.name}</h1>
           <div className="product-code">{product.code}</div>
+            </div>
+            <div className="title-actions">
+              <button
+                type="button"
+                className={`wishlist-btn ${isInWishlist ? 'active' : ''}`}
+                onClick={toggleWishlist}
+                title={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                aria-label={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                disabled={wishlistLoading}
+              >
+                <Heart size={22} fill={isInWishlist ? '#C5A56F' : 'none'} color={isInWishlist ? '#C5A56F' : '#111'} strokeWidth={1.8} />
+              </button>
+              <button
+                type="button"
+                className="share-btn"
+                onClick={handleShare}
+                title="Share"
+                aria-label="Share"
+              >
+                <Share2 size={20} color="#111" strokeWidth={1.8} />
+              </button>
+            </div>
+          </div>
 
           <div className="price-container">
             <span className="current-price">₹{product.sellingPrice}</span>
             {product.mrp > product.sellingPrice && (
               <>
-                <span className="mrp-text">MRP</span>
+
                 <span className="original-price">₹{product.mrp}</span>
               </>
             )}
           </div>
-          <div className="tax-info">Inclusive of all taxes</div>
+          <div className="tax-info">Inclusive Of All Taxes</div>
+          <div className="secure-by">
+            <span className="secure-by-text">Secured By</span>
+            <img src="../assets/razorpay_logo.png" alt="Razorpay" className="secure-by-logo" />
+          </div>
 
           {/* Product Description */}
           {(product.productDescriptionWeb || product.productDescriptionMobile) && (
+            <>
+            <h3 className="product-section-title">Description</h3>
             <div className="product-description">
               {product.productDescriptionWeb || product.productDescriptionMobile}
             </div>
+            </>
           )}
-
-          {/* Stock Status */}
-          <div style={{
-            marginTop: '16px',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            backgroundColor: product.totalStock > 0 ? '#f0f9f0' : '#fff0f0',
-            color: product.totalStock > 0 ? '#2c7a2c' : '#cc0000',
-            display: 'inline-block',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>
-            {product.totalStock > 0 ? (
-              <>
-                In Stock ({product.totalStock} items available)
-                {selectedSize && (
-                  <span style={{ marginLeft: '8px', color: '#666' }}>
-                    • Size {selectedSize}: {product.sizeStocks[selectedSize] || 0} available
-                  </span>
-                )}
-              </>
-            ) : (
-              'Out of Stock'
-            )}
-          </div>
 
           {/* Rest of the existing code */}
           {renderColorOptions()}
           {renderSizeOptions()}
+          {renderKeyHighlights()}
 
-          <div className="action-buttons">
+          <div className="purchase-row">
             <button 
               className="add-to-cart" 
               onClick={handleAddToCart}
@@ -1010,11 +1293,11 @@ const SelectProduct = () => {
               Add To Bag
             </button>
             <button 
-              className="shop-now" 
-              onClick={handleShopNow}
+              className="buy-now" 
+              onClick={handleBuyNow}
               disabled={!product.totalStock || !selectedSize || !selectedColor || !isSizeAvailable(selectedSize)}
             >
-              Shop Now
+              Buy Now
             </button>
           </div>
           </div>
@@ -1036,18 +1319,32 @@ const SelectProduct = () => {
       />
       <Toaster position="bottom-center" />
 
+      {/* Debug info */}
+      {console.log('Available colors state:', availableColors)}
+      {console.log('Product category:', product?.category)}
+      {console.log('Product categoryType:', product?.categoryType)}
+
       {/* You may like section */}
       {similarProducts && similarProducts.length > 0 && (
         <div className="you-may-like-section">
-          <div className="you-may-like-header" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '32px 0 18px 0'}}>
-            <h2 style={{fontSize: '1.3rem', fontWeight: 600, margin: 0}}>You may like</h2>
-            <Link
-              to={product && product.categoryType && product.category ? `/home/${product.categoryType}/${product.category}` : '/products'}
-              className="you-may-like-viewall"
-              style={{fontSize: '1rem', color: '#caa75d', textDecoration: 'underline', fontWeight: 500, marginLeft: '16px'}}
-            >
-              View All
-            </Link>
+          <div className="you-may-like-header">
+            <h2 className="you-may-like-title">You may also like</h2>
+            <div className="you-may-like-navigation">
+              <button 
+                className="nav-arrow prev" 
+                aria-label="Previous"
+                onClick={() => document.querySelector('.product-grid').scrollBy({left: -300, behavior: 'smooth'})}
+              >
+                ←
+              </button>
+              <button 
+                className="nav-arrow next" 
+                aria-label="Next"
+                onClick={() => document.querySelector('.product-grid').scrollBy({left: 300, behavior: 'smooth'})}
+              >
+                →
+              </button>
+            </div>
           </div>
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>

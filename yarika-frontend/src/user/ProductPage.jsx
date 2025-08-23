@@ -1,35 +1,37 @@
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
-import { Mail, Phone, MessageSquare } from "lucide-react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "../styles/ProductPage.css";
 import api from "../config/axios";
-import YarikaLogo from "../assets/YarikaLogo1.png";
-import SignatureBlouse1 from "../assets/SignatureBlouse1.png";
-import SignatureBlouse2 from "../assets/SignatureBlouse2.png";
-import SignatureBlouse3 from "../assets/SignatureBlouse3.png";
-import { useScrollFade } from "../hooks/useScrollFade";
+
+
+
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
 const ProductPage = () => {
-  const categories = [
-    { label: "All Products", slug: "", categoryType: "" },
-    { label: "Kalamkari", slug: "kalamkari-blouse", categoryType: "readymade-blouse" },
-    { label: "Embroidery", slug: "embroidery-blouse", categoryType: "readymade-blouse" },
-    { label: "Plain", slug: "plain-blouse", categoryType: "readymade-blouse" },
-    { label: "Zardozi", slug: "zardozi-blouse", categoryType: "readymade-blouse" },
-    { label: "Ikat", slug: "ikat-blouse", categoryType: "readymade-blouse" },
-    { label: "Designer", slug: "designer-blouse", categoryType: "readymade-blouse" }
-  ];
 
-  const [activeCategory, setActiveCategory] = useState(categories[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(true);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedFabrics, setSelectedFabrics] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [collapsedSections, setCollapsedSections] = useState({
+    categories: false,
+    colors: false,
+    fabrics: false,
+    sizes: false,
+  });
+
+  const toggleSection = (key) => {
+    setCollapsedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   const navigate = useNavigate();
 
@@ -40,12 +42,28 @@ const ProductPage = () => {
     currentPage * itemsPerPage
   );
 
-  const filtersRef = useRef(null);
+
+
+  // Normalizers for potentially object-shaped attributes
+  const normalizeColor = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object") return value.name || value.code || JSON.stringify(value);
+    return String(value);
+  };
+  
+  const normalizeSize = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object") return value.name || value.code || JSON.stringify(value);
+    return String(value);
+  };
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/products");
+      // Only fetch readymade-blouse products
+      const res = await api.get("/products?categoryType=readymade-blouse");
       console.log('ProductPage - API Response:', res.data);
       console.log('ProductPage - First product sample:', res.data[0]);
       setProducts(res.data);
@@ -60,30 +78,61 @@ const ProductPage = () => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    const scrollToStart = () => {
-      if (filtersRef.current) {
-        filtersRef.current.scrollLeft = 0;
-      }
-    };
-    scrollToStart();
-    window.addEventListener('resize', scrollToStart);
-    return () => window.removeEventListener('resize', scrollToStart);
-  }, []);
+  // Helper to read a product's subcategory, excluding umbrella categoryType
+  const getSubcategory = (p) => {
+    const candidate = p.categorySlug || p.category || p.subcategory || p.subCategory;
+    if (!candidate) return null;
+    if (p.categoryType && candidate === p.categoryType) return null;
+    return candidate;
+  };
+  // Build unique values for sidebar filters
+  const allCategories = [...new Set(products.map(getSubcategory).filter(Boolean))];
+  const allColors = [
+    ...new Set(
+      products
+        .flatMap((p) => (p.colors || []).map(normalizeColor))
+        .filter(Boolean)
+    ),
+  ];
+  const allFabrics = [...new Set(products.map((p) => p.fabric).filter(Boolean))];
+  const allSizes = [
+    ...new Set(
+      products
+        .flatMap((p) => (p.sizes || []).map(normalizeSize))
+        .filter(Boolean)
+    ),
+  ];
+
+  const hasActiveFilters = selectedCategories.length > 0 || selectedColors.length > 0 || selectedFabrics.length > 0 || selectedSizes.length > 0;
+
+
 
   useEffect(() => {
     let updated = [...products];
 
-    // Always filter to only readymade-blouse categoryType
-    updated = updated.filter(
-      (p) => p.categoryType === "readymade-blouse"
-    );
-
-    // If a specific subcategory is selected, filter further
-    if (activeCategory && activeCategory.slug !== "") {
-      updated = updated.filter(
-        (p) => p.category === activeCategory.slug
-      );
+    // Apply sidebar filters
+    if (selectedCategories.length > 0) {
+      updated = updated.filter(p => {
+        const sub = getSubcategory(p);
+        return sub && selectedCategories.includes(sub);
+      });
+    }
+    if (selectedColors.length > 0) {
+      updated = updated.filter((p) => {
+        if (!p.colors || p.colors.length === 0) return false;
+        const normalized = p.colors.map(normalizeColor);
+        return normalized.some((c) => selectedColors.includes(c));
+      });
+    }
+    if (selectedFabrics.length > 0) {
+      updated = updated.filter(p => p.fabric && selectedFabrics.includes(p.fabric));
+    }
+    if (selectedSizes.length > 0) {
+      updated = updated.filter((p) => {
+        if (!p.sizes || p.sizes.length === 0) return false;
+        const normalized = p.sizes.map(normalizeSize);
+        return normalized.some((s) => selectedSizes.includes(s));
+      });
     }
 
     // Apply sorting
@@ -106,80 +155,30 @@ const ProductPage = () => {
 
     setFilteredProducts(updated);
     setCurrentPage(1);
-  }, [activeCategory, products, sortOption]);
+  }, [products, sortOption, selectedCategories, selectedColors, selectedFabrics, selectedSizes]);
 
   const handlePageClick = (page) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  const occasions = [
-    { 
-      name: "Daily Wear",
-      image: SignatureBlouse1,
-      description: "Comfortable and stylish blouses for everyday use"
-    },
-    { 
-      name: "Office Wear",
-      image: SignatureBlouse2,
-      description: "Professional and elegant blouses for work"
-    },
-    { 
-      name: "Party Wear",
-      image: SignatureBlouse3,
-      description: "Glamorous blouses for special occasions"
-    }
-  ];
 
-  const handleOccasionClick = (occasion) => {
-    const filtered = products.filter(
-      (product) =>
-        product.group &&
-        product.group.toLowerCase().includes(occasion.name.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-    setCurrentPage(1);
-  };
 
-  // Animation refs and classes for each section
-  const [heroRef, heroFade] = useScrollFade();
-  const [gridRef, gridFade] = useScrollFade();
-  const [occasionRef, occasionFade] = useScrollFade();
+
 
   return (
     <>
       <Helmet>
-        <title>
-          {activeCategory.slug === "" 
-            ? "All Blouses - Ethnic Wear | Yarika" 
-            : `${activeCategory.label} Blouses - Ethnic Wear | Yarika`
-          }
-        </title>
+        <title>Readymade Blouses - Ethnic Wear | Yarika</title>
         <meta 
           name="description" 
-          content={
-            activeCategory.slug === ""
-              ? "Shop our exclusive collection of designer blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
-              : `Shop our exclusive ${activeCategory.label} blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
-          } 
+          content="Shop our exclusive collection of designer readymade blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
         />
         <meta 
           name="keywords" 
-          content={
-            activeCategory.slug === ""
-              ? "blouses, ethnic wear, traditional clothing, designer wear, Yarika, kalamkari, embroidery, plain, zardozi, ikat"
-              : `${activeCategory.label}, blouses, ethnic wear, traditional clothing, designer wear, Yarika`
-          } 
+          content="readymade blouses, ethnic wear, traditional clothing, designer wear, Yarika, kalamkari, embroidery, plain, zardozi, ikat"
         />
-        <meta property="og:title" content={
-          activeCategory.slug === "" 
-            ? "All Blouses - Ethnic Wear | Yarika" 
-            : `${activeCategory.label} Blouses - Ethnic Wear | Yarika`
-        } />
-        <meta property="og:description" content={
-          activeCategory.slug === ""
-            ? "Shop our exclusive collection of designer blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India."
-            : `Shop our exclusive ${activeCategory.label} blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India.`
-        } />
+        <meta property="og:title" content="Readymade Blouses - Ethnic Wear | Yarika" />
+        <meta property="og:description" content="Shop our exclusive collection of designer readymade blouses with premium quality and perfect fit. Available in multiple sizes and colors. Free shipping across India." />
         <meta property="og:type" content="website" />
       </Helmet>
 
@@ -192,7 +191,7 @@ const ProductPage = () => {
                   <Link to="/">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+              <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
                   <Link to="/home/readymade-blouse">Readymade Blouse</Link>
@@ -205,23 +204,162 @@ const ProductPage = () => {
         <h1 className="category-title">Readymade Blouse</h1>
         <h4 className="section-label">Elegance awaits you</h4>
         <h2 className="sub-heading">READYMADE BLOUSE</h2>
-        <div className="filter-list" ref={filtersRef}>
-          {categories.map((cat, idx) => (
-            <button
-              key={cat.slug}
-              className={`category-btn${idx === 0 ? ' first-btn' : ''} ${activeCategory.slug === cat.slug ? "active" : ""}`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat.label}
-            </button>
-          ))}
 
-          {/* Sort By Dropdown */}
+        <div className="product-listing-container">
+          {/* Left Sidebar - Filters */}
+          <div className={`filters-sidebar ${showFilters ? 'show' : 'hide'}`}>
+            <div className="filter-status">
+              {hasActiveFilters ? (
+                <span className="filters-applied">Filters Applied</span>
+              ) : (
+                <span className="no-filters">No Filter Applied</span>
+              )}
+            </div>
+            <div className="filters-header">
+              <h3>Filters</h3>
+              {hasActiveFilters && (
+                <button onClick={() => { setSelectedCategories([]); setSelectedColors([]); setSelectedFabrics([]); setSelectedSizes([]); }} className="clear-all-btn">
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            {/* Categories Filter */}
+            <div className={`filter-section ${collapsedSections.categories ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('categories')}>
+                <h4>Categories</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allCategories.map(category => (
+                  <label key={category} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(category)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedCategories([...selectedCategories, category]);
+                        } else {
+                          setSelectedCategories(selectedCategories.filter(c => c !== category));
+                        }
+                      }}
+                    />
+                    <span>{category}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Colors Filter */}
+            <div className={`filter-section ${collapsedSections.colors ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('colors')}>
+                <h4>Colors</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allColors.map(color => (
+                  <label key={color} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedColors.includes(color)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedColors([...selectedColors, color]);
+                        } else {
+                          setSelectedColors(selectedColors.filter(c => c !== color));
+                        }
+                      }}
+                    />
+                    <span>{color}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Fabric Filter */}
+            <div className={`filter-section ${collapsedSections.fabrics ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('fabrics')}>
+                <h4>Fabric</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allFabrics.map(fabric => (
+                  <label key={fabric} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedFabrics.includes(fabric)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedFabrics([...selectedFabrics, fabric]);
+                        } else {
+                          setSelectedFabrics(selectedFabrics.filter(f => f !== fabric));
+                        }
+                      }}
+                    />
+                    <span>{fabric}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Size Filter */}
+            <div className={`filter-section ${collapsedSections.sizes ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('sizes')}>
+                <h4>Size</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allSizes.map(size => (
+                  <label key={size} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedSizes.includes(size)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedSizes([...selectedSizes, size]);
+                        } else {
+                          setSelectedSizes(selectedSizes.filter(s => s !== size));
+                        }
+                      }}
+                    />
+                    <span>{size}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Main Content */}
+          <div className="main-content">
+            {/* Top Controls */}
+            <div className="top-controls">
+              <div className="controls-group">
+            <button
+                  className="toggle-filters-btn"
+                  onClick={() => setShowFilters(!showFilters)}
+            >
+                  {showFilters ? 'Hide Filters' : 'Show Filters'}
+                  <svg className="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 4h18v2.172a2 2 0 0 1-.586 1.414l-4.702 4.702a2 2 0 0 0-.586 1.414V20l-4-2v-6.172a2 2 0 0 0-.586-1.414L4.586 7.586A2 2 0 0 1 4 6.172V4z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+            </button>
+                <div className="sort-control">
+                  <span className="sort-label">Sort By</span>
+                  <svg className="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
           <select
             className="sort-dropdown"
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            style={{flex: '0 0 auto', minWidth: '140px', maxWidth: '220px', marginLeft: '0.5em'}}
           >
             <option value="">Sort By</option>
             <option value="new-old">Newest First</option>
@@ -229,6 +367,8 @@ const ProductPage = () => {
             <option value="low-high">Price: Low to High</option>
             <option value="high-low">Price: High to Low</option>
           </select>
+                </div>
+              </div>
         </div>
 
         {/* Products Grid */}
@@ -261,6 +401,8 @@ const ProductPage = () => {
           </Suspense>
         </div>
         )}
+          </div>
+        </div>
 
         {totalPages > 1 && (
         <div className="pagination">
@@ -295,3 +437,4 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+

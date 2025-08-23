@@ -83,11 +83,11 @@ const AddEditColorGroupModal = ({
                   checked={selectedColors.includes(color.code)}
                   onChange={() => handleToggleColor(color.code)}
                   style={{
-                    accentColor: selectedColors.includes(color.code) ? '#caa75d' : '#eee',
+                    accentColor: selectedColors.includes(color.code) ? '#deb33f' : '#eee',
                     width: 18,
                     height: 18,
                     borderRadius: 4,
-                    border: '2px solid #caa75d',
+                    border: '2px solid #deb33f',
                     marginRight: 6,
                     cursor: 'pointer'
                   }}
@@ -118,7 +118,7 @@ const AddEditColorGroupModal = ({
           <button
             type="submit"
             style={{
-              background: "#caa75d",
+              background: "#deb33f",
               color: "#fff",
               fontWeight: 600,
               borderRadius: 8,

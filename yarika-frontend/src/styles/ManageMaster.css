@@ -44,7 +44,7 @@
 .manage-master-tab.active {
   background: #f3f3f3 !important;
   color: #222;
-  border: 1.5px solid #caa75d;
+  border: 1.5px solid #deb33f;
   border-radius: 8px;
 }
 
@@ -82,7 +82,7 @@
   gap: 8px;
 }
 .gold-btn {
-  background: #caa75d;
+  background: #deb33f;
   color: #fff;
   font-weight: 600;
   border-radius: 8px;
@@ -111,7 +111,7 @@
   margin-top: 0;
 }
 .manage-master-bar .gold-btn {
-  background: #caa75d;
+  background: #deb33f;
   color: #fff;
   font-weight: 600;
   border-radius: 8px;
@@ -336,7 +336,7 @@
   appearance: none;
   width: 28px !important;
   height: 16px !important;
-  background: #caa75d;
+  background: #deb33f;
   border-radius: 999px !important;
   position: relative;
   outline: none;
@@ -362,7 +362,7 @@
   left: 15px;
 }
 .status-label {
-  color: #caa75d !important;
+  color: #deb33f !important;
   background: none !important;
   font-weight: 600;
   font-size: 0.78rem !important;
@@ -634,7 +634,7 @@
   font-size: 1.1rem;
 }
   .action-btn svg {
-    color: #caa75d !important;
+    color: #deb33f !important;
     width: 18px;
     height: 18px;
     display: inline-block;

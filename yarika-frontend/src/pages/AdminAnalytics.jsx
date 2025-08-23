@@ -285,7 +285,7 @@ export default function AdminAnalytics() {
                   <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="orders" fill="#caa75d" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="orders" fill="#deb33f" radius={[8, 8, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

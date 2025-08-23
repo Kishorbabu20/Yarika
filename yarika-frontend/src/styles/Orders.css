@@ -2,21 +2,46 @@
 .orders-page-container {
   min-height: 100vh;
     background-color: #F5F5F5;
-    padding: 120px 64px 40px;
+    padding: 40px 64px 40px;
+    display: flex;
+    gap: 96px;
 }
 
 /* Left Sidebar */
 .orders-sidebar {
     position: fixed;
     width: 280px;
-  background-color: #111111;
+    background-color: #111111;
     padding: 32px;
-  color: white;
-  display: flex;
-  flex-direction: column;
+    color: white;
+    display: flex;
+    flex-direction: column;
     border-radius: 16px;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 200px);
+    max-height: calc(100vh - 200px);
     overflow-y: auto;
+    overflow-x: hidden;
+    top: 200px;
+    left: 64px;
+    z-index: 100;
+}
+
+.orders-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.orders-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.orders-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.orders-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* Main Content Area */
@@ -92,7 +117,7 @@
     gap: 8px;
     background: none !important;
     border: none;
-    color: #caa75d !important;
+    color: #deb33f !important;
     font-size: 14px;
     padding: 12px 16px;
     cursor: pointer;
@@ -122,11 +147,11 @@
 }
 
 .orders-filter .filter-link:hover {
-    color: #caa75d;
+    color: #deb33f;
 }
 
 .orders-filter .filter-link.active {
-    color: #caa75d;
+    color: #deb33f;
   font-weight: 500;
 }
 
@@ -186,7 +211,7 @@
   background-color: #F44336; /* Red */
 }
 .order-status-tag.pending {
-  background-color: #CAA75D; /* Gold */
+  background-color: #deb33f; /* Gold */
 }
 .order-status-tag.returned {
   background-color: #9E9E9E; /* Grey */
@@ -247,8 +272,8 @@
 
 .order-details-button {
   background-color: #FFFFFF;
-  border: 1px solid #CAA75D; /* Gold border */
-  color: #CAA75D; /* Gold text */
+  border: 1px solid #deb33f; /* Gold border */
+  color: #deb33f; /* Gold text */
   padding: 10px 20px;
   border-radius: 5px;
   font-family: 'Inter', sans-serif;
@@ -276,19 +301,21 @@
 @media (max-width: 768px) {
   .orders-page-container {
     padding: 80px 4vw 24px 4vw !important;
+    flex-direction: column !important;
+    gap: 18px !important;
   }
   .orders-sidebar {
     position: static !important;
     width: 100% !important;
     border-radius: 12px !important;
     padding: 20px 8px !important;
-    margin-bottom: 18px !important;
+    margin-bottom: 0 !important;
     height: auto !important;
     flex-direction: row !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
     overflow: visible !important;
-    margin-top: 300px !important;
+    margin-top: 0 !important;
   }
   .orders-content {
     margin-left: 0 !important;

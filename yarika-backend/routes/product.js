@@ -50,6 +50,11 @@ router.post(
         netWeight,
         grossWeight,
         maxOrderQuantity,
+        // Key Highlights fields
+        fabric,
+        neck,
+        sleeveStyling,
+        sleeveLength,
         qrCodeDataUrl,
       } = req.body;
 
@@ -185,6 +190,11 @@ router.post(
         netWeight,
         grossWeight,
         maxOrderQuantity,
+        // Key Highlights fields
+        fabric,
+        neck,
+        sleeveStyling,
+        sleeveLength,
         qrCodeDataUrl,
       };
 
@@ -822,6 +832,11 @@ router.put(
       netWeight,
       grossWeight,
       maxOrderQuantity,
+      // Key Highlights fields
+      fabric,
+      neck,
+      sleeveStyling,
+      sleeveLength,
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -888,6 +903,12 @@ router.put(
       if (netWeight) product.netWeight = netWeight;
       if (grossWeight) product.grossWeight = grossWeight;
       if (maxOrderQuantity) product.maxOrderQuantity = maxOrderQuantity;
+      
+      // Handle Key Highlights fields
+      if (fabric !== undefined) product.fabric = fabric;
+      if (neck !== undefined) product.neck = neck;
+      if (sleeveStyling !== undefined) product.sleeveStyling = sleeveStyling;
+      if (sleeveLength !== undefined) product.sleeveLength = sleeveLength;
 
     // Log the product before saving
     console.log('Product before save:', {

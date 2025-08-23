@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../config/axios";
-import "../styles/ProductPage.css";
+// import "../styles/ProductPage.css";
 import { useScrollFade } from "../hooks/useScrollFade";
 
 const ProductCard = lazy(() => import("./ProductCard"));
@@ -74,3 +74,4 @@ const SearchResultsPage = () => {
 };
 
 export default SearchResultsPage;
+

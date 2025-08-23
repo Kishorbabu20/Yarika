@@ -126,7 +126,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // Add to cart function
-  const addToCart = async (productId, size, qty = 1, color) => {
+  const addToCart = async (productId, size, qty = 1, color) => { qty = Math.max(1, Number(qty) || 1);
     try {
       console.log('=== ADD TO CART DEBUG ===');
       console.log('productId:', productId);
@@ -192,7 +192,7 @@ export const CartProvider = ({ children }) => {
       const { data: updatedCart } = await api.post("/cart/add", {
         productId,
         size,
-        qty,
+        qty: Math.max(1, Number(qty) || 1),
         color: typeof color === 'object' ? (color.name || color.code) : color || product.colors?.[0] || 'Default'
       });
 

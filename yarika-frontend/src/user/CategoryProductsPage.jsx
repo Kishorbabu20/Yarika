@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import "../styles/ProductPage.css";
+import "../styles/CategoryProductsPage.css";
 import api from "../config/axios";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../components/ui/Breadcrumb";
 const ProductCard = lazy(() => import("./ProductCard"));
@@ -9,7 +9,24 @@ const ProductCard = lazy(() => import("./ProductCard"));
 const CategoryProductsPage = () => {
   const { dropdown, categoryType, category } = useParams();
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(true);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedFabrics, setSelectedFabrics] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [collapsedSections, setCollapsedSections] = useState({
+    categories: false,
+    colors: false,
+    fabrics: false,
+    sizes: false,
+  });
+
+  const toggleSection = (key) => {
+    setCollapsedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+  const [sortOption, setSortOption] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,27 +47,133 @@ const CategoryProductsPage = () => {
 
         const res = await api.get(`/products?${query}`);
         
+        let filtered = [];
         if (Array.isArray(res.data)) {
-        setProducts(res.data);
+          filtered = res.data;
         } else if (res.data.products && Array.isArray(res.data.products)) {
-          setProducts(res.data.products);
-        } else {
-          setProducts([]);
+          filtered = res.data.products;
         }
+        
+        // Apply sorting
+        switch (sortOption) {
+          case "new-old":
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            break;
+          case "old-new":
+            filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            break;
+          case "low-high":
+            filtered.sort((a, b) => a.sellingPrice - b.sellingPrice);
+            break;
+          case "high-low":
+            filtered.sort((a, b) => b.sellingPrice - a.sellingPrice);
+            break;
+          default:
+            break;
+        }
+
+        setProducts(filtered);
+        setFilteredProducts(filtered);
       } catch (err) {
         console.error("Failed to fetch products", err);
         setProducts([]);
+        setFilteredProducts([]);
       } finally {
         setLoading(false);
       }
     };
     fetchProducts();
-  }, [categoryType, category]);
+  }, [categoryType, category, sortOption]);
 
   const getFormattedTitle = (text) => {
     if (!text) return "";
     return text.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
   };
+
+  // Normalizers for potentially object-shaped attributes
+  const normalizeColor = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object") return value.name || value.code || JSON.stringify(value);
+    return String(value);
+  };
+  
+  const normalizeSize = (value) => {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object") return value.name || value.code || JSON.stringify(value);
+    return String(value);
+  };
+
+  // Helper to read a product's subcategory, excluding umbrella categoryType
+  const getSubcategory = (p) => {
+    const candidate = p.categorySlug || p.category || p.subcategory || p.subCategory;
+    if (!candidate) return null;
+    if (p.categoryType && candidate === p.categoryType) return null;
+    return candidate;
+  };
+  // Build unique values for sidebar filters
+  const allCategories = [...new Set(products.map(getSubcategory).filter(Boolean))];
+  const allColors = [
+    ...new Set(
+      products
+        .flatMap((p) => (p.colors || []).map(normalizeColor))
+        .filter(Boolean)
+    ),
+  ];
+  const allFabrics = [...new Set(products.map((p) => p.fabric).filter(Boolean))];
+  const allSizes = [
+    ...new Set(
+      products
+        .flatMap((p) => (p.sizes || []).map(normalizeSize))
+        .filter(Boolean)
+    ),
+  ];
+
+  const hasActiveFilters = selectedCategories.length > 0 || selectedColors.length > 0 || selectedFabrics.length > 0 || selectedSizes.length > 0;
+
+  // Apply sidebar filters and sorting
+  useEffect(() => {
+    let result = [...products];
+          if (selectedCategories.length > 0) {
+        result = result.filter(p => selectedCategories.includes(p.categoryType));
+      }
+    if (selectedColors.length > 0) {
+      result = result.filter((p) => {
+        if (!p.colors || p.colors.length === 0) return false;
+        const normalized = p.colors.map(normalizeColor);
+        return normalized.some((c) => selectedColors.includes(c));
+      });
+    }
+    if (selectedFabrics.length > 0) {
+      result = result.filter(p => p.fabric && selectedFabrics.includes(p.fabric));
+    }
+    if (selectedSizes.length > 0) {
+      result = result.filter((p) => {
+        if (!p.sizes || p.sizes.length === 0) return false;
+        const normalized = p.sizes.map(normalizeSize);
+        return normalized.some((s) => selectedSizes.includes(s));
+      });
+    }
+
+    switch (sortOption) {
+      case "new-old":
+        result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      case "old-new":
+        result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case "low-high":
+        result.sort((a, b) => a.sellingPrice - b.sellingPrice);
+        break;
+      case "high-low":
+        result.sort((a, b) => b.sellingPrice - a.sellingPrice);
+        break;
+      default:
+        break;
+    }
+    setFilteredProducts(result);
+  }, [products, selectedCategories, selectedColors, selectedFabrics, selectedSizes, sortOption]);
 
   return (
     <>
@@ -74,7 +197,7 @@ const CategoryProductsPage = () => {
               </BreadcrumbItem>
           {dropdown && (
             <>
-                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
               <Link to={`/${dropdown}`}>{getFormattedTitle(dropdown)}</Link>
@@ -84,7 +207,7 @@ const CategoryProductsPage = () => {
           )}
           {categoryType && (
             <>
-                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
               <Link to={`/${dropdown}/${categoryType}`}>{getFormattedTitle(categoryType)}</Link>
@@ -94,7 +217,7 @@ const CategoryProductsPage = () => {
           )}
           {category && (
             <>
-                  <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
+                  <BreadcrumbSeparator>{'/'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
                     <BreadcrumbPage>{getFormattedTitle(category)}</BreadcrumbPage>
                   </BreadcrumbItem>
@@ -108,13 +231,171 @@ const CategoryProductsPage = () => {
               {getFormattedTitle(categoryType)}
         </h1>
 
-        {/* Category Types */}
-        {category && (
-          <div className="category-types">
-            <span className="active">{getFormattedTitle(category)}</span>
-            {/* Add other category types here */}
+        <div className="product-listing-container">
+          {/* Left Sidebar - Filters */}
+          <div className={`filters-sidebar ${showFilters ? 'show' : 'hide'}`}>
+            <div className="filter-status">
+              {hasActiveFilters ? (
+                <span className="filters-applied">Filters Applied</span>
+              ) : (
+                <span className="no-filters">No Filter Applied</span>
+              )}
+            </div>
+            <div className="filters-header">
+              <h3>Filters</h3>
+              {hasActiveFilters && (
+                <button onClick={() => { setSelectedCategories([]); setSelectedColors([]); setSelectedFabrics([]); setSelectedSizes([]); }} className="clear-all-btn">
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            {/* Categories Filter */}
+            <div className={`filter-section ${collapsedSections.categories ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('categories')}>
+                <h4>Categories</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allCategories.map(category => (
+                  <label key={category} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(category)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedCategories([...selectedCategories, category]);
+                        } else {
+                          setSelectedCategories(selectedCategories.filter(c => c !== category));
+                        }
+                      }}
+                    />
+                    <span>{category}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Colors Filter */}
+            <div className={`filter-section ${collapsedSections.colors ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('colors')}>
+                <h4>Colors</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allColors.map(color => (
+                  <label key={color} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedColors.includes(color)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedColors([...selectedColors, color]);
+                        } else {
+                          setSelectedColors(selectedColors.filter(c => c !== color));
+                        }
+                      }}
+                    />
+                    <span>{color}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Fabric Filter */}
+            <div className={`filter-section ${collapsedSections.fabrics ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('fabrics')}>
+                <h4>Fabric</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allFabrics.map(fabric => (
+                  <label key={fabric} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedFabrics.includes(fabric)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedFabrics([...selectedFabrics, fabric]);
+                        } else {
+                          setSelectedFabrics(selectedFabrics.filter(f => f !== fabric));
+                        }
+                      }}
+                    />
+                    <span>{fabric}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Size Filter */}
+            <div className={`filter-section ${collapsedSections.sizes ? 'collapsed' : ''}`}>
+              <div className="filter-section-header" onClick={() => toggleSection('sizes')}>
+                <h4>Size</h4>
+                <svg className="filter-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="filter-options">
+                {allSizes.map(size => (
+                  <label key={size} className="filter-option">
+                    <input
+                      type="checkbox"
+                      checked={selectedSizes.includes(size)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedSizes([...selectedSizes, size]);
+                        } else {
+                          setSelectedSizes(selectedSizes.filter(s => s !== size));
+                        }
+                      }}
+                    />
+                    <span>{size}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
-        )}
+
+          {/* Right Main Content */}
+          <div className="main-content">
+            {/* Top Controls */}
+            <div className="top-controls">
+              <div className="controls-group">
+                <button 
+                  className="toggle-filters-btn"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  {showFilters ? 'Hide Filters' : 'Show Filters'}
+                  <svg className="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 4h18v2.172a2 2 0 0 1-.586 1.414l-4.702 4.702a2 2 0 0 0-.586 1.414V20l-4-2v-6.172a2 2 0 0 0-.586-1.414L4.586 7.586A2 2 0 0 1 4 6.172V4z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                <div className="sort-control">
+                  <span className="sort-label">Sort By</span>
+                  <svg className="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <select
+                    className="sort-dropdown"
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                  >
+                    <option value="">Sort By</option>
+                    <option value="new-old">Newest First</option>
+                    <option value="old-new">Oldest First</option>
+                    <option value="low-high">Price: Low to High</option>
+                    <option value="high-low">Price: High to Low</option>
+                  </select>
+                </div>
+              </div>
+            </div>
 
         {/* Products Grid */}
           {loading ? (
@@ -130,7 +411,7 @@ const CategoryProductsPage = () => {
                       </div>
                     ))}
                   </div>
-          ) : products.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-xl text-gray-600">No products found in this category.</p>
               <Link to="/" className="text-gold hover:underline mt-6 inline-block">
@@ -140,12 +421,14 @@ const CategoryProductsPage = () => {
           ) : (
           <div className="product-grid">
             <Suspense fallback={<div>Loading...</div>}>
-            {products.map((product) => (
+                  {filteredProducts.map((product) => (
                 <ProductCard product={product} key={product._id} />
               ))}
                   </Suspense>
                 </div>
         )}
+          </div>
+        </div>
       </div>
     </>
   );

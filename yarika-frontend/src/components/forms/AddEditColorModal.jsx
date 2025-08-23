@@ -95,7 +95,7 @@ const AddEditColorModal = ({
         <div style={{ marginBottom: 24 }}>
           <label style={{ fontWeight: 500, marginRight: 18 }}>Status</label>
           <label style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <span style={{ color: status ? "#bdbdbd" : "#caa75d", fontWeight: 500, fontSize: 15 }}>Inactive</span>
+            <span style={{ color: status ? "#bdbdbd" : "#deb33f", fontWeight: 500, fontSize: 15 }}>Inactive</span>
             <span style={{
               position: "relative",
               display: "inline-block",
@@ -123,7 +123,7 @@ const AddEditColorModal = ({
                   display: "block",
                   width: 44,
                   height: 24,
-                  background: status ? "#caa75d" : "#eee",
+                  background: status ? "#deb33f" : "#eee",
                   borderRadius: 999,
                   transition: "background 0.2s"
                 }}
@@ -142,7 +142,7 @@ const AddEditColorModal = ({
                 }}
               />
             </span>
-            <span style={{ color: status ? "#caa75d" : "#bdbdbd", fontWeight: 500, fontSize: 15 }}>Active</span>
+            <span style={{ color: status ? "#deb33f" : "#bdbdbd", fontWeight: 500, fontSize: 15 }}>Active</span>
           </label>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 8, marginBottom: 0, paddingBottom: 0 }}>
@@ -165,7 +165,7 @@ const AddEditColorModal = ({
           <button
             type="submit"
             style={{
-              background: "#caa75d",
+              background: "#deb33f",
               color: "#fff",
               fontWeight: 600,
               borderRadius: 8,

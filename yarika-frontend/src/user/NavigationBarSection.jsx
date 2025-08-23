@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import YarikaLogo from "../assets/YarikaLogo1.png";
-import { Search, ChevronDown, MapPin, User, Heart, ShoppingBag, Menu } from "lucide-react";
-import "../styles/Navbar.css";
+import BlouseBanner from "../assets/Blousebanner.png";
+import ReadymadeBlouseNav from "../assets/Readymade blouse nav img.png";
+import MaterialNav from "../assets/material nav img.png";
+import LeggingNav from "../assets/legging nav img.png";
+import { Search, MapPin, User, Heart, ShoppingBag, Menu } from "lucide-react";
+import WhatsAppButton from "../components/WhatsAppButton";
+import ScrollToTop from "../components/ScrollToTop";
+import "../styles/navbar.css";
 
 function isMobile() {
   return window.innerWidth <= 768;
@@ -15,10 +21,20 @@ const NavigationBarSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileDropdown, setMobileDropdown] = useState(null); // Track which dropdown is open
+  const [mobileDropdown, setMobileDropdown] = useState(null);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
+  const [selectedCategory, setSelectedCategory] = useState('women');
+  const [mobileActiveDropdown, setMobileActiveDropdown] = useState(null);
+
+  const announcements = [
+    "New Styles On Sale: Up To 40% Off",
+    "FREE Shipping All Over INDIA",
+    "New Stock Updated Every Week",
+    "Your One Stop Destination",
+    "Delivering Love World Wide"
+  ];
 
   useEffect(() => {
     const updateLoginState = () => {
@@ -41,6 +57,14 @@ const NavigationBarSection = () => {
     setActiveDropdown(null);
   };
 
+  const handleMobileDropdownToggle = (dropdownName) => {
+    if (mobileActiveDropdown === dropdownName) {
+      setMobileActiveDropdown(null);
+    } else {
+      setMobileActiveDropdown(dropdownName);
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -52,10 +76,6 @@ const NavigationBarSection = () => {
     if (e.key === 'Enter') {
       handleSearch(e);
     }
-  };
-
-  const handleStoreLocatorClick = () => {
-    navigate("/store-locator");
   };
 
   const handleLoginClick = () => {
@@ -70,16 +90,21 @@ const NavigationBarSection = () => {
     navigate("/cart");
   };
 
-  const handleMenuClick = () => {
-    // This function is not defined in the original file,
-    // but the edit hint implies its existence.
-    // For now, it will be a placeholder.
-    console.log("Menu clicked");
+  const handleFeaturedClick = () => {
+    navigate("/");
+    // Add a small delay to ensure the page loads before scrolling
+    setTimeout(() => {
+      const featuredSection = document.getElementById('featured');
+      if (featuredSection) {
+        featuredSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const handleSearchClick = () => {
     setMobileSearchOpen(true);
   };
+
   const handleMobileSearchClose = () => {
     setMobileSearchOpen(false);
   };
@@ -181,312 +206,273 @@ const NavigationBarSection = () => {
     return `/${dropdown}/${categoryType}/${item.slug}`;
   };
 
-  const isMobileView = window.innerWidth <= 768;
-
-  if (isMobileView) {
-    return (
-      <>
-      <div className="mobile-navbar">
-          <button className="navbar-icon menu-icon" onClick={() => setMobileMenuOpen(true)}>
-          <Menu size={28} color="#caa75d" />
-        </button>
-        <div className="navbar-logo">
-            <Link to="/">
-          <img src={YarikaLogo} alt="Yarika Logo" className="mobile-navbar-logo" />
-            </Link>
-        </div>
-        <div className="navbar-icons">
-          <button className="navbar-icon" onClick={handleSearchClick}>
-            <Search size={24} color="#111" />
-          </button>
-          <button className="navbar-icon" onClick={handleCartClick}>
-            <ShoppingBag size={24} color="#111" />
-          </button>
-        </div>
-      </div>
-        {mobileSearchOpen && (
-          <div className="mobile-search-overlay" onClick={handleMobileSearchClose}>
-            <div className="mobile-search-bar" onClick={e => e.stopPropagation()}>
-              <input
-                type="text"
-                className="mobile-search-input"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyPress}
-                autoFocus
-              />
-              <button className="mobile-search-btn" onClick={handleSearch}>
-                <Search size={20} />
-              </button>
-              <button className="mobile-search-close" onClick={handleMobileSearchClose}>
-                ×
-              </button>
-            </div>
-          </div>
-        )}
-        {mobileMenuOpen && (
-          <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
-            <div className="mobile-menu" onClick={e => e.stopPropagation()}>
-              <button className="close-menu" onClick={() => setMobileMenuOpen(false)}>×</button>
-              <div className="mobile-menu-links">
-                <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-                <div>
-                  <button className="mobile-dropdown-btn" onClick={() => setMobileDropdown(mobileDropdown === 'women' ? null : 'women')}>
-                    Women
-                  </button>
-                  {mobileDropdown === 'women' && (
-                    <ul className="mobile-submenu">
-                      {Object.entries(categoryTypes.women).map(([categoryType, category], idx) => (
-                        <li key={idx} style={{marginBottom: '8px'}}>
-                          <span style={{fontWeight: 'bold', fontSize: '1em'}}>{category.title}</span>
-                          <ul style={{marginLeft: '12px', marginTop: '4px'}}>
-                            {category.items.map((item, itemIdx) => (
-                              <li key={itemIdx}>
-                                <Link to={getCategoryLink('women', categoryType, item)} onClick={() => setMobileMenuOpen(false)}>
-                                  {item.name}
-                                  {item.highlight && <span className="highlight"> ({item.highlight})</span>}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div>
-                  <button className="mobile-dropdown-btn" onClick={() => setMobileDropdown(mobileDropdown === 'girls' ? null : 'girls')}>
-                    Girls
-                  </button>
-                  {mobileDropdown === 'girls' && (
-                    <ul className="mobile-submenu">
-                      {Object.entries(categoryTypes.girls).map(([categoryType, category], idx) => (
-                        <li key={idx} style={{marginBottom: '8px'}}>
-                          <span style={{fontWeight: 'bold', fontSize: '1em'}}>{category.title}</span>
-                          <ul style={{marginLeft: '12px', marginTop: '4px'}}>
-                            {category.items.map((item, itemIdx) => (
-                              <li key={itemIdx}>
-                                <Link to={getCategoryLink('girls', categoryType, item)} onClick={() => setMobileMenuOpen(false)}>
-                                  {item.name}
-                                  {item.highlight && <span className="highlight"> ({item.highlight})</span>}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div>
-                  <button className="mobile-dropdown-btn" onClick={() => setMobileDropdown(mobileDropdown === 'kids' ? null : 'kids')}>
-                    Kids
-                  </button>
-                  {mobileDropdown === 'kids' && (
-                    <ul className="mobile-submenu">
-                      {/* Add kids categories/items here if needed */}
-                      <li>No categories available</li>
-                    </ul>
-                  )}
-                </div>
-              </div>
-              <div className="mobile-menu-icons" style={{marginTop: '18px', alignItems: 'center'}}>
-                <a
-                  className="icon-item"
-                  href="https://www.google.com/maps/place/Zillion+Threads/@11.011062,76.8626941,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba85f912d3d1dd9:0xdfd0242d8a996267!8m2!3d11.011062!4d76.865269!16s%2Fg%2F11ybt6v8jq?entry=ttu&g_ep=EgoyMDI1MDcyMi4wIKXMDSoASAFQAw%3D%3D"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Store Locator"
-                  style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#222', fontSize: '1.1rem', textDecoration: 'none'}}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <MapPin size={22} className="gold-icon" />
-                  <span>Store Locator</span>
-                </a>
-                <Link
-                  to="/profile"
-                  className="icon-item"
-                  style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#222', fontSize: '1.1rem', textDecoration: 'none'}}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <User size={22} />
-                  <span>Profile</span>
-                </Link>
-                <Link
-                  to="/wishlist"
-                  className="icon-item"
-                  style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#222', fontSize: '1.1rem', textDecoration: 'none'}}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Heart size={22} />
-                  <span>Wishlist</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-      </>
-    );
-  }
+  // Mobile navbar logic completely removed - always show desktop navigation
 
   return (
     <div className="nav-wrapper">
-      <nav className="navigation-bar">
-        <div className="nav-left">
-          <Link to="/" className="logo">
-            <img src="/YarikaLogo1.png" alt="Yarika Logo" />
-          </Link>
-          <div className="nav-categories">
-            <div
-              className="nav-item"
-              onMouseEnter={() => { if (!isMobile()) setActiveDropdown('women'); }}
-              onMouseLeave={() => { if (!isMobile()) setActiveDropdown(null); }}
-              onClick={() => { if (isMobile()) setActiveDropdown(activeDropdown === 'women' ? null : 'women'); }}
-            >
-              <span>WOMEN</span>
-              {activeDropdown === 'women' && (
-                <div className="dropdown-menu">
-                  <div className="dropdown-content">
-                    {Object.entries(categoryTypes.women).map(([categoryType, category], index) => (
-                      <div key={index} className="dropdown-column">
-                        <h3>{category.title}</h3>
-                        <ul>
-                          {category.items.map((item, itemIndex) => (
-                            <li key={itemIndex}>
-                                <Link to={getCategoryLink('women', categoryType, item)}>
-                                {item.name}
-                                {item.highlight && <span className="highlight"> ({item.highlight})</span>}
-                                </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {/* Top announcement marquee */}
+      <div className="announcement-bar">
+        <div className="marquee" role="marquee" aria-label="site announcements">
+          <div className="marquee-track">
+            {announcements.map((text, idx) => (
+              <span key={`m1-${idx}`} className="announcement-item">
+                {text}
+                <span className="announcement-sep" />
+              </span>
             ))}
           </div>
-          </div>
-        )}
+          {announcements.length > 1 ? (
+            <div className="marquee-track" aria-hidden="true">
+              {announcements.map((text, idx) => (
+                <span key={`m2-${idx}`} className="announcement-item">
+                  {text}
+                  <span className="announcement-sep" />
+                </span>
+              ))}
             </div>
-            <div
-              className="nav-item"
-              onMouseEnter={() => { if (!isMobile()) setActiveDropdown('girls'); }}
-              onMouseLeave={() => { if (!isMobile()) setActiveDropdown(null); }}
-              onClick={() => { if (isMobile()) setActiveDropdown(activeDropdown === 'girls' ? null : 'girls'); }}
-            >
-              <span>GIRLS</span>
-              {activeDropdown === 'girls' && (
-                <div className="dropdown-menu">
-                  <div className="dropdown-content">
-                    {Object.entries(categoryTypes.girls).map(([categoryType, category], index) => (
-                      <div key={index} className="dropdown-column">
-                        <h3>{category.title}</h3>
-                        <ul>
-                          {category.items.map((item, itemIndex) => (
-                            <li key={itemIndex}>
-                                <Link to={getCategoryLink('girls', categoryType, item)}>
-                                {item.name}
-                                {item.highlight && <span className="highlight"> ({item.highlight})</span>}
-                                </Link>
-                            </li>
-                          ))}
-                        </ul>
+          ) : null}
+        </div>
       </div>
-          ))}
-                  </div>
-                </div>
-              )}
-            </div>
+      
+      <nav className="navigation-bar">
+        {/* Left: Categories */}
+        <div className="nav-left">
+          <div className="nav-categories">
             <div
-              className="nav-item"
-              onMouseEnter={() => { if (!isMobile()) setActiveDropdown('kids'); }}
-              onMouseLeave={() => { if (!isMobile()) setActiveDropdown(null); }}
-              onClick={() => { if (isMobile()) setActiveDropdown(activeDropdown === 'kids' ? null : 'kids'); }}
+              className={`nav-item${selectedCategory === 'women' ? ' active' : ''}`}
+              onClick={() => setSelectedCategory('women')}
+            >
+              <span>WOMEN</span>
+            </div>
+
+            <div
+              className={`nav-item${selectedCategory === 'kids' ? ' active' : ''}`}
+              onClick={() => setSelectedCategory('kids')}
             >
               <span>KIDS</span>
-              {activeDropdown === 'kids' && (
-                <div className="dropdown-menu">
-                  <div className="dropdown-content">
-                  </div>
-                </div>
-              )}
+            </div>
+
+            <div
+              className={`nav-item${selectedCategory === 'bridal' ? ' active' : ''}`}
+              onClick={() => setSelectedCategory('bridal')}
+            >
+              <span>BRIDAL</span>
             </div>
           </div>
       </div>
 
-        <div className="content-wrapper">
+        {/* Center: Logo */}
       <div className="navbar-center">
-        <div className="search-bar">
-              <div className="search-icon" onClick={handleSearch}>
-                <Search size={20} strokeWidth={1} />
-              </div>
+          <Link to="/" className="logo">
+            <img src={YarikaLogo} alt="Yarika Logo" />
+          </Link>
+        </div>
+
+        {/* Right: Search + Icons */}
+        <div className="navbar-right">
+          <div className="search-container">
               <input 
                 type="text" 
-                placeholder="What are you looking for?"
+                placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
+              <div className="search-icon" onClick={handleSearch}>
+                <Search size={16} />
         </div>
       </div>
 
-      <div className="navbar-right">
-        <div className="icon-group">
-              <a
-                className="icon-item"
-                href="https://www.google.com/maps/place/Zillion+Threads/@11.011062,76.8626941,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba85f912d3d1dd9:0xdfd0242d8a996267!8m2!3d11.011062!4d76.865269!16s%2Fg%2F11ybt6v8jq?entry=ttu&g_ep=EgoyMDI1MDcyMi4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Store Locator"
-              >
-                <MapPin size={20} className="gold-icon" />
-                <span className="icon-label">Store Locator</span>
-              </a>
-              <button className="icon-item" onClick={handleLoginClick}>
+            <div className="user-actions">
+              <button className="icon-btn" onClick={handleLoginClick}>
             <User size={20} />
-            <span className="icon-label">{isLoggedIn ? "Profile" : "Login"}</span>
           </button>
-              <button className="icon-item" onClick={handleWishlistClick}>
+              <button className="icon-btn" onClick={handleWishlistClick}>
             <Heart size={20} />
-            <span className="icon-label">Wishlist</span>
           </button>
-              <button className="icon-item" onClick={handleCartClick}>
-            <div className="bag-icon">
+              <button className="icon-btn" onClick={handleCartClick}>
+                <div className="cart-icon">
               <ShoppingBag size={20} />
                   {totalItems > 0 && (
                     <span className="cart-badge">{totalItems}</span>
                   )}
             </div>
-            <span className="icon-label">Bag</span>
           </button>
             </div>
         </div>
+      </nav>
+
+
+
+      {/* Sub-navigation bar with dropdowns */}
+      <div className={`subnav-bar hide-on-mobile ${selectedCategory ? 'has-content' : ''}`}>
+        <div className="subnav-inner">
+          {/* First row: Main category buttons - visible on all screen sizes */}
+          <div className="subnav-primary">
+            <div
+              className={`subnav-category-btn${selectedCategory === 'women' ? ' active' : ''}`}
+              onClick={() => setSelectedCategory('women')}
+            >
+              WOMEN
+            </div>
+            <span className="subnav-sep" />
+            
+            <div
+              className={`subnav-category-btn${selectedCategory === 'kids' ? ' active' : ''}`}
+              onClick={() => setSelectedCategory('kids')}
+            >
+              KIDS
+            </div>
+            <span className="subnav-sep" />
+            
+            <div
+              className={`subnav-category-btn${selectedCategory === 'bridal' ? ' active' : ''}`}
+              onClick={() => setSelectedCategory('bridal')}
+            >
+              BRIDAL
+            </div>
+          </div>
+          
+          {/* Second row: Secondary navigation items - Featured, Store Locator, etc. */}
+          <div className="subnav-secondary">
+          <div className="subnav-link" style={{cursor: 'pointer'}} onClick={handleFeaturedClick}>FEATURED</div>
+          <span className="subnav-sep" />
+          
+          {selectedCategory === 'women' && (
+            <>
+              <div 
+                className="subnav-dropdown"
+                onMouseEnter={() => handleMouseEnter('women-readymade')}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleMobileDropdownToggle('women-readymade')}
+              >
+                <span className="subnav-link">READYMADE BLOUSE</span>
+                {(activeDropdown === 'women-readymade' || mobileActiveDropdown === 'women-readymade') && (
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-readymade' ? 'active' : ''}`}>
+                    <div className="dropdown-content">
+                      <div className="dropdown-list">
+                        {categoryTypes.women["readymade-blouse"].items.map((item, idx) => (
+                          <Link key={idx} to={getCategoryLink('women', 'readymade-blouse', item)} className="subnav-dropdown-item">
+                            <span className="diamond-bullet">◆</span>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="dropdown-image">
+                        <img src={ReadymadeBlouseNav} alt="Readymade Blouse Collection" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <span className="subnav-sep" />
+              
+              <div 
+                className="subnav-dropdown"
+                onMouseEnter={() => handleMouseEnter('women-leggings')}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleMobileDropdownToggle('women-leggings')}
+              >
+                <span className="subnav-link">LEGGINGS</span>
+                {(activeDropdown === 'women-leggings' || mobileActiveDropdown === 'women-leggings') && (
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-leggings' ? 'active' : ''}`}>
+                    <div className="dropdown-content">
+                      <div className="dropdown-list">
+                        {categoryTypes.women.leggings.items.map((item, idx) => (
+                          <Link key={idx} to={getCategoryLink('women', 'leggings', item)} className="subnav-dropdown-item">
+                            <span className="diamond-bullet">◆</span>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="dropdown-image">
+                        <img src={LeggingNav} alt="Leggings Collection" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <span className="subnav-sep" />
+              
+              <div 
+                className="subnav-dropdown"
+                onMouseEnter={() => handleMouseEnter('women-materials')}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleMobileDropdownToggle('women-materials')}
+              >
+                <span className="subnav-link">MATERIALS</span>
+                {(activeDropdown === 'women-materials' || mobileActiveDropdown === 'women-materials') && (
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-materials' ? 'active' : ''}`}>
+                    <div className="dropdown-content">
+                      <div className="dropdown-list">
+                        {categoryTypes.women["readymade-blouse-cloth"].items.map((item, idx) => (
+                          <Link key={idx} to={getCategoryLink('women', 'readymade-blouse-cloth', item)} className="subnav-dropdown-item">
+                            <span className="diamond-bullet">◆</span>
+                            {item.name}
+                            {item.highlight && <span className="highlight"> ({item.highlight})</span>}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="dropdown-image">
+                        <img src={MaterialNav} alt="Materials Collection" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <span className="subnav-sep" />
+            </>
+          )}
+          
+          {selectedCategory === 'kids' && (
+            <>
+              <div 
+                className="subnav-dropdown"
+                onMouseEnter={() => handleMouseEnter('kids-leggings')}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleMobileDropdownToggle('kids-leggings')}
+              >
+                <span className="subnav-link">LEGGINGS</span>
+                {(activeDropdown === 'kids-leggings' || mobileActiveDropdown === 'kids-leggings') && (
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'kids-leggings' ? 'active' : ''}`}>
+                    {categoryTypes.girls.leggings.items.map((item, idx) => (
+                      <Link key={idx} to={getCategoryLink('girls', 'leggings', item)} className="subnav-dropdown-item">
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <span className="subnav-sep" />
+            </>
+          )}
+          
+          {selectedCategory === 'bridal' && (
+            <>
+              <Link to={getCategoryLink('women','bridal',{slug:'bridal-lehenga'})} className="subnav-link">LEHENGA</Link>
+              <span className="subnav-sep" />
+              <Link to={getCategoryLink('women','bridal',{slug:'bridal-gown'})} className="subnav-link">GOWNS</Link>
+              <span className="subnav-sep" />
+            </>
+          )}
+          
+          <a
+            className="subnav-link"
+              href="https://www.google.com/maps/place/Zillion+Threads/@11.011062,76.8626941,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba75d912d3d1dd9:0xdfd0242d8a996267!8m2!3d11.011062!4d76.865269!16s%2Fg%2F11ybt6v8jq?entry=ttu&g_ep=EgoyMDI1MDcyMi4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            STORE LOCATOR
+          </a>
+          </div>
+        </div>
       </div>
-    </nav>
-    {mobileMenuOpen && (
-  <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
-    <div className="mobile-menu" onClick={e => e.stopPropagation()}>
-      <button className="close-menu" onClick={() => setMobileMenuOpen(false)}>×</button>
-      <div className="mobile-menu-links">
-        <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-        <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
-        <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)}>Wishlist</Link>
-        <Link to="/orders" onClick={() => setMobileMenuOpen(false)}>My Orders</Link>
-        {/* Add your category dropdowns here as needed */}
-      </div>
-      <div className="mobile-menu-icons">
-        <button onClick={() => { setMobileMenuOpen(false); handleLoginClick(); }}>
-          <User size={24} /> Profile
-        </button>
-        <button onClick={() => { setMobileMenuOpen(false); handleWishlistClick(); }}>
-          <Heart size={24} /> Wishlist
-        </button>
-        <button onClick={() => { setMobileMenuOpen(false); handleCartClick(); }}>
-          <ShoppingBag size={24} /> Cart
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      
+      {/* Scroll to Top Button - appears when scrolling */}
+      <ScrollToTop />
+      
+      {/* WhatsApp Button - appears on every page */}
+      <WhatsAppButton />
     </div>
   );
 };

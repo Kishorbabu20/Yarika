@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster, toast } from "react-hot-toast";
 import NavigationBarSection from './user/NavigationBarSection';
+import ServiceHighlights from "./components/ServiceHighlights";
 
 // Admin
 import AdminLogin from "./pages/AdminLogin";
@@ -39,11 +40,18 @@ import UserProfile from "./user/UserProfile";
 import WishlistPage from "./user/WishlistPage";
 import UserProtectedRoute from "./utils/UserProtectedRoute";
 import BridalPage from "./user/BridalPage";
+import ShopByOccasionPage from "./user/ShopByOccasionPage";
 
 // Policy Pages
 import TermsOfUse from "./pages/TermsOfUse";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
+
+// New Pages
+import Payments from "./pages/Payments";
+import BulkQueries from "./pages/BulkQueries";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 
 const queryClient = new QueryClient();
 
@@ -108,32 +116,44 @@ function App() {
             <Toaster position="top-right" />
             <Routes>
               {/* User Routes - All with NavigationBarSection */}
-              <Route path="/" element={<><NavigationBarSection /><HeroLanding /><Footer /></>} />
-              <Route path="/products" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
-              <Route path="/cart" element={<><NavigationBarSection /><Cart /><Footer /></>} />
-              <Route path="/orders" element={<><NavigationBarSection /><MyOrders /></>} />
+              <Route path="/" element={<><NavigationBarSection /><HeroLanding /><ServiceHighlights /><Footer /></>} />
+              <Route path="/products" element={<><NavigationBarSection /><ProductPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/cart" element={<><NavigationBarSection /><Cart /><ServiceHighlights /><Footer /></>} />
+              <Route path="/orders" element={<><NavigationBarSection /><MyOrders /><ServiceHighlights /></>} />
               <Route path="/profile" element={
                 <UserProtectedRoute>
                   <NavigationBarSection />
                   <UserProfile />
+                  <ServiceHighlights />
                 </UserProtectedRoute>
               } />
-              <Route path="/wishlist" element={<><NavigationBarSection /><WishlistPage /></>} />
-              <Route path="/products/:categorySlug" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />
-              <Route path="/search" element={<><NavigationBarSection /><SearchResultsPage /><Footer /></>} />
-              <Route path="/home/trending" element={<><NavigationBarSection /><TrendingPage /><Footer /></>} />
-              <Route path="/home/readymade-blouse" element={<><NavigationBarSection /><ProductPage /><Footer /></>} />
-              <Route path="/home/leggings" element={<><NavigationBarSection /><LeggingsPage /><Footer /></>} />
-              <Route path="/home/materials" element={<><NavigationBarSection /><MaterialsPage /><Footer /></>} />
+              <Route path="/wishlist" element={<><NavigationBarSection /><WishlistPage /><ServiceHighlights /></>} />
+              <Route path="/products/:categorySlug" element={<><NavigationBarSection /><CategoryProductsPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/search" element={<><NavigationBarSection /><SearchResultsPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/home/trending" element={<><NavigationBarSection /><TrendingPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/home/readymade-blouse" element={<><NavigationBarSection /><ProductPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/home/leggings" element={<><NavigationBarSection /><LeggingsPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/home/materials" element={<><NavigationBarSection /><MaterialsPage /><ServiceHighlights /><Footer /></>} />
               <Route path="/login" element={isLoggedIn ? <Navigate to="/profile" /> : <LoginPage />} />
               <Route path="/signup" element={<SignupLoginPage />} />
-              {/* Bridal Page Route */}
-              <Route path="/home/bridal" element={<><NavigationBarSection /><BridalPage /><Footer /></>} />
+              {/* Bridal Page Routes */}
+              <Route path="/home/bridal" element={<><NavigationBarSection /><BridalPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/home/bridal/:category" element={<><NavigationBarSection /><BridalPage /><ServiceHighlights /><Footer /></>} />
+              
+              {/* Shop by Occasion Routes */}
+              <Route path="/occasion" element={<><NavigationBarSection /><ShopByOccasionPage /><ServiceHighlights /><Footer /></>} />
+              <Route path="/occasion/:occasion" element={<><NavigationBarSection /><ShopByOccasionPage /><ServiceHighlights /><Footer /></>} />
               
               {/* Policy Pages */}
               <Route path="/terms-of-use" element={<><NavigationBarSection /><TermsOfUse /></>} />
               <Route path="/privacy-policy" element={<><NavigationBarSection /><PrivacyPolicy /></>} />
               <Route path="/shipping-policy" element={<><NavigationBarSection /><ShippingPolicy /></>} />
+              
+              {/* New Pages */}
+              <Route path="/payments" element={<><NavigationBarSection /><Payments /></>} />
+              <Route path="/bulk-queries" element={<><NavigationBarSection /><BulkQueries /></>} />
+              <Route path="/about-us" element={<><NavigationBarSection /><AboutUs /></>} />
+              <Route path="/contact-us" element={<><NavigationBarSection /><ContactUs /></>} />
               
               {/* SEO-friendly product routes - MUST come before fallback route */}
               <Route path="/:dropdown/:categoryType/:category" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />

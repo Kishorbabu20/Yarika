@@ -16,7 +16,7 @@
   .brand {
     text-align: center;
     font-size: 36px;
-    color: #caa75d;
+    color: #deb33f;
     letter-spacing: 6px;
     margin-bottom: 4px;
   }
@@ -127,7 +127,7 @@
     }
   }
 
-@media (max-width: 768px) {
+@media (max-width: 720px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;

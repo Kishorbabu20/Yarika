@@ -47,6 +47,13 @@ const categoryOptions = {
     { label: "Aari Embroidery Cloth", slug: "aari-embroidery-cloth" },
     { label: "Aari Zardosi Cloth", slug: "aari-zardosi-cloth" },
     { label: "Zardosi Embroidery Cloth", slug: "zardosi-embroidery-cloth" }
+  ],
+  occasion: [
+    { label: "Wedding Season", slug: "wedding-season" },
+    { label: "Festive Celebrations", slug: "festive-celebrations" },
+    { label: "Everyday Ethnic", slug: "everyday-ethnic" },
+    { label: "Workwear Staples", slug: "workwear-staples" },
+    { label: "Party & Evening Out", slug: "party-evening-out" }
   ]
 };
 
@@ -122,7 +129,7 @@ const COLOR_OPTIONS = {
     { id: "8", name: "White", value: "#ffffff" },
     { id: "6", name: "Maroon", value: "#660000" },
     { id: "101", name: "Rose Pink", value: "#FF007F" },
-    { id: "102", name: "Gold", value: "#FFD700" },
+    { id: "102", name: "Gold", value: "#deb33f" },
     { id: "103", name: "Silver", value: "#C0C0C0" }
   ]
 };
@@ -177,6 +184,12 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   const [metaKeywords, setMetaKeywords] = useState(product?.metaKeywords || "");
   const [dataLoaded, setDataLoaded] = useState(false);
   const [sizeColorStocks, setSizeColorStocks] = useState(/* initial value, e.g. [] or {} */);
+  
+  // Key Highlights state variables
+  const [fabric, setFabric] = useState(product?.fabric || "");
+  const [neck, setNeck] = useState(product?.neck || "");
+  const [sleeveStyling, setSleeveStyling] = useState(product?.sleeveStyling || "");
+  const [sleeveLength, setSleeveLength] = useState(product?.sleeveLength || "");
 
   // SEO character limits
   const META_TITLE_LIMIT = 60;
@@ -219,6 +232,10 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     setGrossWeight("");
     setMaxOrderQuantity("");
     setQrCodeDataUrl("");
+    setFabric("");
+    setNeck("");
+    setSleeveStyling("");
+    setSleeveLength("");
   };
 
   // Auto-generate SEO fields from product details
@@ -285,7 +302,8 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     // Get category abbreviations
     const categoryAbbr = categoryType === "readymade-blouse" ? "BL" : 
                         categoryType === "leggings" ? "LG" : 
-                        categoryType === "materials" ? "MT" : "PR";
+                        categoryType === "materials" ? "MT" : 
+                        categoryType === "occasion" ? "OC" : "PR";
     
     const subCategoryAbbr = category.split('-')[0].toUpperCase().substring(0, 2);
     
@@ -853,6 +871,13 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     formData.append("netWeight", netWeight ? netWeight.trim() : "");
     formData.append("grossWeight", grossWeight ? grossWeight.trim() : "");
     formData.append("maxOrderQuantity", maxOrderQuantity ? maxOrderQuantity.trim() : "");
+    
+    // Add Key Highlights fields
+    formData.append("fabric", fabric ? fabric.trim() : "");
+    formData.append("neck", neck ? neck.trim() : "");
+    formData.append("sleeveStyling", sleeveStyling ? sleeveStyling.trim() : "");
+    formData.append("sleeveLength", sleeveLength ? sleeveLength.trim() : "");
+    
     // QR Code data URL commented out
     // formData.append("qrCodeDataUrl", qrCodeDataUrl);
 
@@ -1064,11 +1089,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem>
-                    <BreadcrumbPage style={{ color: '#caa75d', fontWeight: 500 }}>Product</BreadcrumbPage>
+                    <BreadcrumbPage style={{ color: '#deb33f', fontWeight: 500 }}>Product</BreadcrumbPage>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
-                    <BreadcrumbPage style={{ color: '#caa75d', fontWeight: 500 }}>Manage Product</BreadcrumbPage>
+                    <BreadcrumbPage style={{ color: '#deb33f', fontWeight: 500 }}>Manage Product</BreadcrumbPage>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator>{'>'}</BreadcrumbSeparator>
                   <BreadcrumbItem>
@@ -1105,6 +1130,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                 <option value="leggings">Leggings</option>
                 <option value="readymade-blouse-cloth">Blouse Cloth</option>
                 <option value="trending">Trending</option>
+                <option value="occasion">Occasion</option>
               </select>
             </div>
             {/* Row 2: Category Type | Product Code */}
@@ -1304,9 +1330,10 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
             </div>
 
             {/* Pricing & Information Section */}
-           
-            <div className="pricing-info-group" style={{ gridColumn: '1 / span 2' }}>Pricing & Information</div>
             <div className="pricing-info-section">
+              <div className="section-header" style={{ gridColumn: '1 / span 2' }}>
+                <h3>Pricing & Information</h3>
+              </div>
               {/* Row 1: MRP Price | Our Price */}
               <div className="pricing-info-group">
                 <Label>MRP Price (₹) *</Label>
@@ -1336,10 +1363,62 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
           </div>
         </div>
         
+        {/* Key Highlights Section */}
+        <div className="key-highlights-section">
+          <div className="section-header" style={{ gridColumn: '1 / span 2' }}>
+            <h3>Key Highlights</h3>
+          </div>
+          
+          {/* Row 1: Fabric | Neck */}
+          <div className="key-highlights-group">
+            <Label>Fabric</Label>
+            <textarea
+              className="form-textarea"
+              placeholder="e.g., Silk, Cotton, Georgette"
+              value={fabric}
+              onChange={e => setFabric(e.target.value)}
+              rows={2}
+            />
+          </div>
+          <div className="key-highlights-group">
+            <Label>Neck</Label>
+            <textarea
+              className="form-textarea"
+              placeholder="e.g., Rounded Neck, V-Neck, Boat Neck"
+              value={neck}
+              onChange={e => setNeck(e.target.value)}
+              rows={2}
+            />
+          </div>
+          
+          {/* Row 2: Sleeve Styling | Sleeve Length */}
+          <div className="key-highlights-group">
+            <Label>Sleeve Styling</Label>
+            <textarea
+              className="form-textarea"
+              placeholder="e.g., 3/4th, Full Sleeve, Sleeveless"
+              value={sleeveStyling}
+              onChange={e => setSleeveStyling(e.target.value)}
+              rows={2}
+            />
+          </div>
+          <div className="key-highlights-group">
+            <Label>Sleeve Length</Label>
+            <textarea
+              className="form-textarea"
+              placeholder="e.g., 12 Inches, 18 Inches, Full Length"
+              value={sleeveLength}
+              onChange={e => setSleeveLength(e.target.value)}
+              rows={2}
+            />
+          </div>
+        </div>
 
             {/* More Info Section */}
-            <div className="more-info-group" style={{ gridColumn: '1 / span 2' }}>More Info</div>
             <div className="more-info-section">
+              <div className="section-header" style={{ gridColumn: '1 / span 2' }}>
+                <h3>SEO & Meta Information</h3>
+              </div>
               {/* Row 1: SEO Url | Tax Class */}
               <div className="more-info-group">
                 <Label>SEO Url *</Label>
@@ -1364,10 +1443,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                     style={{ 
                       padding: '8px 12px', 
                       fontSize: '12px',
-                      backgroundColor: '#f0f0f0',
-                      border: '1px solid #ddd',
+                      backgroundColor: '#fff',
+                      border: '1.5px solid #c6aa62',
                       borderRadius: '4px',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      color: '#c6aa62'
                     }}
                   >
                     Generate
@@ -1488,7 +1568,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                     padding: '8px 16px',
                     backgroundColor: '#c6aa62',
                     color: '#fff',
-                    border: 'none',
+                    border: '1.5px solid #c6aa62',
                     borderRadius: '6px',
                     cursor: 'pointer',
                     fontSize: '14px',
@@ -1657,120 +1737,140 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
             */}
 
             {/* Product Images Section */}
-            <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>Product Images</div>
-            <div className="product-images-section" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              {/* Main Image Upload */}
-              <div className="product-images-group">
+            <div className="product-images-section">
+              <div className="section-header" style={{ gridColumn: '1 / span 2' }}>
+                <h3>Product Images</h3>
+              </div>
+              {/* Main Image Upload with Alt Text Side by Side */}
+              <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>
                 <Label>Main Image (640 × 700) *</Label>
                 <div className="image-upload-area">
                   {!mainImagePreview && (
                     <label className="image-dropzone" style={{ 
                       border: '2px dashed #c6aa62',
                       borderRadius: '8px',
-                      padding: '40px 20px',
+                      padding: '30px 20px',
                       textAlign: 'center',
                       cursor: 'pointer',
                       backgroundColor: '#faf9f6',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      marginBottom: '16px'
                     }}>
                     <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleMainImageChange} />
                     <div className="image-drop-content">
-                        <span className="image-upload-icon" style={{ fontSize: '32px', color: '#c6aa62', display: 'block', marginBottom: '12px' }}>↑</span>
-                        <span style={{ fontSize: '16px', fontWeight: '500', color: '#333' }}>Click to upload main image</span>
-                        <div style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>Required for product display</div>
+                        <span className="image-upload-icon" style={{ fontSize: '24px', color: '#c6aa62', display: 'block', marginBottom: '8px' }}>↑</span>
+                        <span style={{ fontSize: '14px', fontWeight: '500', color: '#333' }}>Click to upload main image</span>
+                        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>Required for product display</div>
                   </div>
                 </label>
                   )}
-                {mainImagePreview && (
-                    <div className="image-preview-row" style={{
+                  {mainImagePreview && (
+                    <div style={{
                       display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px',
-                      border: '1px solid #e5e5e5',
+                      gap: '16px',
+                      border: !mainImageAlt ? '2px solid #d32f2f' : '1px solid #e5e5e5',
                       borderRadius: '8px',
-                      backgroundColor: '#fafafa'
+                      padding: '20px',
+                      marginBottom: '16px',
+                      backgroundColor: !mainImageAlt ? '#fff5f5' : '#fff',
+                      alignItems: 'flex-start',
+                      minHeight: '140px',
+                      boxSizing: 'border-box'
                     }}>
-                      <div className="image-preview-thumb" style={{
-                        width: '80px',
-                        height: '80px',
-                        backgroundColor: '#f0f0f0',
-                        borderRadius: '6px',
-                        overflow: 'hidden',
-                        position: 'relative'
+                      {/* Left Side - Image Preview */}
+                      <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '8px',
+                        width: '120px',
+                        flexShrink: 0
                       }}>
-                        <img 
-                          src={mainImagePreview} 
-                          alt="Main image"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            borderRadius: '6px'
-                          }}
-                        />
-                    </div>
-                      <div className="image-preview-info" style={{ flex: 1 }}>
-                        <div style={{ fontWeight: '500', fontSize: '14px' }}>{mainImageAlt || 'Main image'}</div>
-                        <div style={{ fontSize: '12px', color: '#666' }}>
-                          {mainImage ? `${(mainImage.size / 1024).toFixed(0)} kb` : ''}
-                        </div>
-                      </div>
-                      <button 
-                        type="button" 
-                        className="image-delete-btn" 
-                        onClick={handleRemoveMainImage}
-                        style={{
-                          padding: '6px',
-                          backgroundColor: 'transparent',
-                          color: '#d32f2f',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
+                        <div className="image-preview-thumb" style={{ 
+                          width: '100px', 
+                          height: '100px', 
+                          backgroundColor: '#f0f0f0',
+                          borderRadius: '6px',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                  </div>
-                )}
-            </div>
-              {/* Main Image Alt Text */}
-              <div className="product-images-group">
-                <Label>Main Image Alt Text *</Label>
-                <textarea 
-                  className="form-textarea" 
-                  placeholder="Enter alt text for main image (e.g., 'White embroidery blouse main view')" 
-                  value={mainImageAlt} 
-                  onChange={e => setMainImageAlt(e.target.value)}
-                  style={{ 
-                    width: '100%', 
-                    minHeight: '80px',
-                    border: mainImageAlt ? '1px solid #28a745' : '1px solid #ddd'
-                  }}
-                />
-                {!mainImageAlt && mainImagePreview && (
-                  <div style={{ 
-                    fontSize: '12px', 
-                    color: '#d32f2f', 
-                    marginTop: '4px' 
-                  }}>
-                    Alt text is required for the main image
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          color: '#666',
+                          overflow: 'hidden',
+                          position: 'relative'
+                        }}>
+                          <img 
+                            src={mainImagePreview} 
+                            alt="Main image"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: '6px'
+                            }}
+                          />
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
+                          {mainImage ? `${(mainImage.size / 1024).toFixed(0)} kb` : ''}
+                        </div>
+                        <button 
+                          type="button" 
+                          className="image-delete-btn" 
+                          onClick={handleRemoveMainImage}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: 'transparent',
+                            color: '#d32f2f',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                      
+                      {/* Right Side - Alt Text Input */}
+                      <div style={{ flex: 1 }}>
+                        <Label style={{ marginBottom: '8px' }}>Main Image Alt Text *</Label>
+                        <textarea 
+                          className="form-textarea" 
+                          placeholder="Enter alt text for main image (e.g., 'White embroidery blouse main view')" 
+                          value={mainImageAlt} 
+                          onChange={e => setMainImageAlt(e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            minHeight: '80px',
+                            border: mainImageAlt ? '1px solid #28a745' : '1px solid #ddd',
+                            marginBottom: '8px'
+                          }}
+                        />
+                        {!mainImageAlt && mainImagePreview && (
+                          <div style={{ 
+                            fontSize: '12px', 
+                            color: '#d32f2f', 
+                            marginTop: '4px' 
+                          }}>
+                            ⚠ Alt text is required for main image
+                          </div>
+                        )}
+                        {mainImageAlt && mainImagePreview && (
+                          <div style={{ 
+                            fontSize: '12px', 
+                            color: '#28a745', 
+                            marginTop: '4px' 
+                          }}>
+                            ✓ Alt text provided
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-                )}
-                {mainImageAlt && (
-                  <div style={{ 
-                    fontSize: '12px', 
-                    color: '#28a745', 
-                    marginTop: '4px' 
-                  }}>
-                    ✓ Alt text provided
-                  </div>
-                )}
-              </div>
-              </div>
+
               {/* Additional Images Upload with Alt Text Side by Side */}
               <div className="product-images-group" style={{ gridColumn: '1 / span 2' }}>
                 <Label>Additional Images ({additionalImagePreviews.length}/4)*</Label>

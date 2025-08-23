@@ -218,7 +218,7 @@
   .sub-image-delete {
     background: none;
     border: none;
-    color: #caa75d;
+    color: #deb33f;
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
@@ -292,7 +292,7 @@
   .sub-image-delete-vertical {
     background: none;
     border: none;
-    color: #caa75d;
+    color: #deb33f;
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
@@ -575,7 +575,7 @@ button:not(.basic-info-select),
 
 /* Override for Basic Information section - ensure gray borders */
 .add-product-form-container form.basic-info-section select.basic-info-select:focus {
-  border-color: #caa75d !important;
+  border-color: #deb33f !important;
 }
   
   textarea {
@@ -879,7 +879,7 @@ button:not(.basic-info-select),
   gap: 12px;
 }
 .image-dropzone {
-  border: 2px dashed #caa75d;
+  border: 2px dashed #deb33f;
   border-radius: 12px;
   padding: 28px 0;
   text-align: center;
@@ -897,7 +897,7 @@ button:not(.basic-info-select),
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  color: #caa75d;
+  color: #deb33f;
   font-size: 1.1rem;
 }
 .image-upload-icon {
@@ -933,7 +933,7 @@ button:not(.basic-info-select),
 .image-delete-btn {
   background: none;
   border: none;
-  color: #caa75d;
+  color: #deb33f;
   cursor: pointer;
   padding: 4px;
   border-radius: 6px;
@@ -954,7 +954,7 @@ button, .yarika-button-primary {
   font-weight: 600;
 }
 button[type="submit"], .yarika-button-primary {
-  background: #caa75d !important;
+  background: #deb33f !important;
   color: #fff !important;
   border: none !important;
 }
@@ -963,8 +963,8 @@ button[type="submit"]:hover, .yarika-button-primary:hover {
 }
 button[type="button"].secondary, .ap-btn-white {
   background: #fff !important;
-  color: #caa75d !important;
-  border: 1.5px solid #caa75d !important;
+  color: #deb33f !important;
+  border: 1.5px solid #deb33f !important;
 }
 button[type="button"].secondary:hover, .ap-btn-white:hover {
   background: #f7f5ef !important;
@@ -991,7 +991,7 @@ select.form-select {
 .breadcrumb {
   font-size: 1rem;
   margin-bottom: 8px;
-  color: #caa75d;
+  color: #deb33f;
   font-weight: 500;
 }
 .add-product-header-row {
@@ -1006,8 +1006,8 @@ select.form-select {
   max-width: 1200px;
   margin: 32px auto;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
   padding: 32px 20px 24px 20px;
   width: 100%;
 }
@@ -1085,7 +1085,7 @@ textarea {
 input[type="text"]:focus,
 input[type="number"]:focus,
 textarea:focus {
-  border-color: #caa75d;
+  border-color: #deb33f;
   outline: none;
 }
 
@@ -1116,15 +1116,15 @@ label,
   transition: background 0.2s, color 0.2s, border 0.2s;
 }
 .size-pill.selected {
-  background: #caa75d;
+  background: #deb33f;
   color: #fff;
-  border: 1.5px solid #caa75d;
+  border: 1.5px solid #deb33f;
 }
 
 /* --- Buttons --- */
 button,
 .Button {
-  background: #caa75d;
+  background: #deb33f;
   color: #fff;
   font-weight: 600;
   border-radius: 8px;
@@ -1141,8 +1141,8 @@ button:hover,
 button[type="button"].secondary,
 .ap-btn-white {
   background: #fff !important;
-  color: #caa75d !important;
-  border: 1.5px solid #caa75d !important;
+  color: #deb33f !important;
+  border: 1.5px solid #deb33f !important;
 }
 button[type="button"].secondary:hover,
 .ap-btn-white:hover {
@@ -1175,7 +1175,7 @@ button[type="button"].secondary:hover,
 .breadcrumb {
   font-size: 1rem;
   margin-bottom: 8px;
-  color: #caa75d;
+  color: #deb33f;
   font-weight: 500;
 }
 .add-product-header-row {
@@ -1271,27 +1271,81 @@ button[type="button"].secondary:hover,
 .pricing-info-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px 24px;
+  gap: 20px;
   width: 100%;
-  margin-bottom: 32px;
+  margin: 30px 0;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.pricing-info-section .section-header {
+  grid-column: 1 / span 2;
+  margin-bottom: 20px;
+}
+
+.pricing-info-section .section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c6aa62;
 }
 
 /* More Info Section */
 .more-info-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px 24px;
+  gap: 20px;
   width: 100%;
-  margin-bottom: 32px;
+  margin: 30px 0;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.more-info-section .section-header {
+  grid-column: 1 / span 2;
+  margin-bottom: 20px;
+}
+
+.more-info-section .section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c6aa62;
 }
 
 /* Product Images Section */
 .product-images-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px 24px;
+  gap: 20px;
   width: 100%;
-  margin-bottom: 32px;
+  margin: 30px 0;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.product-images-section .section-header {
+  grid-column: 1 / span 2;
+  margin-bottom: 20px;
+}
+
+.product-images-section .section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c6aa62;
 }
 
 /* Responsive Design for All Sections */
@@ -1308,54 +1362,72 @@ button[type="button"].secondary:hover,
 /* SECTION-SPECIFIC FORM STYLES: All form element styles are now section-specific. No global input/select/textarea/.form-group rules. */
 
 /* --- Basic Information Section --- */
+.add-product-form-container form.add-product-basic-info-section {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+  width: 100% !important;
+  margin: 30px 0 !important;
+  padding: 25px !important;
+  background: #f8f9fa !important;
+  border-radius: 12px !important;
+  border: 1px solid #e9ecef !important;
+}
+
+.add-product-form-container form.add-product-basic-info-section .section-header {
+  grid-column: 1 / span 2 !important;
+  margin-bottom: 20px !important;
+}
+
+.add-product-form-container form.add-product-basic-info-section .section-header h3 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin: 0 !important;
+  padding-bottom: 8px !important;
+  border-bottom: 2px solid #c6aa62 !important;
+}
+
+.add-product-form-container form.add-product-basic-info-section .basic-info-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-bottom: 0 !important;
+  width: 100% !important;
+}
+
 .add-product-form-container form.add-product-basic-info-section input,
 .add-product-form-container form.add-product-basic-info-section select,
 .add-product-form-container form.add-product-basic-info-section textarea {
-  border: 1.5px solid #ccc !important;
+  border: 1.2px solid #d1d1d1 !important;
   color: #222 !important;
   background: #fff !important;
-  border-radius: 6px !important;
-  font-size: 15px !important;
+  border-radius: 8px !important;
+  font-size: 0.9rem !important;
   width: 100% !important;
   min-height: 40px !important;
   outline: none !important;
   box-shadow: none !important;
-  padding: 8px 12px !important;
+  padding: 10px 12px !important;
   transition: border 0.2s !important;
 }
+
 .add-product-form-container form.add-product-basic-info-section input:focus,
 .add-product-form-container form.add-product-basic-info-section select:focus,
 .add-product-form-container form.add-product-basic-info-section textarea:focus {
-  border: 1.5px solid #caa75d !important;
+  border: 1.2px solid #c6aa62 !important;
   background: #fff !important;
   color: #222 !important;
   outline: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 2px rgba(198, 170, 98, 0.1) !important;
 }
-.add-product-form-container form.add-product-basic-info-section .basic-info-group {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  margin-bottom: 12px !important;
-  width: 100% !important;
-}
+
 .add-product-form-container form.add-product-basic-info-section label,
 .add-product-form-container form.add-product-basic-info-section .Label {
   font-weight: 600 !important;
-  color: #222 !important;
-  margin-bottom: 2px !important;
-  font-size: 0.97rem !important;
-}
-.add-product-form-container form.add-product-basic-info-section {
-  /* display: grid !important; */
-  grid-template-columns: 1fr 1fr !important;
-  gap: 18px 24px !important;
-  width: 100% !important;
-  margin-bottom: 32px !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  box-shadow: none !important;
+  color: #555 !important;
+  margin-bottom: 4px !important;
+  font-size: 0.95rem !important;
 }
 @media (max-width: 900px) {
   .add-product-form-container form.add-product-basic-info-section {
@@ -1385,7 +1457,7 @@ button[type="button"].secondary:hover,
 .pricing-info-section input:focus,
 .pricing-info-section select:focus,
 .pricing-info-section textarea:focus {
-  border: 1.5px solid #caa75d !important;
+  border: 1.5px solid #deb33f !important;
   background: #fff !important;
   color: #222 !important;
   outline: none !important;
@@ -1425,7 +1497,7 @@ button[type="button"].secondary:hover,
 .more-info-section input:focus,
 .more-info-section select:focus,
 .more-info-section textarea:focus {
-  border: 1.5px solid #caa75d !important;
+  border: 1.5px solid #deb33f !important;
   background: #fff !important;
   color: #222 !important;
   outline: none !important;
@@ -1466,7 +1538,7 @@ button[type="button"].secondary:hover,
 .more-info-section input:focus,
 .more-info-section select:focus,
 .more-info-section textarea:focus {
-  border: 1.5px solid #caa75d !important;
+  border: 1.5px solid #deb33f !important;
   background: #fff !important;
   color: #222 !important;
   outline: none !important;
@@ -1491,11 +1563,11 @@ button[type="button"].secondary:hover,
 .product-images-section input,
 .product-images-section select,
 .product-images-section textarea {
-  border: 1.5px solid #e5e5e5 !important;
+  border: 1.2px solid #d1d1d1 !important;
   color: #222 !important;
-  background: #fafafa !important;
+  background: #fff !important;
   border-radius: 8px !important;
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
   width: 100% !important;
   min-height: 40px !important;
   outline: none !important;
@@ -1506,25 +1578,25 @@ button[type="button"].secondary:hover,
 .product-images-section input:focus,
 .product-images-section select:focus,
 .product-images-section textarea:focus {
-  border: 1.5px solid #caa75d !important;
+  border: 1.2px solid #c6aa62 !important;
   background: #fff !important;
   color: #222 !important;
   outline: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 2px rgba(198, 170, 98, 0.1) !important;
 }
 .product-images-section .product-images-group {
   display: flex !important;
   flex-direction: column !important;
-  gap: 6px !important;
-  margin-bottom: 12px !important;
+  gap: 8px !important;
+  margin-bottom: 0 !important;
   width: 100% !important;
 }
 .product-images-section label,
 .product-images-section .Label {
   font-weight: 600 !important;
-  color: #222 !important;
-  margin-bottom: 2px !important;
-  font-size: 0.97rem !important;
+  color: #555 !important;
+  margin-bottom: 4px !important;
+  font-size: 0.95rem !important;
 }
 
 /* --- Pricing & Information Section Spacing --- */
@@ -1640,47 +1712,75 @@ button[type="button"].secondary:hover,
 }
 
 .add-product-form-container .pricing-info-section .pricing-info-group {
-  margin-bottom: 6px !important;
-  gap: 4px !important;
+  margin-bottom: 0 !important;
+  gap: 8px !important;
+  display: flex;
+  flex-direction: column;
 }
 
 .add-product-form-container .pricing-info-section label,
 .add-product-form-container .pricing-info-section .Label {
-  margin-bottom: 2px !important;
+  margin-bottom: 4px !important;
+  font-weight: 600 !important;
+  color: #555 !important;
+  font-size: 0.95rem !important;
 }
 
 .add-product-form-container .pricing-info-section input,
 .add-product-form-container .pricing-info-section select,
 .add-product-form-container .pricing-info-section textarea {
   min-height: 40px !important;
-  padding: 8px 12px !important;
-  font-size: 1rem !important;
+  padding: 10px 12px !important;
+  font-size: 0.9rem !important;
   background: #fff !important;
   border-radius: 8px !important;
   border: 1.2px solid #d1d1d1 !important;
   margin-bottom: 0 !important;
+  transition: border 0.2s;
+}
+
+.add-product-form-container .pricing-info-section input:focus,
+.add-product-form-container .pricing-info-section select:focus,
+.add-product-form-container .pricing-info-section textarea:focus {
+  border: 1.2px solid #c6aa62 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(198, 170, 98, 0.1) !important;
 }
 
 .add-product-form-container .more-info-section .more-info-group {
-  margin-bottom: 6px !important;
-  gap: 4px !important;
+  margin-bottom: 0 !important;
+  gap: 8px !important;
+  display: flex;
+  flex-direction: column;
 }
 
 .add-product-form-container .more-info-section label,
 .add-product-form-container .more-info-section .Label {
-  margin-bottom: 2px !important;
+  margin-bottom: 4px !important;
+  font-weight: 600 !important;
+  color: #555 !important;
+  font-size: 0.95rem !important;
 }
 
 .add-product-form-container .more-info-section input,
 .add-product-form-container .more-info-section select,
 .add-product-form-container .more-info-section textarea {
   min-height: 40px !important;
-  padding: 8px 12px !important;
-  font-size: 1rem !important;
+  padding: 10px 12px !important;
+  font-size: 0.9rem !important;
   background: #fff !important;
   border-radius: 8px !important;
   border: 1.2px solid #d1d1d1 !important;
   margin-bottom: 0 !important;
+  transition: border 0.2s;
+}
+
+.add-product-form-container .more-info-section input:focus,
+.add-product-form-container .more-info-section select:focus,
+.add-product-form-container .more-info-section textarea:focus {
+  border: 1.2px solid #c6aa62 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(198, 170, 98, 0.1) !important;
 }
 body .add-product-form-container .pricing-info-section .pricing-info-group input,
 body .add-product-form-container .pricing-info-section .pricing-info-group textarea,
@@ -1715,7 +1815,7 @@ body .add-product-form-container .pricing-info-section .pricing-info-group selec
 }
 
 .gold-btn {
-  background: #caa75d !important;
+  background: #deb33f !important;
   color: #fff !important;
   border: none !important;
   border-radius: 8px !important;
@@ -1731,8 +1831,8 @@ body .add-product-form-container .pricing-info-section .pricing-info-group selec
 }
 .gold-outline-btn {
   background: #fff !important;
-  color: #caa75d !important;
-  border: 1.5px solid #caa75d !important;
+  color: #deb33f !important;
+  border: 1.5px solid #deb33f !important;
   border-radius: 8px !important;
   font-weight: 600 !important;
   min-width: 80px;
@@ -1765,4 +1865,65 @@ select,
 textarea,
 button {
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* Key Highlights Section */
+.key-highlights-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 30px 0;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.key-highlights-section .section-header {
+  grid-column: 1 / span 2;
+  margin-bottom: 20px;
+}
+
+.key-highlights-section .section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c6aa62;
+}
+
+.key-highlights-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.key-highlights-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.key-highlights-group textarea {
+  min-height: 60px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  background: #fff;
+  border-radius: 8px;
+  border: 1.2px solid #d1d1d1;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.key-highlights-group textarea:focus {
+  outline: none;
+  border-color: #c6aa62;
+  box-shadow: 0 0 0 2px rgba(198, 170, 98, 0.1);
+}
+
+.key-highlights-group textarea::placeholder {
+  color: #9ca3af;
+  font-style: italic;
 }
