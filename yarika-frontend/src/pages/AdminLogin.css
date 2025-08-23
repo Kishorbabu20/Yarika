@@ -7,6 +7,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
+/* Override global padding for admin login */
 .admin-login-bg {
   background: #111 url('../assets/Yarika Pattern (1).png') no-repeat center;
   background-size: cover;
@@ -15,6 +16,16 @@
   align-items: center;
   justify-content: center;
   font-family: "Segoe UI", sans-serif;
+  margin-top: -64px !important; /* Remove global padding-top */
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
 }
 
 .admin-login-box {

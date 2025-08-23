@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   BarChart3,
@@ -6,9 +6,8 @@ import {
   FolderOpen,
   Users,
   LogOut,
-  Menu,
-  X,
-  UserCircle
+  UserCircle,
+  XCircle
 } from "lucide-react";
 import "../styles/AdminDashboard.css";
 import YarikaLogo from "../assets/YarikaLogo1.png";
@@ -22,33 +21,16 @@ const menuItems = [
 ];
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
   return (
-    <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+    <div className="sidebar">
       {/* Header */}
       <div className="sidebar-header">
-        {collapsed ? (
-          <img
-            src="/logo.png"
-            alt="Yarika Logo Collapsed"
-            className="sidebar-logo"
-            style={{ height: 36, width: 'auto', maxWidth: 48, objectFit: 'contain' }}
-          />
-        ) : (
-          <img
-                            src="/YarikaLogo1.png"
-            alt="Yarika Logo"
-            className="sidebar-logo"
-            style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain', background: 'none' }}
-          />
-        )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="toggle-btn"
-        >
-          {collapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
+        <img
+          src="/YarikaLogo1.png"
+          alt="Yarika Logo"
+          className="sidebar-logo"
+          style={{ height: 36, width: 'auto', maxWidth: 120, objectFit: 'contain', background: 'none' }}
+        />
       </div>
 
       {/* Navigation */}
@@ -62,7 +44,7 @@ const Sidebar = () => {
               }
             >
               <Icon size={18} className="icon" />
-              {!collapsed && <span>{title}</span>}
+              <span>{title}</span>
             </NavLink>
           </li>
         ))}
@@ -77,7 +59,7 @@ const Sidebar = () => {
           }
         >
           <LogOut size={18} className="icon" />
-          {!collapsed && <span>Logout</span>}
+          <span>Logout</span>
         </NavLink>
       </div>
     </div>

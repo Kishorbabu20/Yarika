@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useState, useEffect, Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { CartProvider } from "./context/CartContext";
 import Footer from "./components/Footer";
@@ -8,19 +8,28 @@ import { Toaster, toast } from "react-hot-toast";
 import NavigationBarSection from './user/NavigationBarSection';
 import ServiceHighlights from "./components/ServiceHighlights";
 
-// Admin
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminAnalytics from "./pages/AdminAnalytics";
-import Products from "./pages/Products";
-import Members from "./pages/Members";
-import Customers from "./pages/Customers";
-import Logout from "./Logout";
-import ProtectedRoute from "./utils/ProtectedRoute";
-import OrderDetails from './pages/OrderDetails';
-import AddProductForm from "./components/forms/AddProductForm";
-import ManageMaster from "./pages/ManageMaster";
-import AdminProfile from "./pages/AdminProfile";
+// Ensure CSS is loaded
+const ensureCSSLoaded = () => {
+  return new Promise((resolve) => {
+    // Check if all critical CSS is loaded
+    const checkCSS = () => {
+      const styleSheets = Array.from(document.styleSheets);
+      const hasGlobalCSS = styleSheets.some(sheet => 
+        sheet.href && (sheet.href.includes('global.css') || sheet.href.includes('index.css'))
+      );
+      
+      // Also check if DOM is ready
+      if (hasGlobalCSS || document.readyState === 'complete') {
+        // Add a small delay to ensure all styles are applied
+        setTimeout(resolve, 100);
+      } else {
+        setTimeout(checkCSS, 50);
+      }
+    };
+    
+    checkCSS();
+  });
+};
 
 // User
 import HeroLanding from "./user/HeroLanding";
@@ -43,9 +52,12 @@ import BridalPage from "./user/BridalPage";
 import ShopByOccasionPage from "./user/ShopByOccasionPage";
 
 // Policy Pages
-import TermsOfUse from "./pages/TermsOfUse";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import ShippingPolicy from "./pages/ShippingPolicy";
+const TermsOfUse = lazy(() => import("./pages/TermsOfUse"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
+const CancellationRefundPolicy = lazy(() => import("./pages/CancellationRefundPolicy"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
 
 // New Pages
 import Payments from "./pages/Payments";
@@ -55,10 +67,51 @@ import ContactUs from "./pages/ContactUs";
 
 const queryClient = new QueryClient();
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+// Loading component
+const PageLoader = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontSize: '18px',
+    color: '#666'
+  }}>
+    Loading...
+  </div>
+);
+
+// ScrollToTop component to handle scroll behavior
+function ScrollToTop() {
+  const { pathname } = useLocation();
 
   useEffect(() => {
+    // Scroll to top on route change
+    window.scrollTo(0, 0);
+    
+    // For mobile devices, ensure smooth scrolling
+    if (window.innerWidth <= 768) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+  }, [pathname]);
+
+  return null;
+}
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cssLoaded, setCssLoaded] = useState(false);
+
+  useEffect(() => {
+    // Ensure CSS is loaded before rendering
+    ensureCSSLoaded().then(() => {
+      setCssLoaded(true);
+    });
+
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
     
@@ -112,8 +165,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <div className="App">
             <Toaster position="top-right" />
+            {!cssLoaded ? (
+              <PageLoader />
+            ) : (
             <Routes>
               {/* User Routes - All with NavigationBarSection */}
               <Route path="/" element={<><NavigationBarSection /><HeroLanding /><ServiceHighlights /><Footer /></>} />
@@ -121,11 +178,58 @@ function App() {
               <Route path="/cart" element={<><NavigationBarSection /><Cart /><ServiceHighlights /><Footer /></>} />
               <Route path="/orders" element={<><NavigationBarSection /><MyOrders /><ServiceHighlights /></>} />
               <Route path="/profile" element={
+                <Suspense fallback={<PageLoader />}>
                 <UserProtectedRoute>
                   <NavigationBarSection />
                   <UserProfile />
                   <ServiceHighlights />
                 </UserProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/wishlist" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><WishlistPage /></>
+                </Suspense>
+              } />
+              <Route path="/products/:categorySlug" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><CategoryProductsPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/search" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><SearchResultsPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/home/trending" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><TrendingPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/home/readymade-blouse" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><ProductPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/home/leggings" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><LeggingsPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/home/materials" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><MaterialsPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/login" element={
+                <Suspense fallback={<PageLoader />}>
+                  {isLoggedIn ? <Navigate to="/profile" /> : <LoginPage />}
+                </Suspense>
+              } />
+              <Route path="/signup" element={
+                <Suspense fallback={<PageLoader />}>
+                  <SignupLoginPage />
+                </Suspense>
               } />
               <Route path="/wishlist" element={<><NavigationBarSection /><WishlistPage /><ServiceHighlights /></>} />
               <Route path="/products/:categorySlug" element={<><NavigationBarSection /><CategoryProductsPage /><ServiceHighlights /><Footer /></>} />
@@ -145,9 +249,36 @@ function App() {
               <Route path="/occasion/:occasion" element={<><NavigationBarSection /><ShopByOccasionPage /><ServiceHighlights /><Footer /></>} />
               
               {/* Policy Pages */}
-              <Route path="/terms-of-use" element={<><NavigationBarSection /><TermsOfUse /></>} />
-              <Route path="/privacy-policy" element={<><NavigationBarSection /><PrivacyPolicy /></>} />
-              <Route path="/shipping-policy" element={<><NavigationBarSection /><ShippingPolicy /></>} />
+              <Route path="/terms-of-use" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><TermsOfUse /></>
+                </Suspense>
+              } />
+              <Route path="/privacy-policy" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><PrivacyPolicy /></>
+                </Suspense>
+              } />
+              <Route path="/shipping-policy" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><ShippingPolicy /></>
+                </Suspense>
+              } />
+              <Route path="/contact-us" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><ContactUs /></>
+                </Suspense>
+              } />
+              <Route path="/cancellation-refund-policy" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><CancellationRefundPolicy /></>
+                </Suspense>
+              } />
+              <Route path="/about-us" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><AboutUs /></>
+                </Suspense>
+              } />
               
               {/* New Pages */}
               <Route path="/payments" element={<><NavigationBarSection /><Payments /></>} />
@@ -156,27 +287,92 @@ function App() {
               <Route path="/contact-us" element={<><NavigationBarSection /><ContactUs /></>} />
               
               {/* SEO-friendly product routes - MUST come before fallback route */}
-              <Route path="/:dropdown/:categoryType/:category" element={<><NavigationBarSection /><CategoryProductsPage /><Footer /></>} />
-              <Route path="/:dropdown/:categoryType/:category/:productSlug" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
-              <Route path="/home/:categoryType/:category/:productSlug" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
+              <Route path="/:dropdown/:categoryType/:category" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><CategoryProductsPage /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/:dropdown/:categoryType/:category/:productSlug" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><SelectProduct /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/home/:categoryType/:category/:productSlug" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><SelectProduct /><Footer /></>
+                </Suspense>
+              } />
               
               {/* Fallback route - MUST come last */}
-              <Route path="/product/:id" element={<><NavigationBarSection /><SelectProduct /><Footer /></>} />
+              <Route path="/product/:id" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><SelectProduct /><Footer /></>
+                </Suspense>
+              } />
               
               {/* Admin Routes (no navbar, no footer) */}
-              <Route path="/admin" element={<AdminLogin onLogin={onLogin} />} />
-              <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
-              <Route path="/admin/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
-              <Route path="/admin/add-product" element={<ProtectedRoute><AddProductForm /></ProtectedRoute>} />
-              <Route path="/admin/products/edit/:id" element={<AddProductForm />} />
-              <Route path="/admin/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
-              <Route path="/admin/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
-              <Route path="/admin/logout" element={<ProtectedRoute><Logout /></ProtectedRoute>} />
-              <Route path="/admin/orders/:orderId" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
-              <Route path="/admin/manage-master" element={<ProtectedRoute><ManageMaster /></ProtectedRoute>} />
-              <Route path="/admin/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
+              <Route path="/admin" element={
+                <Suspense fallback={<PageLoader />}>
+                  <AdminLogin onLogin={onLogin} />
+                </Suspense>
+              } />
+              <Route path="/admin/dashboard" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/analytics" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><AdminAnalytics /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/products" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><Products /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/add-product" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><AddProductForm /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/products/edit/:id" element={
+                <Suspense fallback={<PageLoader />}>
+                  <AddProductForm />
+                </Suspense>
+              } />
+              <Route path="/admin/members" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><Members /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/customers" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><Customers /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/logout" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><Logout /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/orders/:orderId" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><OrderDetails /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/manage-master" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><ManageMaster /></ProtectedRoute>
+                </Suspense>
+              } />
+              <Route path="/admin/profile" element={
+                <Suspense fallback={<PageLoader />}>
+                  <ProtectedRoute><AdminProfile /></ProtectedRoute>
+                </Suspense>
+              } />
             </Routes>
+            )}
           </div>
         </BrowserRouter>
       </CartProvider>

@@ -148,6 +148,14 @@ const SelectProduct = () => {
     });
   };
 
+  // Available colors for the category
+  const [availableColors, setAvailableColors] = useState([]);
+  const [selectedFilterColor, setSelectedFilterColor] = useState('');
+
+  // Get color parameter from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const colorFromUrl = urlParams.get('color');
+
   // Determine which parameter to use for fetching product
   const productIdentifier = productSlug || id;
 
@@ -1011,7 +1019,7 @@ const SelectProduct = () => {
         )}
       </div>
     );
-    };
+  };
     
   const renderSizeOptions = () => {
     if (!product?.sizes?.length) {

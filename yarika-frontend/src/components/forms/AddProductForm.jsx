@@ -426,8 +426,14 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   // Fetch color groups on mount
   useEffect(() => {
     axios.get("/color-groups")
-      .then(res => setColorGroups(res.data))
-      .catch(() => setColorGroups([]));
+      .then(res => {
+        console.log('Color groups loaded:', res.data);
+        setColorGroups(res.data);
+      })
+      .catch(err => {
+        console.error('Error loading color groups:', err);
+        setColorGroups([]);
+      });
   }, []);
 
   // Fetch size groups on mount
@@ -453,10 +459,33 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   // Update available colors when group changes
   useEffect(() => {
+    console.log('Group changed:', {
+      group,
+      colorGroups: colorGroups.length,
+      availableColors: availableColors.length
+    });
+    
+    console.log('Available color group names:', colorGroups.map(g => g.name));
+    console.log('Looking for group name:', group);
+    
+    // If group is 'none' or doesn't match any available groups, set it to the first available group
+    if (group === 'none' || group === '' || !colorGroups.find(g => g.name === group)) {
+      if (colorGroups.length > 0) {
+        const firstGroup = colorGroups[0].name;
+        console.log('Auto-setting group to first available group:', firstGroup);
+        setGroup(firstGroup);
+        return; // Exit early, this will trigger the useEffect again
+      }
+    }
+    
     const groupObj = colorGroups.find(g => g.name === group);
+    console.log('Found group object:', groupObj);
+    
     if (groupObj && groupObj.colors) {
+      console.log('Setting available colors:', groupObj.colors);
       setAvailableColors(groupObj.colors);
     } else {
+      console.log('No group found or no colors, clearing available colors');
       setAvailableColors([]);
     }
     // Only reset selected colors if not editing or not loaded
@@ -489,6 +518,15 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     const total = Object.values(sizeStocks).reduce((sum, stock) => sum + stock, 0);
     setManualTotalStock(total.toString());
   }, [sizeStocks]);
+
+  // Debug: Log metaKeywords state changes
+  useEffect(() => {
+    console.log('metaKeywords state changed:', {
+      value: metaKeywords,
+      type: typeof metaKeywords,
+      length: metaKeywords ? metaKeywords.length : 0
+    });
+  }, [metaKeywords]);
 
   const toggleSize = (size) => {
     setSelectedSizes(prev => {
@@ -1015,6 +1053,17 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         setBrand(data.brand || "");
         setCategoryType(data.categoryType || "");
         setCategory(data.category || "");
+        console.log('Group data from API:', {
+          colorGroup: data.colorGroup,
+          group: data.group,
+          finalGroup: data.colorGroup || data.group || ""
+        });
+        console.log('Full group data structure:', {
+          colorGroupType: typeof data.colorGroup,
+          groupType: typeof data.group,
+          colorGroupValue: data.colorGroup,
+          groupValue: data.group
+        });
         setGroup(data.colorGroup || data.group || ""); // Use colorGroup ID if available
         setProductName(data.name || "");
         setMrp(data.mrp || "");
@@ -1037,11 +1086,26 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         setSeoUrl(data.seoUrl || "");
         setMetaTitle(data.metaTitle || "");
         setMetaDescription(data.metaDescription || "");
+        console.log('API Data - metaKeywords:', {
+          raw: data.metaKeywords,
+          type: typeof data.metaKeywords,
+          isArray: Array.isArray(data.metaKeywords),
+          processed: Array.isArray(data.metaKeywords)
+            ? data.metaKeywords.join(", ")
+            : (data.metaKeywords || "")
+        });
         setMetaKeywords(
           Array.isArray(data.metaKeywords)
             ? data.metaKeywords.join(", ")
-            : (data.metaKeywords || "")
+            : (data.metaKeywords && data.metaKeywords.trim() !== "" 
+                ? data.metaKeywords 
+                : `${data.name}, ${data.category}, ${data.categoryType}, ethnic wear, Indian fashion`)
         );
+        console.log('Setting metaKeywords to:', Array.isArray(data.metaKeywords)
+          ? data.metaKeywords.join(", ")
+          : (data.metaKeywords && data.metaKeywords.trim() !== "" 
+              ? data.metaKeywords 
+              : `${data.name}, ${data.category}, ${data.categoryType}, ethnic wear, Indian fashion`));
         setTaxClass(data.taxClass || "gst-5");
         setQrSize(data.qrSize || "small");
         setNetWeight(data.netWeight || "");
@@ -1078,9 +1142,9 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   }, [isEditMode, product]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="dashboard-container">
       <Sidebar />
-      <div style={{ flex: 1, background: '#fff' }}>
+      <div className="main-content">
         <Header title="Add New Product" />
         <div className="add-product-form-container">
           {/* Breadcrumb and Back Button */}

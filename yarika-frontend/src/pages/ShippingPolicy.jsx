@@ -12,7 +12,6 @@ const ShippingPolicy = () => {
         <meta name="description" content="Shipping Policy for Yarika - Premium Ethnic Wear. Learn about our shipping methods, delivery times, and shipping costs." />
       </Helmet>
       
-      <NavigationBarSection />
       
       <div className="policy-page">
         <div className="policy-container">
@@ -120,8 +119,8 @@ const ShippingPolicy = () => {
               <p>If you have any questions about our shipping policy, please contact us at:</p>
               <div className="contact-info">
                 <p>Email: info@zillionthreads.com</p>
-                <p>Phone: +91 94890 4226, +91 94890 4223</p>
-                <p>Address: SF No. 29/18, Onapalayam, Vadavalli To Thondamuthur Road, Coimbatore-641 109, Tamilnadu, India.</p>
+                <p>Phone: +91 94890 42226, +91 94890 42223</p>
+                <p>Address: SF No. 29/1b, Onapalayam, Vadavalli To Thondamuthur Road, Coimbatore-641 109, Tamilnadu, India.</p>
               </div>
             </section>
           </div>

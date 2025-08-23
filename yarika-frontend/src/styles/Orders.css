@@ -1,6 +1,6 @@
-/* General container for the orders page - similar to profile/wishlist */
-.orders-page-container {
-  min-height: 100vh;
+/* General container for the orders page - consistent with profile/wishlist */
+.profile-page-container {
+    min-height: 100vh;
     background-color: #F5F5F5;
     padding: 40px 64px 40px;
     display: flex;
@@ -8,7 +8,7 @@
 }
 
 /* Left Sidebar */
-.orders-sidebar {
+.profile-sidebar {
     position: fixed;
     width: 280px;
     background-color: #111111;
@@ -44,8 +44,98 @@
     background: rgba(255, 255, 255, 0.5);
 }
 
-/* Main Content Area */
-.orders-content {
+.profile-header {
+    text-align: left;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-avatar-placeholder {
+    width: 96px;
+    height: 96px;
+    background-color: #4A4A4A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-name {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-name h2 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.profile-name h3 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.profile-navigation {
+    flex-grow: 1;
+    margin-bottom: 32px;
+}
+
+.profile-navigation .nav-button {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 14px;
+    padding: 10px 14px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.profile-navigation .nav-button.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+    font-weight: normal;
+}
+
+.profile-navigation .nav-button:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.logout-button {
+    background: none !important;
+    border: none;
+    color: #caa75d !important;
+    font-size: 14px;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.logout-button svg {
+    color: #caa75d !important;
+}
+
+.logout-button:hover {
+    opacity: 0.8;
+}
+
+/* Right Content Area */
+.profile-page-container .profile-content {
     flex: 1;
     padding: 40px;
     background-color: #ffffff;

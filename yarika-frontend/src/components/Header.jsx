@@ -1,5 +1,5 @@
 // src/components/Header.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "../config/axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/AdminDashboard.css";
@@ -8,14 +8,28 @@ import { Bell, User } from "lucide-react";
 const Header = ({ title }) => {
   const [notifications, setNotifications] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const seenNotificationsRef = useRef(new Set());
   const navigate = useNavigate();
+
+  // Load seen notifications from localStorage on component mount
+  useEffect(() => {
+    const savedSeen = localStorage.getItem('seenNotifications');
+    if (savedSeen) {
+      seenNotificationsRef.current = new Set(JSON.parse(savedSeen));
+    }
+  }, []);
 
   // Poll for new orders every 30 seconds
   useEffect(() => {
     const fetchNotifications = async () => {
-      const res = await api.get("/orders/recent");
-      // Filter for new/unseen orders (implement your own logic)
-      setNotifications(res.data.filter(order => !order.seen));
+      try {
+        const res = await api.get("/orders/recent");
+        // Filter out notifications that have been seen
+        const newNotifications = res.data.filter(order => !seenNotificationsRef.current.has(order._id));
+        setNotifications(newNotifications);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
     };
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
@@ -23,9 +37,16 @@ const Header = ({ title }) => {
   }, []);
 
   const handleNotificationClick = (orderId) => {
-    // Mark as seen (optional: update backend)
-    setNotifications(notifications.filter(n => n._id !== orderId));
+    // Mark as seen by adding to seenNotifications set
+    seenNotificationsRef.current.add(orderId);
+    
+    // Save to localStorage
+    localStorage.setItem('seenNotifications', JSON.stringify([...seenNotificationsRef.current]));
+    
+    // Remove from current notifications
+    setNotifications(prev => prev.filter(n => n._id !== orderId));
     setDropdownOpen(false);
+    
     // Navigate to order details page
     navigate(`/admin/orders/${orderId}`);
   };

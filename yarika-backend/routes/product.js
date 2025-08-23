@@ -626,7 +626,9 @@ router.get("/seo/:seoUrl", async (req, res, next) => {
       seoUrl: response.seoUrl || '',
       metaTitle: response.metaTitle || response.name,
       metaDescription: response.metaDescription || response.productDescriptionWeb || '',
-      metaKeywords: response.metaKeywords || '',
+      metaKeywords: response.metaKeywords && response.metaKeywords.trim() !== '' 
+        ? response.metaKeywords 
+        : `${response.name}, ${response.category}, ${response.categoryType}, ethnic wear, Indian fashion`,
       taxClass: response.taxClass || 'gst-5',
       qrSize: response.qrSize || 'small',
       netWeight: response.netWeight || '',
@@ -636,6 +638,20 @@ router.get("/seo/:seoUrl", async (req, res, next) => {
       additionalImageAlts: response.additionalImageAlts || [],
       status: response.status || (response.totalStock > 0 ? 'active' : 'out-of-stock')
     };
+
+    // Debug: Log SEO fields
+    console.log('SEO Fields Debug:', {
+      original: {
+        metaTitle: response.metaTitle,
+        metaDescription: response.metaDescription,
+        metaKeywords: response.metaKeywords
+      },
+      enhanced: {
+        metaTitle: enhancedResponse.metaTitle,
+        metaDescription: enhancedResponse.metaDescription,
+        metaKeywords: enhancedResponse.metaKeywords
+      }
+    });
 
     // Populate color names for the single product
     if (enhancedResponse.colors && Array.isArray(enhancedResponse.colors)) {
