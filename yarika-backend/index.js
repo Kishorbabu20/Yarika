@@ -38,7 +38,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https:yarika.in", "https:yarika.in"],
+    origin: ["http://localhost:3000", "https://yarika.in", "https://www.yarika.in"],
     methods: ["GET", "POST"],
     credentials: true,
   },

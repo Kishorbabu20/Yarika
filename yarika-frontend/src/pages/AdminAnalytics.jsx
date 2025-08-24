@@ -155,9 +155,9 @@ export default function AdminAnalytics() {
         <Header title="Analytics" />
         <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
 
-        <div style={{ padding: '0 32px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: 0 }}>
           {/* Filters */}
-          <div className="analytics-filters">
+          <div className="analytics-filters" style={{ margin: '32px 0 0 0' }}>
             <div className="filter-group">
               <label className="filter-label">From Date</label>
               <input type="date" className="filter-input" />
@@ -201,7 +201,7 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Stat Cards */}
-          <div className="analytics-stats">
+          <div className="analytics-stats" style={{ margin: '32px 0 0 0' }}>
             <div className="stat-card">
               <div className="stat-card-icon">
                 <BarChart3 color="#c6aa62" />
@@ -259,7 +259,7 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Charts */}
-          <div className="analytics-charts">
+          <div className="analytics-charts" style={{ margin: '32px 0 0 0' }}>
             <div className="chart-container">
               <h4>Order Status</h4>
               <ResponsiveContainer width="100%" height={200}>
@@ -292,7 +292,7 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Product Performance Table */}
-          <div className="analytics-table">
+          <div className="analytics-table" style={{ margin: '32px 0 0 0' }}>
             <h3>Product Performance</h3>
             <div className="table-controls">
               <button onClick={() => setTab("all")} className={tab === 'all' ? 'active' : ''}>All</button>
@@ -340,7 +340,7 @@ export default function AdminAnalytics() {
           </div>
 
           {/* Recent Admin Activity */}
-          <div className="analytics-activity">
+          <div className="analytics-activity" style={{ margin: '32px 0 0 0' }}>
             <h3>Recent Admin Activity</h3>
             {console.log("Rendering admin activity section, length:", adminActivity.length)}
             {adminActivity.length > 0 ? (

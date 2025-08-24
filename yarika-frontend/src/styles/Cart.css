@@ -96,16 +96,6 @@
   position: relative;
 }
 
-.cart-page .price-info .original-price::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  border-top: 2px solid #B52025; /* red diagonal strike */
-  transform: translateY(-50%) rotate(-8deg);
-  pointer-events: none;
-}
 
 /* Quantity under price - 96x32px control (override) */
 .quantity-controls { 

@@ -290,13 +290,13 @@ export default function ManageMaster() {
       <Sidebar />
       <div className="main-content">
         <Header title="Manage Master" />
-        <div className="manage-master-container">
-          <h1 className="manage-master-title">Manage Master</h1>
-          <div className="manage-master-subtitle">
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 32px' }}>
+          <h1 className="manage-master-title" style={{ margin: '32px 0 0 0' }}>Manage Master</h1>
+          <div className="manage-master-subtitle" style={{ margin: '8px 0 24px 0' }}>
             Manage colors, sizes, and color groupings for your inventory
           </div>
           {/* Tabs */}
-          <div className="manage-master-tabs">
+          <div className="manage-master-tabs" style={{ margin: '32px 0 0 0' }}>
             {TABS.map((tab) => (
               <button
                 key={tab}
@@ -309,7 +309,7 @@ export default function ManageMaster() {
           </div>
           {/* Manage Colors Section */}
           {activeTab === "Colors" && (
-            <div className="manage-master-card">
+            <div className="manage-master-card" style={{ margin: '32px 0 0 0' }}>
               <div className="manage-master-section-title">Manage Colors</div>
               <div className="manage-master-bar">
                 <div className="search-input-wrapper" style={{ position: 'relative', flex: 1 }}>
@@ -444,7 +444,7 @@ export default function ManageMaster() {
           )}
           {/* Manage Sizes Section */}
           {activeTab === "Sizes" && (
-            <div className="manage-master-card">
+            <div className="manage-master-card" style={{ margin: '32px 0 0 0' }}>
               <div className="manage-master-section-title">Manage Sizes</div>
               <div className="manage-master-bar">
                 <div className="search-input-wrapper" style={{ position: 'relative', flex: 1 }}>
@@ -571,7 +571,7 @@ export default function ManageMaster() {
           )}
           {/* Manage Color Grouping Section */}
           {activeTab === "Color Grouping" && (
-            <div className="manage-master-card">
+            <div className="manage-master-card" style={{ margin: '32px 0 0 0' }}>
               <div className="manage-master-section-title">Manage Color Grouping</div>
               <div className="manage-master-bar">
                 <div className="search-input-wrapper" style={{ position: 'relative', flex: 1 }}>
@@ -650,7 +650,7 @@ export default function ManageMaster() {
           )}
           {/* Manage Group Size Section */}
           {activeTab === "Group Size" && (
-            <div className="manage-master-card">
+            <div className="manage-master-card" style={{ margin: '32px 0 0 0' }}>
               <div className="manage-master-section-title">Manage Group Size</div>
               <div className="manage-master-bar">
                 <div style={{ flex: 1 }} />
@@ -698,7 +698,7 @@ export default function ManageMaster() {
             </div>
           )}
           {activeTab === "Batch & Products" && (
-            <div className="manage-master-card">
+            <div className="manage-master-card" style={{ margin: '32px 0 0 0' }}>
               <div className="manage-master-section-title">Batch & Products</div>
               <div className="manage-master-table-wrapper">
                 <table className="manage-master-table">

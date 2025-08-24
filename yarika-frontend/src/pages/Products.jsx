@@ -170,8 +170,8 @@ export default function Products() {
         <Header title="Products" />
         <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
 
-        <div style={{ padding: '0 32px' }}>
-        <div className="products-section-row">
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 32px' }}>
+        <div className="products-section-row" style={{ margin: '32px 0 0 0' }}>
           <div className="products-section-title">Product Inventory</div>
           <Button
                 onClick={() => navigate('/admin/add-product')}
@@ -183,7 +183,7 @@ export default function Products() {
         </div>
 
           {/* Stat Cards */}
-        <div className="products-stats-row">
+        <div className="products-stats-row" style={{ margin: '32px 0 0 0' }}>
           <div className="stat-card">
               <div className="stat-value">{String(stats?.totalProducts || 0)}</div>
             <div className="stat-label">Total Products</div>
@@ -210,7 +210,7 @@ export default function Products() {
 
           {/* Add Product Form (for editing only) */}
           {editProduct && (
-          <div className="mb-10">
+          <div className="mb-10" style={{ margin: '32px 0 0 0' }}>
             <AddProductForm
               product={editProduct}
                 onClose={() => { setEditProduct(null); }}
@@ -226,7 +226,7 @@ export default function Products() {
         )}
 
         {/* Filters */}
-        <div className="products-filters-row">
+        <div className="products-filters-row" style={{ margin: '32px 0 0 0' }}>
           <div className="filter-group">
             <label className="filter-label">Status</label>
               <select
@@ -261,7 +261,7 @@ export default function Products() {
           borderRadius: '12px',
           border: '1.5px solid #e5e5e5',
           boxShadow: '0 2px 8px rgba(198,170,98,0.04)',
-          marginBottom: '32px',
+          margin: '32px 0 0 0',
           overflow: 'hidden'
         }}>
           <div className="products-table-title" style={{ padding: '24px 24px 16px 24px', borderBottom: '1.5px solid #e5e5e5' }}>Manage Products</div>
