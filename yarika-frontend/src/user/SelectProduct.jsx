@@ -457,10 +457,7 @@ const SelectProduct = () => {
   };
 
   const handleSizeSelect = (size) => {
-    console.log('Size selected:', size);
-    console.log('Previous selectedSize:', selectedSize);
     setSelectedSize(size);
-    console.log('New selectedSize will be:', size);
   };
 
   const handleAddToCart = () => {
@@ -1039,8 +1036,6 @@ const SelectProduct = () => {
             const isAvailable = isSizeAvailable(size);
             const sizeStock = product.sizeStocks[size] || 0;
             
-            console.log(`Size ${size}: isSelected=${isSelected}, selectedSize=${selectedSize}`);
-            
             return (
               <button
                 key={size}
@@ -1062,66 +1057,29 @@ const SelectProduct = () => {
   };
 
   const renderKeyHighlights = () => {
-    console.log('=== RENDERING KEY HIGHLIGHTS ===');
-    console.log('Product data:', {
-      fabric: product?.fabric,
-      neck: product?.neck,
-      sleeveStyling: product?.sleeveStyling,
-      sleeveLength: product?.sleeveLength,
-      netWeight: product?.netWeight,
-      grossWeight: product?.grossWeight,
-      code: product?.code,
-      brand: product?.brand
-    });
+    const taxLabel = product?.taxClass === 'gst-12' ? 'GST @ 12%' : (product?.taxClass === 'gst-5' ? 'GST @ 5%' : product?.taxClass);
     
-    // Key highlights fields (show first) - always show available fields
+    // Key highlights fields (show first)
     const keyHighlights = [
-      product?.fabric && { label: 'Fabric', value: product.fabric },
-      product?.neck && { label: 'Neck', value: product.neck },
-      product?.sleeveStyling && { label: 'Sleeve Styling', value: product.sleeveStyling },
-      product?.sleeveLength && { label: 'Sleeve Length', value: product.sleeveLength },
+      product?.fabric ? { label: 'Fabric', value: product.fabric } : null,
+      product?.neck ? { label: 'Neck', value: product.neck } : null,
+      product?.sleeveStyling ? { label: 'Sleeve Styling', value: product.sleeveStyling } : null,
+      product?.sleeveLength ? { label: 'Sleeve Length', value: product.sleeveLength } : null,
     ].filter(Boolean);
 
     // Additional specs (show only when expanded)
     const additionalSpecs = [
-      product?.netWeight && { label: 'Net Weight', value: product.netWeight },
-      product?.grossWeight && { label: 'Gross Weight', value: product.grossWeight },
-      product?.code && { label: 'Product Code', value: product.code },
-      product?.brand && { label: 'Brand', value: product.brand },
+      product?.netWeight ? { label: 'Net Weight', value: product.netWeight } : null,
+      product?.grossWeight ? { label: 'Gross Weight', value: product.grossWeight } : null,
+      product?.maxOrderQuantity ? { label: 'Max Order Quantity', value: product.maxOrderQuantity } : null,
+      product?.taxClass ? { label: 'Tax', value: taxLabel } : null,
+      product?.code ? { label: 'Product Code', value: product.code } : null,
+      product?.brand ? { label: 'Brand', value: product.brand } : null,
     ].filter(Boolean);
 
     const allSpecs = [...keyHighlights, ...additionalSpecs];
-    
-    console.log('Filtered highlights:', keyHighlights);
-    console.log('Filtered additional specs:', additionalSpecs);
-    console.log('All specs:', allSpecs);
 
-    // Always show the section if we have any product data
-    if (allSpecs.length === 0) {
-      console.log('No specs found, showing basic info');
-      // Show at least the product code if available
-      const basicInfo = [
-        product?.code && { label: 'Product Code', value: product.code },
-        product?.category && { label: 'Category', value: product.category },
-        product?.categoryType && { label: 'Type', value: product.categoryType }
-      ].filter(Boolean);
-      
-      if (basicInfo.length === 0) return null;
-      
-      return (
-        <div className="key-highlights-section">
-          <h3 className="product-section-title">Product Information</h3>
-          <div className="spec-grid">
-            {basicInfo.map((spec, idx) => (
-              <div className="spec-item" key={`${spec.label}-${idx}`}>
-                <div className="spec-label">{spec.label}</div>
-                <div className="spec-value">{spec.value || '-'}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
+    if (allSpecs.length === 0) return null;
 
     const visible = showAllSpecs ? allSpecs : keyHighlights;
 
@@ -1310,7 +1268,7 @@ const SelectProduct = () => {
           <div className="tax-info">Inclusive Of All Taxes</div>
           <div className="secure-by">
             <span className="secure-by-text">Secured By</span>
-            <img src={razorpay_logo} alt="Razorpay" className="secure-by-logo" />
+            <img src="../assets/razorpay_logo.png" alt="Razorpay" className="secure-by-logo" />
           </div>
 
           {/* Product Description */}
@@ -1379,14 +1337,14 @@ const SelectProduct = () => {
                 aria-label="Previous"
                 onClick={() => document.querySelector('.product-grid').scrollBy({left: -300, behavior: 'smooth'})}
               >
-                ‹
+                ←
               </button>
               <button 
                 className="nav-arrow next" 
                 aria-label="Next"
                 onClick={() => document.querySelector('.product-grid').scrollBy({left: 300, behavior: 'smooth'})}
               >
-                ›
+                →
               </button>
             </div>
           </div>

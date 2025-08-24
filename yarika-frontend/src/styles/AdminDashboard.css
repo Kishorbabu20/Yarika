@@ -27,7 +27,6 @@ html, body {
   border-radius: 0px 20px 20px 0px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   transition: width 0.3s ease;
   overflow-y: auto;
   overflow-x: hidden;
@@ -49,10 +48,61 @@ html, body {
   transition: margin-left 0.3s ease;
   position: relative;
   z-index: 1;
+  width: calc(100vw - 180px); /* Ensure content takes remaining width */
+  box-sizing: border-box;
 }
 
 .dashboard-container:has(.sidebar.collapsed) .main-content {
   margin-left: 70px; /* Match collapsed sidebar width */
+  width: calc(100vw - 70px); /* Ensure content takes remaining width when collapsed */
+}
+
+/* Ensure all content inside main-content starts after sidebar */
+.main-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Override any conflicting styles from other CSS files */
+.dashboard-container .main-content {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: none;
+}
+
+/* Ensure content inside main-content is properly constrained */
+.dashboard-container .main-content > div {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Add responsive behavior for admin pages */
+@media (max-width: 1400px) {
+  .dashboard-container .main-content > div {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard-container .main-content > div {
+    padding: 0 16px;
+  }
+}
+
+/* Force content positioning for admin pages */
+.dashboard-container .main-content {
+  position: relative;
+  left: 0;
+  overflow: visible;
+  margin-left: 180px !important; /* Force override any conflicting styles */
+  width: calc(100vw - 180px) !important; /* Force width calculation */
+  max-width: none; /* Allow content to be constrained by its container */
+}
+
+/* Ensure collapsed state also works */
+.dashboard-container:has(.sidebar.collapsed) .main-content {
+  margin-left: 70px !important;
+  width: calc(100vw - 70px) !important;
 }
 
 .actions {
@@ -62,7 +112,7 @@ html, body {
 
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   background: transparent !important;
   box-shadow: none !important;
@@ -71,6 +121,7 @@ html, body {
   position: relative;
   z-index: 1001;
   min-height: 60px;
+  text-align: center;
 }
 
 .brand {
@@ -151,9 +202,29 @@ html, body {
   color: #facc15;
 }
 
+/* Sidebar Navigation */
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  margin: 1rem 0;
+  overflow-y: auto;
+}
+
+.sidebar-tagline {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+}
+
 .logout-section {
   color: #e2ad53;
-  margin-bottom: 100px;
+  margin-top: auto;
   position: relative;
   z-index: 1000;
   padding: 0.5rem 0;

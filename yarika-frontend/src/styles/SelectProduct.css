@@ -370,9 +370,9 @@
 }
 
 .size-btn.selected {
-  background: #C5A56F !important;
-  color: white !important;
-  border-color: #C5A56F !important;
+  background: #C5A56F;
+  color: white;
+  border-color: #C5A56F;
 }
 
 .size-btn.disabled {
@@ -952,11 +952,8 @@
 }
 
 .secure-by-logo {
-  height: 18px;
+  height: 14px;
   display: block;
-  background: #000000;
-  padding: 2px 4px;
-  border-radius: 3px;
 }
 
 /* You May Like Header */
@@ -987,8 +984,6 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .nav-arrow {
@@ -996,32 +991,25 @@
   height: 32px;
   border-radius: 50%;
   border: none;
-  background: #f0f0f0 !important;
-  color: #000000 !important;
+  background: #f0f0f0;
+  color: #000000;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  font-weight: bold !important;
-  position: relative;
-  z-index: 10;
+  font-weight: bold;
 }
 
 .nav-arrow:hover {
-  background: #e8e8e8 !important;
-  color: #000000 !important;
+  background: #e8e8e8;
+  color: #000000;
   transform: scale(1.05);
 }
 
-.nav-arrow.prev {
-  left: -16px;
-}
-
 .nav-arrow.next {
-  right: -16px;
-  background: #f0f0f0 !important;
-  color: #000000 !important;
+  background: #f0f0f0;
+  color: #000000;
 }
 
 .you-may-like-viewall-link {

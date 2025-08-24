@@ -11,6 +11,13 @@ export const CartProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+  // Initialize authentication state on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+    console.log('Initial auth state:', !!token);
+  }, []);
+
   // Load cart items from backend on mount and when token changes
   useEffect(() => {
     const fetchCart = async () => {
@@ -19,6 +26,7 @@ export const CartProvider = ({ children }) => {
         const token = localStorage.getItem("token");
         console.log('Token exists:', !!token);
         if (token) {
+          // Set authentication to true immediately when token exists
           setIsAuthenticated(true);
           console.log('Making request to /api/cart');
           const { data } = await api.get("/cart");
@@ -54,7 +62,9 @@ export const CartProvider = ({ children }) => {
         if (error.response?.status === 401) {
           handleLogout();
         } else {
-          toast.error("Failed to load cart");
+          // Don't set isAuthenticated to false on network errors
+          // Only set to false if it's an authentication error
+          console.log('Network error occurred, but user remains authenticated');
         }
       } finally {
         setLoading(false);
@@ -72,10 +82,21 @@ export const CartProvider = ({ children }) => {
     window.addEventListener('storage', handleStorageChange);
     // Add event listener for unauthorized events
     window.addEventListener(UNAUTHORIZED_EVENT, handleLogout);
+    
+    // Add event listener for login events
+    const handleLogin = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        setIsAuthenticated(true);
+        console.log('Login event detected, updating auth state');
+      }
+    };
+    window.addEventListener('userLoggedIn', handleLogin);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener(UNAUTHORIZED_EVENT, handleLogout);
+      window.removeEventListener('userLoggedIn', handleLogin);
     };
   }, [token]);
 
@@ -141,10 +162,17 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      // Check if user is logged in
-      if (!isAuthenticated) {
+      // Check if user is logged in - check both state and token
+      const token = localStorage.getItem('token');
+      if (!isAuthenticated && !token) {
         toast.error("Please login to add items to cart");
         return;
+      }
+      
+      // If we have a token but state is wrong, update the state
+      if (token && !isAuthenticated) {
+        console.log('Token exists but state is wrong, updating authentication state');
+        setIsAuthenticated(true);
       }
 
       // Check if item already exists with same size and color
@@ -266,10 +294,17 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      // Check if user is logged in
-      if (!isAuthenticated) {
+      // Check if user is logged in - check both state and token
+      const token = localStorage.getItem('token');
+      if (!isAuthenticated && !token) {
         toast.error("Please login to update cart");
         return;
+      }
+      
+      // If we have a token but state is wrong, update the state
+      if (token && !isAuthenticated) {
+        console.log('Token exists but state is wrong, updating authentication state');
+        setIsAuthenticated(true);
       }
 
       if (newQty < 1) {
@@ -331,6 +366,16 @@ export const CartProvider = ({ children }) => {
     window.dispatchEvent(new Event('storage'));
   };
 
+  // Add function to refresh authentication state
+  const refreshAuthState = () => {
+    const token = localStorage.getItem('token');
+    const shouldBeAuthenticated = !!token;
+    if (isAuthenticated !== shouldBeAuthenticated) {
+      console.log('Refreshing auth state:', { current: isAuthenticated, shouldBe: shouldBeAuthenticated });
+      setIsAuthenticated(shouldBeAuthenticated);
+    }
+  };
+
   return (
     <CartContext.Provider value={{ 
       cartItems, 
@@ -340,7 +385,8 @@ export const CartProvider = ({ children }) => {
       clearCart,
       loading,
       handleLogout,
-      isAuthenticated
+      isAuthenticated,
+      refreshAuthState
     }}>
       {children}
     </CartContext.Provider>
