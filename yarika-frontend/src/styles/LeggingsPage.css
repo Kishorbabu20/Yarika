@@ -1,11 +1,20 @@
 /* Leggings Page Styles - matches reference layout */
 
+/* Force remove top spacing with maximum specificity */
+body .content-section,
+html .content-section,
 .content-section { 
   max-width: 1280px; 
   margin: 0 auto; 
-  padding: 40px 0 120px; 
+  padding: 5px 0 120px !important; 
   width: 100%; 
   overflow-x: hidden; 
+}
+
+/* Additional override to ensure no top spacing */
+.content-section {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 .content-section, .product-listing-container, .main-content, .product-grid { 
@@ -13,9 +22,16 @@
 }
 
 .breadcrumb { 
-  margin-bottom: 20px; 
+  margin: 0 0 20px 0 !important; 
+  padding: 0 !important;
   font-size: 14px; 
   color: #666; 
+}
+
+/* Force remove any top spacing on breadcrumb */
+.breadcrumb {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 .breadcrumb a { 
@@ -32,7 +48,7 @@
   font-weight: 600; 
   color: #111; 
   text-align: center; 
-  margin: 20px 0 10px; 
+  margin: 10px 0 10px; 
 }
 
 .section-label { 
@@ -182,6 +198,8 @@
   min-width: 0; 
   width: 100%; 
   overflow: visible !important; 
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 .main-content * { 
@@ -279,11 +297,12 @@
   display: grid !important; 
   grid-template-columns: repeat(3, 280px) !important; 
   gap: 20px !important; 
-  padding: 0 16px !important; 
+  padding: 0 !important; 
   margin-bottom: 120px !important; 
   width: 100% !important; 
+  overflow-x: auto !important; 
   overflow-y: hidden !important; 
-  justify-content: center !important; 
+  justify-content: flex-start !important; 
   scrollbar-width: none !important; /* Firefox */
   -ms-overflow-style: none !important; /* Internet Explorer 10+ */
 }
@@ -301,6 +320,9 @@
 /* When filters are hidden, adjust grid for larger cards */
 .filters-sidebar.hide ~ .main-content .product-grid {
   grid-template-columns: repeat(3, 380px) !important;
+  justify-content: flex-start !important;
+  overflow-x: auto !important;
+  padding: 0 !important;
 }
 
 .filters-sidebar.hide ~ .main-content .product-grid > * {
@@ -688,6 +710,48 @@ html::-webkit-scrollbar {
   display: inline-block;
 }
 
+/* Tablet breakpoint */
+@media (max-width: 1024px) and (min-width: 721px) {
+  .content-section .product-grid,
+  .content-section.product-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, 200px) !important;
+    gap: 16px !important;
+    padding: 0 !important;
+    margin-bottom: 100px !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+  }
+  
+  .content-section .product-grid > *,
+  .content-section.product-grid > *,
+  .product-grid > * {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+  }
+  
+  .content-section .product-card,
+  .product-card {
+    width: 200px !important;
+    height: 320px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+  }
+  
+  .content-section .product-image-container,
+  .product-image-container {
+    width: 200px !important;
+    height: 260px !important;
+  }
+  
+  .content-section .product-image,
+  .product-image {
+    width: 200px !important;
+    height: 260px !important;
+  }
+}
+
 /* Force mobile grid layout with maximum specificity */
 @media (max-width: 720px) {
   .content-section .product-grid,
@@ -695,8 +759,10 @@ html::-webkit-scrollbar {
   .product-grid {
     grid-template-columns: repeat(3, 80px) !important;
     gap: 10px !important;
-    padding: 0 6px !important;
+    padding: 0 !important;
     margin-bottom: 60px !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
   }
   
   .content-section .product-grid > *,
@@ -734,7 +800,7 @@ html::-webkit-scrollbar {
   .product-grid {
     grid-template-columns: repeat(2, 70px) !important;
     gap: 8px !important;
-    padding: 0 4px !important;
+    padding: 0 !important;
     margin-bottom: 40px !important;
   }
   
@@ -773,7 +839,7 @@ html::-webkit-scrollbar {
   .product-grid {
     grid-template-columns: repeat(2, 60px) !important;
     gap: 6px !important;
-    padding: 0 3px !important;
+    padding: 0 !important;
     margin-bottom: 30px !important;
   }
   

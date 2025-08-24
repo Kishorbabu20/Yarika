@@ -6,7 +6,53 @@ import Footer from "./components/Footer";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster, toast } from "react-hot-toast";
 import NavigationBarSection from './user/NavigationBarSection';
+
+// User Components
+import HeroLanding from "./user/HeroLanding";
+import ProductPage from "./user/ProductPage";
+import SelectProduct from "./user/SelectProduct";
+import Cart from "./user/Cart";
+import MyOrders from "./user/MyOrders";
+import CategoryProductsPage from "./user/CategoryProductsPage";
+import SearchResultsPage from "./user/SearchResultsPage";
+import TrendingPage from "./user/TrendingPage";
+import LeggingsPage from "./user/LeggingsPage";
+import MaterialsPage from "./user/MaterialsPage";
+import LoginModal from "./user/LoginModal";
+import LoginPage from "./user/LoginPage";
+import SignupLoginPage from "./user/SignupLoginPage";
+import UserProfile from "./user/UserProfile";
+import WishlistPage from "./user/WishlistPage";
+import UserProtectedRoute from "./utils/UserProtectedRoute";
+import BridalPage from "./user/BridalPage";
+import ShopByOccasionPage from "./user/ShopByOccasionPage";
+
+// Admin Components
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminAnalytics from "./pages/AdminAnalytics";
+import Products from "./pages/Products";
+import AddProductForm from "./components/forms/AddProductForm";
+import Members from "./pages/Members";
+import Customers from "./pages/Customers";
+import Logout from "./Logout";
+import OrderDetails from "./pages/OrderDetails";
+import ManageMaster from "./pages/ManageMaster";
+import AdminProfile from "./pages/AdminProfile";
+import ProtectedRoute from "./utils/ProtectedRoute";
+
+// Pages
+import Payments from "./pages/Payments";
+import BulkQueries from "./pages/BulkQueries";
 import ServiceHighlights from "./components/ServiceHighlights";
+
+// Lazy Loaded Components
+const TermsOfUse = lazy(() => import("./pages/TermsOfUse"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
+const CancellationRefundPolicy = lazy(() => import("./pages/CancellationRefundPolicy"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
 
 // Ensure CSS is loaded
 const ensureCSSLoaded = () => {
@@ -30,40 +76,6 @@ const ensureCSSLoaded = () => {
     checkCSS();
   });
 };
-
-// User
-import HeroLanding from "./user/HeroLanding";
-import ProductPage from "./user/ProductPage";
-import SelectProduct from "./user/SelectProduct";
-import Cart from "./user/Cart";
-import MyOrders from "./user/MyOrders";
-import CategoryProductsPage from "./user/CategoryProductsPage";
-import SearchResultsPage from "./user/SearchResultsPage";
-import TrendingPage from "./user/TrendingPage";
-import LeggingsPage from "./user/LeggingsPage";
-import MaterialsPage from "./user/MaterialsPage";
-import LoginModal from "./user/LoginModal";
-import LoginPage from "./user/LoginPage";
-import SignupLoginPage from "./user/SignupLoginPage";
-import UserProfile from "./user/UserProfile";
-import WishlistPage from "./user/WishlistPage";
-import UserProtectedRoute from "./utils/UserProtectedRoute";
-import BridalPage from "./user/BridalPage";
-import ShopByOccasionPage from "./user/ShopByOccasionPage";
-
-// Policy Pages
-const TermsOfUse = lazy(() => import("./pages/TermsOfUse"));
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
-const ContactUs = lazy(() => import("./pages/ContactUs"));
-const CancellationRefundPolicy = lazy(() => import("./pages/CancellationRefundPolicy"));
-const AboutUs = lazy(() => import("./pages/AboutUs"));
-
-// New Pages
-import Payments from "./pages/Payments";
-import BulkQueries from "./pages/BulkQueries";
-import AboutUs from "./pages/AboutUs";
-import ContactUs from "./pages/ContactUs";
 
 const queryClient = new QueryClient();
 
@@ -188,37 +200,37 @@ function App() {
               } />
               <Route path="/wishlist" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><WishlistPage /></>
+                  <><NavigationBarSection /><WishlistPage /><ServiceHighlights /></>
                 </Suspense>
               } />
               <Route path="/products/:categorySlug" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><CategoryProductsPage /><Footer /></>
+                  <><NavigationBarSection /><CategoryProductsPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/search" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><SearchResultsPage /><Footer /></>
+                  <><NavigationBarSection /><SearchResultsPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/home/trending" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><TrendingPage /><Footer /></>
+                  <><NavigationBarSection /><TrendingPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/home/readymade-blouse" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><ProductPage /><Footer /></>
+                  <><NavigationBarSection /><ProductPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/home/leggings" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><LeggingsPage /><Footer /></>
+                  <><NavigationBarSection /><LeggingsPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/home/materials" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><MaterialsPage /><Footer /></>
+                  <><NavigationBarSection /><MaterialsPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/login" element={
@@ -231,15 +243,6 @@ function App() {
                   <SignupLoginPage />
                 </Suspense>
               } />
-              <Route path="/wishlist" element={<><NavigationBarSection /><WishlistPage /><ServiceHighlights /></>} />
-              <Route path="/products/:categorySlug" element={<><NavigationBarSection /><CategoryProductsPage /><ServiceHighlights /><Footer /></>} />
-              <Route path="/search" element={<><NavigationBarSection /><SearchResultsPage /><ServiceHighlights /><Footer /></>} />
-              <Route path="/home/trending" element={<><NavigationBarSection /><TrendingPage /><ServiceHighlights /><Footer /></>} />
-              <Route path="/home/readymade-blouse" element={<><NavigationBarSection /><ProductPage /><ServiceHighlights /><Footer /></>} />
-              <Route path="/home/leggings" element={<><NavigationBarSection /><LeggingsPage /><ServiceHighlights /><Footer /></>} />
-              <Route path="/home/materials" element={<><NavigationBarSection /><MaterialsPage /><ServiceHighlights /><Footer /></>} />
-              <Route path="/login" element={isLoggedIn ? <Navigate to="/profile" /> : <LoginPage />} />
-              <Route path="/signup" element={<SignupLoginPage />} />
               {/* Bridal Page Routes */}
               <Route path="/home/bridal" element={<><NavigationBarSection /><BridalPage /><ServiceHighlights /><Footer /></>} />
               <Route path="/home/bridal/:category" element={<><NavigationBarSection /><BridalPage /><ServiceHighlights /><Footer /></>} />
@@ -289,24 +292,24 @@ function App() {
               {/* SEO-friendly product routes - MUST come before fallback route */}
               <Route path="/:dropdown/:categoryType/:category" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><CategoryProductsPage /><Footer /></>
+                  <><NavigationBarSection /><CategoryProductsPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/:dropdown/:categoryType/:category/:productSlug" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><SelectProduct /><Footer /></>
+                  <><NavigationBarSection /><SelectProduct /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/home/:categoryType/:category/:productSlug" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><SelectProduct /><Footer /></>
+                  <><NavigationBarSection /><SelectProduct /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               
               {/* Fallback route - MUST come last */}
               <Route path="/product/:id" element={
                 <Suspense fallback={<PageLoader />}>
-                  <><NavigationBarSection /><SelectProduct /><Footer /></>
+                  <><NavigationBarSection /><SelectProduct /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               
