@@ -16,7 +16,7 @@ import BlouseBanner from "../assets/Blousebanner.png";
 import BlouseBannerMobile from "../assets/Blousemobile.png";
 import BridalBanner from "../assets/Bridalbanner.png";
 import BridalBannerMobile from "../assets/Bridalbannermobile.png";
-import LeggingsBanner from "../assets/Leggingsbanner.png";
+import LeggingsBanner from "../assets/Leggingsbanner.jpg";
 import LeggingsBannerMobile from "../assets/Leggingsmobile.png";
 import Lehenga from "../assets/Lehenga.png";
 import Leggings from "../assets/Leggings.png";

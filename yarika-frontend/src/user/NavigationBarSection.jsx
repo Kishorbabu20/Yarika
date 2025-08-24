@@ -9,7 +9,7 @@ import LeggingNav from "../assets/legging nav img.png";
 import { Search, MapPin, User, Heart, ShoppingBag, Menu } from "lucide-react";
 import WhatsAppButton from "../components/WhatsAppButton";
 import ScrollToTop from "../components/ScrollToTop";
-import "../styles/navbar.css";
+import "../styles/Navbar.css";
 
 function isMobile() {
   return window.innerWidth <= 768;
