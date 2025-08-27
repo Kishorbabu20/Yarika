@@ -20,49 +20,7 @@
   height: auto;
 }
 
-/* Breadcrumb Styles */
-.breadcrumb {
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #666;
-}
-
-.breadcrumb a {
-  color: #deb33f;
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-/* Remove dots from breadcrumb list */
-.breadcrumb ul,
-.breadcrumb ol {
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.breadcrumb li {
-  display: flex;
-  align-items: center;
-  list-style: none !important;
-}
-
-.breadcrumb li::before,
-.breadcrumb li::after {
-  content: none !important;
-}
-
-/* Style breadcrumb separator */
-.breadcrumb [data-radix-breadcrumb-separator] {
-  color: #666;
-  margin: 0 4px;
-}
+/* Breadcrumb styles moved to global.css */
 
 /* Category Title */
 .category-title {
