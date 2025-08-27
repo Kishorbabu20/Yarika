@@ -67,6 +67,91 @@ html, body {
 }
 
 /* ========================================
+   BREADCRUMBS - GLOBAL STYLES
+   ======================================== */
+
+/* Global breadcrumb positioning and alignment */
+.breadcrumb {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 10px 0 100px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
+  position: relative;
+  left: 0;
+  right: 0;
+}
+
+.breadcrumb a {
+  color: #deb33f;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb a:hover {
+  color: #a88a4d;
+  text-decoration: underline;
+}
+
+/* Remove dots from breadcrumb list */
+.breadcrumb ul,
+.breadcrumb ol {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.breadcrumb li {
+  display: flex;
+  align-items: center;
+  list-style: none !important;
+  white-space: nowrap;
+}
+
+.breadcrumb li::before,
+.breadcrumb li::after {
+  content: none !important;
+}
+
+/* Style breadcrumb separator */
+.breadcrumb [data-radix-breadcrumb-separator] {
+  color: #666;
+  margin: 0 4px;
+}
+
+/* Mobile responsive breadcrumbs */
+@media (max-width: 768px) {
+  .breadcrumb {
+    padding: 0 16px 0 72px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  
+  .breadcrumb ul,
+  .breadcrumb ol {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumb {
+    padding: 0 12px 0 72px;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  
+  .breadcrumb ul,
+  .breadcrumb ol {
+    gap: 4px;
+  }
+}
+
+/* ========================================
    FEATURED & HERO SECTIONS
    ======================================== */
 
@@ -75,6 +160,8 @@ html, body {
   padding: 40px 0; 
   max-width: 1280px; 
   margin: 0 auto; 
+  padding-left: 16px;
+  padding-right: 16px;
 }
 .signature-heading { 
   color: #deb33f; 
@@ -90,7 +177,7 @@ html, body {
   gap: 24px; 
   max-width: 1280px; 
   margin: 0 auto; 
-  padding: 0; 
+  padding: 0 16px; 
 }
 .signature-simple-card { 
   position: relative; 
@@ -177,6 +264,14 @@ html, body {
   }
   .signature-simple-card { height: auto; }
   .signature-simple-img { height: 200px; object-fit: cover; }
+}
+
+/* Mobile responsive adjustments for signature section */
+@media (max-width: 768px) {
+  .signature-section {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }
 
 /* ========================================
@@ -1398,6 +1493,25 @@ html, body {
   border-top: 1px solid #444;
 }
 
+.footer-bottom-right {
+  text-align: right;
+  color: #ccc;
+  font-size: 14px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.footer-bottom-logo {
+  height: 15px;
+  width: auto;
+  object-fit: contain;
+  margin-left: 4px;
+}
+
 /* Mobile Responsive for Footer */
 @media (max-width: 768px) {
   .footer {
@@ -1429,14 +1543,35 @@ html, body {
   .footer-bottom {
     font-size: 13px;
   }
+  
+  .footer-bottom-right {
+    font-size: 13px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
 }
+
+
 
 @media (max-width: 480px) {
   .footer-content {
     grid-template-columns: 1fr;
     gap: 25px;
   }
+  
+  .footer-bottom-right {
+    font-size: 12px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+  }
 }
+
 
 /* Main Banner */
 .main-banner {

@@ -4,9 +4,9 @@ import '../styles/WhatsAppButton.css';
 const WhatsAppButton = () => {
   const handleWhatsAppClick = () => {
     // WhatsApp business number - you can change this to your actual WhatsApp number
-    const phoneNumber = '+91948902224'; // Replace with your actual WhatsApp number
-    const message = 'Hi! I would like to know more about your products.';
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const phoneNumber = '+919489042226'; // Replace with your actual WhatsApp number
+    const message = 'Send Hi! to get more info about our products';
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, '_blank');
   };

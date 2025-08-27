@@ -21,27 +21,7 @@ html .content-section,
   max-width: 100%; 
 }
 
-.breadcrumb { 
-  margin: 0 0 20px 0 !important; 
-  padding: 0 !important;
-  font-size: 14px; 
-  color: #666; 
-}
-
-/* Force remove any top spacing on breadcrumb */
-.breadcrumb {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-.breadcrumb a { 
-  color: #deb33f; 
-  text-decoration: none; 
-}
-
-.breadcrumb a:hover { 
-  text-decoration: underline; 
-}
+/* Breadcrumb styles moved to global.css */
 
 .category-title { 
   font-size: 32px; 

@@ -55,6 +55,8 @@ const NavigationBarSection = () => {
 
   const handleMouseLeave = () => {
     setActiveDropdown(null);
+    // Also close mobile dropdowns when mouse leaves
+    setMobileActiveDropdown(null);
   };
 
   const handleMobileDropdownToggle = (dropdownName) => {
@@ -63,6 +65,18 @@ const NavigationBarSection = () => {
     } else {
       setMobileActiveDropdown(dropdownName);
     }
+  };
+
+  const handleDropdownLinkClick = () => {
+    // Close all dropdowns when a link is clicked
+    setActiveDropdown(null);
+    setMobileActiveDropdown(null);
+    
+    // Force close with a small delay to ensure it works
+    setTimeout(() => {
+      setActiveDropdown(null);
+      setMobileActiveDropdown(null);
+    }, 100);
   };
 
   const handleSearch = (e) => {
@@ -348,7 +362,7 @@ const NavigationBarSection = () => {
               >
                 <span className="subnav-link">READYMADE BLOUSE</span>
                 {(activeDropdown === 'women-readymade' || mobileActiveDropdown === 'women-readymade') && (
-                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-readymade' ? 'active' : ''}`}>
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-readymade' ? 'active' : ''}`} onClick={handleDropdownLinkClick}>
                     <div className="dropdown-content">
                       <div className="dropdown-list">
                         {categoryTypes.women["readymade-blouse"].items.map((item, idx) => (
@@ -375,7 +389,7 @@ const NavigationBarSection = () => {
               >
                 <span className="subnav-link">LEGGINGS</span>
                 {(activeDropdown === 'women-leggings' || mobileActiveDropdown === 'women-leggings') && (
-                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-leggings' ? 'active' : ''}`}>
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-leggings' ? 'active' : ''}`} onClick={handleDropdownLinkClick}>
                     <div className="dropdown-content">
                       <div className="dropdown-list">
                         {categoryTypes.women.leggings.items.map((item, idx) => (
@@ -402,7 +416,7 @@ const NavigationBarSection = () => {
               >
                 <span className="subnav-link">MATERIALS</span>
                 {(activeDropdown === 'women-materials' || mobileActiveDropdown === 'women-materials') && (
-                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-materials' ? 'active' : ''}`}>
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'women-materials' ? 'active' : ''}`} onClick={handleDropdownLinkClick}>
                     <div className="dropdown-content">
                       <div className="dropdown-list">
                         {categoryTypes.women["readymade-blouse-cloth"].items.map((item, idx) => (
@@ -434,7 +448,7 @@ const NavigationBarSection = () => {
               >
                 <span className="subnav-link">LEGGINGS</span>
                 {(activeDropdown === 'kids-leggings' || mobileActiveDropdown === 'kids-leggings') && (
-                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'kids-leggings' ? 'active' : ''}`}>
+                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'kids-leggings' ? 'active' : ''}`} onClick={handleDropdownLinkClick}>
                     {categoryTypes.girls.leggings.items.map((item, idx) => (
                       <Link key={idx} to={getCategoryLink('girls', 'leggings', item)} className="subnav-dropdown-item">
                         {item.name}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../styles/global.css";
 import shipwayLogo from "../assets/shipway-logo.png";
 import razorpayLogo from "../assets/razorpay_logo.png";
+import Vector from "../assets/Vector.png";
 
 const Footer = () => (
   <footer className="footer">
@@ -53,6 +54,7 @@ const Footer = () => (
     <div className="footer-bottom">
       © 2025, Yarika. All Rights Reserved.
     </div>
+    <div className="footer-bottom-right">Digitally Stiched by<img src={Vector} alt="YucelHub" className="footer-bottom-logo" />YucelHub</div>
   </footer>
 );
 
