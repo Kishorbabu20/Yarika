@@ -217,6 +217,19 @@ html .content-section,
   transition: all .2s ease; 
 }
 
+/* Hide text on mobile; keep icon visible */
+@media (max-width: 768px) {
+  .toggle-filters-btn .btn-text { display: none !important; }
+}
+
+/* Align filter button left, sort control right on mobile */
+@media (max-width: 768px) {
+  .top-controls { display: flex; }
+  .controls-group { width: 100%; display: flex; justify-content: space-between; }
+  .toggle-filters-btn { order: 0; }
+  .sort-control { order: 1; margin-left: auto; }
+}
+
 .toggle-filters-btn:hover { 
   border-color: #deb33f; 
   color: #deb33f; 
@@ -401,7 +414,7 @@ html .content-section,
 /* Pagination removed - infinite scroll enabled */
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (max-width: 720px) {
   .product-listing-container { 
     flex-direction: column; 
   }
@@ -691,7 +704,7 @@ html::-webkit-scrollbar {
 }
 
 /* Tablet breakpoint */
-@media (max-width: 1024px) and (min-width: 721px) {
+@media (max-width: 720px) and (min-width: 721px) {
   .content-section .product-grid,
   .content-section.product-grid,
   .product-grid {
@@ -733,6 +746,12 @@ html::-webkit-scrollbar {
 }
 
 /* Force mobile grid layout with maximum specificity */
+@media (max-width: 768px) {
+  /* Ensure Toggle Filters button shows on mobile and hamburger hidden */
+  .toggle-filters-btn { display: inline-flex !important; }
+  .filters-hamburger { display: none !important; }
+}
+
 @media (max-width: 720px) {
   .content-section .product-grid,
   .content-section.product-grid,

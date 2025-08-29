@@ -22,7 +22,7 @@ const LeggingsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedFabrics, setSelectedFabrics] = useState([]);
@@ -201,8 +201,7 @@ const LeggingsPage = () => {
         <title>
           {activeCategory.slug === "" 
             ? "All Leggings - Ethnic Wear | Yarika" 
-            : `${activeCategory.label} Leggings - Ethnic Wear | Yarika`
-          }
+            : `${activeCategory.label} Leggings - Ethnic Wear | Yarika`}
         </title>
         <meta 
           name="description" 
@@ -234,7 +233,7 @@ const LeggingsPage = () => {
       </Helmet>
 
       <div className="content-section">
-      <div className="breadcrumb">
+        <div className="breadcrumb">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -250,15 +249,21 @@ const LeggingsPage = () => {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-</div>
+        </div>
         {/* Category Title */}
         <h1 className="category-title">Leggings</h1>
-        <h4 className="section-label">Comfort Meets Style</h4>
-        <h2 className="sub-heading">LEGGINGS COLLECTION</h2>
 
         <div className="product-listing-container">
-          {/* Left Sidebar - Filters */}
+          {/* Left Sidebar - Filters (drawer on mobile) */}
           <div className={`filters-sidebar ${showFilters ? 'show' : 'hide'}`}>
+            {/* Mobile close button */}
+            <button
+              className="close-filters-mobile"
+              aria-label="Close filters"
+              onClick={() => setShowFilters(false)}
+            >
+              ×
+            </button>
             <div className="filter-status">
               {hasActiveFilters ? (
                 <span className="filters-applied">Filters Applied</span>
@@ -313,19 +318,20 @@ const LeggingsPage = () => {
               </div>
               <div className="filter-options">
                 {allColors.map(color => (
-                  <label key={color} className="filter-option">
+                  <label key={(typeof color === 'object' ? color.code : color)} className="filter-option">
                     <input
                       type="checkbox"
-                      checked={selectedColors.includes(color)}
+                      checked={selectedColors.includes(typeof color === 'object' ? color.code : color)}
                       onChange={(e) => {
+                        const code = (typeof color === 'object' ? color.code : color);
                         if (e.target.checked) {
-                          setSelectedColors([...selectedColors, color]);
+                          setSelectedColors([...selectedColors, code]);
                         } else {
-                          setSelectedColors(selectedColors.filter(c => c !== color));
+                          setSelectedColors(selectedColors.filter(c => c !== code));
                         }
                       }}
                     />
-                    <span>{color}</span>
+                    <span>{typeof color === 'object' ? (color.name || color.code) : color}</span>
                   </label>
                 ))}
               </div>
@@ -388,16 +394,31 @@ const LeggingsPage = () => {
             </div>
           </div>
 
+          {/* Backdrop for mobile drawer */}
+          {showFilters && (
+            <div className="filters-backdrop" onClick={() => setShowFilters(false)} />
+          )}
+
           {/* Right Main Content */}
           <div className="main-content">
             {/* Top Controls */}
             <div className="top-controls">
               <div className="controls-group">
+                {/* Mobile filter icon to open filters drawer */}
+                <button
+                  className="filters-hamburger"
+                  aria-label="Open filters"
+                  onClick={() => setShowFilters(true)}
+                >
+                  {/* Filter icon is added via CSS ::before pseudo-element */}
+                </button>
+
+                {/* Desktop toggle (hidden on mobile via CSS) */}
                 <button 
                   className="toggle-filters-btn"
                   onClick={() => setShowFilters(!showFilters)}
                 >
-                  {showFilters ? 'Hide Filters' : 'Show Filters'}
+                  <span className="btn-text">{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
                   <svg className="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3 4h18v2.172a2 2 0 0 1-.586 1.414l-4.702 4.702a2 2 0 0 0-.586 1.414V20l-4-2v-6.172a2 2 0 0 0-.586-1.414L4.586 7.586A2 2 0 0 1 4 6.172V4z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -456,7 +477,7 @@ const LeggingsPage = () => {
         </div>
 
         {/* End product-listing-container */}
-    </div>
+      </div>
     </>
   );
 };

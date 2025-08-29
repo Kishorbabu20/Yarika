@@ -1,20 +1,21 @@
 .whatsapp-button {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  /* Make it appear above the footer, adjust bottom for sticky footers if needed */
+  bottom: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
   background: #deb33f;
-  border-radius: 4px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
   transition: all 0.3s ease;
   z-index: 1000;
   color: white;
-  padding: 12px 20px;
-  min-width: 160px;
+  padding: 0;
 }
 
 .whatsapp-button:hover {
@@ -27,54 +28,40 @@
   transform: scale(0.98);
 }
 
+/* Only show icon, hide text if present */
+.contact-text {
+  display: none;
+}
+
 .whatsapp-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
 }
 
-.contact-text {
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-/* Responsive design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .whatsapp-button {
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 16px;
-    min-width: 140px;
-    gap: 6px;
+    bottom: 15px;
+    right: 15px;
+    width: 42px;
+    height: 42px;
   }
-  
   .whatsapp-icon {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .contact-text {
-    font-size: 13px;
+    width: 20px;
+    height: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .whatsapp-button {
-    bottom: 15px;
-    right: 15px;
-    padding: 8px 14px;
-    min-width: 120px;
-    gap: 5px;
+    bottom: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
   }
-  
   .whatsapp-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
-  
-  .contact-text {
-    font-size: 12px;
-  }
-} 
+}

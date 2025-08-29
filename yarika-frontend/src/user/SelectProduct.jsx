@@ -128,6 +128,10 @@ const SelectProduct = () => {
   const colorFromUrl = urlParams.get('color');
 
   const getSelectedSizeStock = () => {
+    // If product has no size breakdown, use total stock
+    if (!product?.sizes || product.sizes.length === 0) {
+      return product?.totalStock || 0;
+    }
     if (!product?.sizeStocks || !selectedSize) return 0;
     return product.sizeStocks[selectedSize] || 0;
   };
@@ -301,7 +305,9 @@ const SelectProduct = () => {
         const similarRes = await api.get(`/products`, {
           params: {
             category: productRes.data.category,
-          exclude: productRes.data._id,
+            status: 'active',
+            t: Date.now(),
+            exclude: productRes.data._id,
             limit: 4
           }
         });
@@ -345,6 +351,9 @@ const SelectProduct = () => {
       if (category) {
         query.append("category", category);
       }
+      // Only fetch active products and bust cache
+      query.append("status", "active");
+      query.append("t", String(Date.now()));
       
       const response = await api.get(`/products?${query}`);
       
@@ -407,6 +416,9 @@ const SelectProduct = () => {
       if (product?.category) {
         query.append("category", product.category);
       }
+      // Only search active products and bust cache
+      query.append("status", "active");
+      query.append("t", String(Date.now()));
       
       const response = await api.get(`/products?${query}`);
       
@@ -461,20 +473,30 @@ const SelectProduct = () => {
   };
 
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
-      toast.error("Please select both size and color");
+    const noSizes = !product?.sizes || product.sizes.length === 0;
+    if (!selectedColor) {
+      toast.error("Please select a color");
       return;
     }
-
-    // Check if the selected size is available
-    if (!isSizeAvailable(selectedSize)) {
+    if (!noSizes && !selectedSize) {
+      toast.error("Please select a size");
+      return;
+    }
+ 
+    // Check availability
+    if (!product?.totalStock) {
+      toast.error("This item is out of stock");
+      return;
+    }
+    if (!noSizes && !isSizeAvailable(selectedSize)) {
       toast.error(`Size ${selectedSize} is out of stock`);
       return;
     }
-
+ 
     try {
       const safeQty = Math.max(1, Number(quantity) || 1);
-      addToCart(product._id, selectedSize, safeQty, selectedColor);
+      const sizeToUse = noSizes ? '' : selectedSize;
+      addToCart(product._id, sizeToUse, safeQty, selectedColor);
       toast.success("Added to cart successfully!");
     } catch (err) {
       console.error("Failed to add to cart:", err);
@@ -483,24 +505,33 @@ const SelectProduct = () => {
   };
 
   const handleBuyNow = async () => {
-    if (!selectedSize || !selectedColor) {
-      toast.error("Please select both size and color");
+    const noSizes = !product?.sizes || product.sizes.length === 0;
+    if (!selectedColor) {
+      toast.error("Please select a color");
       return;
     }
-
-    // Check if the selected size is available
-    if (!isSizeAvailable(selectedSize)) {
+    if (!noSizes && !selectedSize) {
+      toast.error("Please select a size");
+      return;
+    }
+ 
+    // Check availability
+    if (!product?.totalStock) {
+      toast.error("This item is out of stock");
+      return;
+    }
+    if (!noSizes && !isSizeAvailable(selectedSize)) {
       toast.error(`Size ${selectedSize} is out of stock`);
       return;
     }
-
+ 
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         navigate('/login');
         return;
       }
-
+ 
       // Show address selection modal first
       setIsShippingAddressModalOpen(true);
     } catch (error) {
@@ -594,7 +625,8 @@ const SelectProduct = () => {
         return;
       }
 
-      if (!selectedSize) {
+      const noSizes = !product?.sizes || product.sizes.length === 0;
+      if (!noSizes && !selectedSize) {
         console.error('No size selected');
         toast.error("Please select a size before proceeding");
         setIsInPaymentFlow(false);
@@ -602,22 +634,23 @@ const SelectProduct = () => {
       }
 
       // Validate that selected color and size are available
-      if (!product.colors.includes(selectedColor)) {
+      if (!product.colors.some(c => (typeof c === 'string' ? c === selectedColor : c?.code === selectedColor))) {
         console.error('Selected color not available:', {
           selectedColor,
           availableColors: product.colors
         });
-        toast.error("Selected color is no longer available. Please choose another color.");
+        toast.error("Selected color is not available for this product");
         setIsInPaymentFlow(false);
         return;
       }
 
-      if (!product.sizes.includes(selectedSize)) {
+      if (!noSizes && !isSizeAvailable(selectedSize)) {
         console.error('Selected size not available:', {
           selectedSize,
-          availableSizes: product.sizes
+          availableSizes: product.sizes,
+          sizeStocks: product.sizeStocks
         });
-        toast.error("Selected size is no longer available. Please choose another size.");
+        toast.error(`Selected size ${selectedSize} is not available`);
         setIsInPaymentFlow(false);
         return;
       }
@@ -917,7 +950,10 @@ const SelectProduct = () => {
   };
 
   const isSizeAvailable = (size) => {
-    // Check if the product has stock for this specific size
+    // If no sizes (e.g., bridal), availability is based on total stock
+    if (!product?.sizes || product.sizes.length === 0) {
+      return (product?.totalStock || 0) > 0;
+    }
     if (!product?.sizeStocks) return false;
     const sizeStock = product.sizeStocks[size] || 0;
     console.log(`=== STOCK AVAILABILITY CHECK ===`);
@@ -1268,7 +1304,7 @@ const SelectProduct = () => {
           <div className="tax-info">Inclusive Of All Taxes</div>
           <div className="secure-by">
             <span className="secure-by-text">Secured By</span>
-            <img src="../assets/razorpay_logo.png" alt="Razorpay" className="secure-by-logo" />
+            <img src={razorpay_logo} alt="Razorpay" className="secure-by-logo" />
           </div>
 
           {/* Product Description */}
@@ -1290,14 +1326,14 @@ const SelectProduct = () => {
             <button 
               className="add-to-cart" 
               onClick={handleAddToCart}
-              disabled={!product.totalStock || !selectedSize || !selectedColor || !isSizeAvailable(selectedSize)}
+              disabled={!product.totalStock || (!(!product?.sizes || product.sizes.length === 0) && (!selectedSize || !isSizeAvailable(selectedSize))) || !selectedColor}
             >
               Add To Bag
             </button>
             <button 
               className="buy-now" 
               onClick={handleBuyNow}
-              disabled={!product.totalStock || !selectedSize || !selectedColor || !isSizeAvailable(selectedSize)}
+              disabled={!product.totalStock || (!(!product?.sizes || product.sizes.length === 0) && (!selectedSize || !isSizeAvailable(selectedSize))) || !selectedColor}
             >
               Buy Now
             </button>

@@ -4,7 +4,9 @@ import "../styles/signup.css";
 import { FcGoogle } from "react-icons/fc";
 import { FaKey } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import heroImage from "../assets/signup.png";
+import logoImage from "../assets/YarikaLogo1.png";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
 import { toast } from "react-hot-toast";
@@ -17,6 +19,7 @@ export default function LoginPage() {
     password: ""
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -86,64 +89,88 @@ export default function LoginPage() {
       </Helmet>
 
       <div className="auth-form">
-        <h1 className="brand">YARIKA</h1>
-        <p className="tagline">EXPRESS YOURSELF</p>
+        <div className="form-left">
+          <h1 className="brand">
+            <img src={logoImage} alt="Yarika Logo" className="logo-image" />
+          </h1>
 
-        <form className="form-section" onSubmit={handleSubmit}>
-          <div className="input-group">
-            <MdEmail className="icon" />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              required
-            />
+          {/* Consistent header with signup page styles */}
+          <div className="auth-header">
+            <h2 className="auth-title">Login</h2>
+            <div className="auth-subtext">
+              Don't have an account? <span className="auth-login-link" onClick={handleGoToSignup}>Sign up</span>
+            </div>
           </div>
 
-          <div className="input-group">
-            <FaKey className="icon" />
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              required
-            />
-          </div>
+          <form className="form-section" onSubmit={handleSubmit}>
+            <div className="input-group">
+              <MdEmail className="icon" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                required
+              />
+            </div>
 
-          <button 
-            type="submit" 
-            className="btn black-btn"
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+            <div className="input-group">
+              <FaKey className="icon" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
+              />
+              {showPassword ? (
+                <AiOutlineEyeInvisible
+                  onClick={() => setShowPassword(false)}
+                  style={{ cursor: "pointer" }}
+                />
+              ) : (
+                <AiOutlineEye
+                  onClick={() => setShowPassword(true)}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+            </div>
+            <div className="forgot-link">Forgot Password?</div>
 
-          <div className="divider">
-            <span></span>
-            <p>or</p>
-            <span></span>
-          </div>
+            <div className="actions-row">
+              <button 
+                type="submit" 
+                className="btn btn-create"
+                disabled={loading}
+              >
+                {loading ? "Signing in..." : "Sign In"}
+              </button>
+              <button type="button" className="return-link" onClick={() => navigate('/')}>Return To Store</button>
+            </div>
 
-          <button
-            type="button"
-            className="btn google-btn"
-            onClick={handleGoogleLogin}
-          >
-            <FcGoogle size={20} />
-            Login with Google
-          </button>
+            <div className="divider">
+              <span></span>
+              <p>or</p>
+              <span></span>
+            </div>
 
-          <button type="button" className="btn switch-btn" onClick={handleGoToSignup}>
-            Don't have an account? Sign up
-          </button>
-        </form>
+            <button
+              type="button"
+              className="btn google-btn"
+              onClick={handleGoogleLogin}
+            >
+              <FcGoogle size={20} />
+              Login with Google
+            </button>
+          </form>
+        </div>
+        
+        <div className="form-right">
+          <img src={heroImage} alt="Yarika Fashion" className="auth-image" />
+        </div>
       </div>
-
-      <div className="auth-image" style={{ backgroundImage: `url(${heroImage})` }}></div>
     </div>
   );
 } 

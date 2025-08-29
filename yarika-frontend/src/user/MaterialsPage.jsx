@@ -18,7 +18,7 @@ const MaterialsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedFabrics, setSelectedFabrics] = useState([]);
@@ -182,12 +182,19 @@ const MaterialsPage = () => {
         </div>
         {/* Category Title */}
         <h1 className="category-title">Materials</h1>
-        <h4 className="section-label">Premium Fabrics</h4>
-        <h2 className="sub-heading">MATERIALS COLLECTION</h2>
+       
 
         <div className="product-listing-container">
           {/* Left Sidebar - Filters */}
           <div className={`filters-sidebar ${showFilters ? 'show' : 'hide'}`}>
+            {/* Mobile close button */}
+            <button
+              className="close-filters-mobile"
+              aria-label="Close filters"
+              onClick={() => setShowFilters(false)}
+            >
+              ×
+            </button>
             <div className="filter-status">
               {hasActiveFilters ? (
                 <span className="filters-applied">Filters Applied</span>
@@ -242,19 +249,20 @@ const MaterialsPage = () => {
               </div>
               <div className="filter-options">
                 {allColors.map(color => (
-                  <label key={color} className="filter-option">
+                  <label key={(typeof color === 'object' ? color.code : color)} className="filter-option">
                     <input
                       type="checkbox"
-                      checked={selectedColors.includes(color)}
+                      checked={selectedColors.includes(typeof color === 'object' ? color.code : color)}
                       onChange={(e) => {
+                        const code = (typeof color === 'object' ? color.code : color);
                         if (e.target.checked) {
-                          setSelectedColors([...selectedColors, color]);
+                          setSelectedColors([...selectedColors, code]);
                         } else {
-                          setSelectedColors(selectedColors.filter(c => c !== color));
+                          setSelectedColors(selectedColors.filter(c => c !== code));
                         }
                       }}
                     />
-                    <span>{color}</span>
+                    <span>{typeof color === 'object' ? (color.name || color.code) : color}</span>
                   </label>
                 ))}
               </div>
@@ -418,4 +426,3 @@ const MaterialsPage = () => {
 };
 
 export default MaterialsPage;
-

@@ -4,16 +4,16 @@ import Leggings from '../assets/Leggings.png';
 import Lehengha from '../assets/Lehengha.png';
 import Blouses from '../assets/Blouses.png';
 import LeggingsMobile from '../assets/Leggingsmobile.png';
-import LehengaMobile from '../assets/Lehengasmobile.png';
-import BlouseMobile from '../assets/Blousemobile.png';
+import LehengaMobile from '../assets/Lehengha.png';
+import BlouseMobile from '../assets/Blouses.png';
 
 const desktopImages = [
   Lehengha,
   Blouses
 ];
 const mobileImages = [
-  LehengaMobile,
-  BlouseMobile
+  Lehengha,
+  Blouses
 ];
 
 const featuredItems = [

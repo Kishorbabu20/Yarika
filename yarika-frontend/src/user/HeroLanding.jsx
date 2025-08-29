@@ -13,11 +13,11 @@ import { generateProductUrl } from "../utils/productUrl";
 
 // Import images
 import BlouseBanner from "../assets/Blousebanner.png";
-import BlouseBannerMobile from "../assets/Blousemobile.png";
+import BlouseBannerMobile from "../assets/Blousebannermobile.png";
 import BridalBanner from "../assets/Bridalbanner.png";
 import BridalBannerMobile from "../assets/Bridalbannermobile.png";
 import LeggingsBanner from "../assets/Leggingsbanner.jpg";
-import LeggingsBannerMobile from "../assets/Leggingsmobile.png";
+import LeggingsBannerMobile from "../assets/Leggingsbannermobile.png";
 import Lehenga from "../assets/Lehenga.png";
 import Leggings from "../assets/Leggings.png";
 import Blouse from "../assets/Blouse.png";
@@ -426,7 +426,7 @@ const HeroLanding = () => {
          
          {/* Featured */}
           <div id="featured" ref={signatureRef} className={`signature-section scroll-animate ${signatureFade}`} style={{cursor: 'pointer'}} onClick={() => navigate('/products')}>
-            <SignatureCollection />
+          <SignatureCollection />
           </div>
 
           {/* Shop By Category Section */}
@@ -458,12 +458,12 @@ const HeroLanding = () => {
               <div className="category-card" onClick={() => navigate('/home/bridal/gowns')} style={{cursor:'pointer'}}>
                 <img src={gown} alt="Gown" className="category-image" />
                 <div className="category-label">Gown</div>
-              </div>
+          </div>
               <div className="category-card" onClick={() => navigate('/home/materials')} style={{cursor:'pointer'}}>
                 <img src={Material} alt="Blouse materials" className="category-image" />
                 <div className="category-label">Blouse Materials</div>
-              </div>
-            </div>
+          </div>
+          </div>
           </section>
 
           {/* New Arrivals Section */}

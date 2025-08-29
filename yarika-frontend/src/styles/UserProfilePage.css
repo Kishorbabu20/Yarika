@@ -387,57 +387,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .profile-page-container {
-    padding: 80px 4vw 24px 4vw !important;
-    margin-top: 0 !important;
-    flex-direction: column !important;
-    gap: 18px !important;
-  }
-  .profile-sidebar {
-    position: static !important;
-    width: 100% !important;
-    border-radius: 12px !important;
-    padding: 20px 8px !important;
-    margin-bottom: 0 !important;
-    height: auto !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    overflow: visible !important;
-    margin-top: 0 !important;
-  }
-  .profile-page-container .profile-content {
-    margin-left: 0 !important;
-    padding: 16px 4px !important;
-    border-radius: 12px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .profile-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
-    margin-bottom: 24px !important;
-  }
-  .profile-avatar-placeholder {
-    width: 64px !important;
-    height: 64px !important;
-  }
-  .profile-navigation {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    text-align: center !important;
-  }
-  .profile-navigation .nav-button {
-    text-align: center !important;
-    width: 100% !important;
-  }
-}
-
 /* Address Modal Form Styling */
 .profile-form-group {
   display: flex;
@@ -655,10 +604,215 @@
   background: #f5f5f5;
 }
 
-@media (max-width: 600px) {
-  .profile-page-container,
-  .profile-content {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .profile-page-container {
+        flex-direction: column;
+        padding: 20px 16px;
+        gap: 0;
+        background-color: #F5F5F5;
+    }
+
+    .profile-sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        top: auto;
+        left: auto;
+        margin-bottom: 20px;
+        order: 1;
+        border-radius: 12px;
+    }
+
+    .profile-content {
+        margin-left: 0 !important;
+        order: 2;
+        padding: 24px 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #E5E5E5;
+    }
+
+    .profile-header {
+        margin-bottom: 30px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .profile-navigation {
+        margin-bottom: 20px;
+    }
+
+    .profile-navigation .nav-button {
+        text-align: center;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+    }
+
+    .logout-button {
+        text-align: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .profile-form-group {
+        margin-bottom: 20px;
+    }
+
+    .profile-form-group input.profile-small-input {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 44px !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        border: 1px solid #E0E0E0 !important;
+        background-color: #F8F9FA !important;
+        font-size: 16px !important;
+    }
+
+    .profile-form-group input.profile-small-input:focus {
+        border-color: #deb33f !important;
+        background-color: #ffffff !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(222, 179, 63, 0.1) !important;
+    }
+
+    .profile-form-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .profile-edit-button {
+        width: 100%;
+        margin-top: 24px;
+        height: 48px;
+        background-color: #deb33f !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s !important;
+    }
+
+    .profile-edit-button:hover {
+        background-color: #c19b2e !important;
+    }
+
+    /* Address section mobile styling */
+    .profile-content > div:last-child {
+        margin-top: 32px;
+        border-top: 1px solid #e0e0e0;
+        padding-top: 24px;
+    }
+
+    .profile-content > div:last-child > div:first-child {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .profile-content > div:last-child > div:first-child h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #333333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .profile-content > div:last-child > div:first-child button {
+        width: 100%;
+        justify-content: center;
+        height: 44px;
+        background-color: #deb33f !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .profile-content > div:last-child > div:first-child button:hover {
+        background-color: #c19b2e !important;
+    }
+
+    /* Address cards mobile styling */
+    .profile-content > div:last-child > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .profile-content > div:last-child > div:last-child > div {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #ffffff;
+        position: relative;
+    }
+
+    .profile-content > div:last-child > div:last-child > div > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .profile-content > div:last-child > div:last-child > div > div:last-child button {
+        width: 100%;
+        height: 40px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-page-container {
+        padding: 16px 12px;
+    }
+
+    .profile-content {
+        padding: 20px 16px;
+    }
+
+    .profile-sidebar {
+        padding: 20px 16px;
+    }
+
+    .profile-avatar-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+
+    .profile-name h2,
+    .profile-name h3 {
+        font-size: 18px;
+    }
+
+    .profile-form-group input.profile-small-input {
+        height: 40px !important;
+        padding: 10px 14px !important;
+        font-size: 15px !important;
+    }
+
+    .profile-edit-button {
+        height: 44px;
+        font-size: 15px;
+    }
 }

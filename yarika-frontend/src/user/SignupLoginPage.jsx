@@ -3,11 +3,12 @@ import "../styles/signup.css";
 import { FcGoogle } from "react-icons/fc";
 import { FaUser, FaPhone, FaKey } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import heroImage from "../assets/signup.png";
+import logoImage from "../assets/YarikaLogo1.png";
 import { useNavigate } from "react-router-dom";
 import api from "../config/axios";
 import { toast } from "react-hot-toast";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function SignupLoginPage() {
   const navigate = useNavigate();
@@ -124,7 +125,6 @@ export default function SignupLoginPage() {
       <div className="auth-container">
         <div className="auth-form">
           <h1 className="brand">YARIKA</h1>
-          <p className="tagline">EXPRESS YOURSELF</p>
           <form className="form-section" onSubmit={handleVerify}>
             <div className="input-group">
               <MdEmail className="icon" />
@@ -160,11 +160,25 @@ export default function SignupLoginPage() {
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h1 className="brand">YARIKA</h1>
-        <p className="tagline">EXPRESS YOURSELF</p>
-
-        <form className="form-section" onSubmit={handleSubmit}>
-          <div className="row">
+        <div className="form-left">
+          <h1 className="brand">
+            <img src={logoImage} alt="Yarika Logo" className="logo-image" />
+          </h1>
+          <p className="tagline">Welcome! Create your account below</p>
+    
+          {/* Header */}
+          <div className="auth-header">
+            <h2 className="auth-title">Create Account</h2>
+            <div className="auth-subtext">
+              Already have an account?{" "}
+              <span className="auth-login-link" onClick={handleGoToLogin}>
+                Login
+              </span>
+            </div>
+          </div>
+    
+          <form className="form-section" onSubmit={handleSubmit}>
+            {/* First + last name in two columns for desktop */}
             <div className="input-group">
               <FaUser className="icon" />
               <input
@@ -187,107 +201,116 @@ export default function SignupLoginPage() {
                 required
               />
             </div>
-          </div>
-
-          <div className="input-group">
-            <MdEmail className="icon" />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <FaPhone className="icon" />
-            <input
-              type="tel"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              placeholder="Phone No."
-            />
-          </div>
-
-          <div className="input-group">
-            <FaKey className="icon" />
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              required
-            />
-            {showPassword ? (
-              <AiOutlineEyeInvisible
-                className="admin-login-eye-icon"
-                onClick={() => setShowPassword(false)}
-                style={{ cursor: "pointer" }}
+    
+            {/* Email */}
+            <div className="input-group">
+              <MdEmail className="icon" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                required
               />
-            ) : (
-              <AiOutlineEye
-                className="admin-login-eye-icon"
-                onClick={() => setShowPassword(true)}
-                style={{ cursor: "pointer" }}
+            </div>
+    
+            {/* Phone */}
+            <div className="input-group">
+              <FaPhone className="icon" />
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                placeholder="Phone No."
               />
-            )}
-          </div>
-
-          <div className="input-group">
-            <FaKey className="icon" />
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm Password"
-              required
-            />
-            {showConfirmPassword ? (
-              <AiOutlineEyeInvisible
-                className="admin-login-eye-icon"
-                onClick={() => setShowConfirmPassword(false)}
-                style={{ cursor: "pointer" }}
+            </div>
+    
+            {/* Password */}
+            <div className="input-group">
+              <FaKey className="icon" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
               />
-            ) : (
-              <AiOutlineEye
-                className="admin-login-eye-icon"
-                onClick={() => setShowConfirmPassword(true)}
-                style={{ cursor: "pointer" }}
+              {showPassword ? (
+                <AiOutlineEyeInvisible
+                  onClick={() => setShowPassword(false)}
+                  style={{ cursor: "pointer" }}
+                />
+              ) : (
+                <AiOutlineEye
+                  onClick={() => setShowPassword(true)}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+            </div>
+    
+            {/* Confirm Password */}
+            <div className="input-group">
+              <FaKey className="icon" />
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm Password"
+                required
               />
-            )}
-          </div>
-
-          <button type="submit" className="btn black-btn">
-            Signup
-          </button>
-
-          <div className="divider">
-            <span></span>
-            <p>or</p>
-            <span></span>
-          </div>
-
-          <button
-            type="button"
-            className="btn google-btn"
-            onClick={() => window.location.href = "https://yarika.in/api/auth/google"}
-          >
-            <FcGoogle size={20} />
-            Login with Google
-          </button>
-
-          <button type="button" className="btn switch-btn" onClick={handleGoToLogin}>
-            Already have an account? Login
-          </button>
-        </form>
+              {showConfirmPassword ? (
+                <AiOutlineEyeInvisible
+                  onClick={() => setShowConfirmPassword(false)}
+                  style={{ cursor: "pointer" }}
+                />
+              ) : (
+                <AiOutlineEye
+                  onClick={() => setShowPassword(true)}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+            </div>
+    
+            {/* Create button */}
+            <button type="submit" className="btn btn-create">
+              Create Account
+            </button>
+    
+            <button
+              type="button"
+              className="return-link"
+              onClick={() => (window.location.href = "/")}
+            >
+              Return To Store
+            </button>
+    
+            <div className="divider">
+              <span></span>
+              <p>or</p>
+              <span></span>
+            </div>
+    
+            <button
+              type="button"
+              className="btn google-btn"
+              onClick={() =>
+                (window.location.href = "https://yarika.in/api/auth/google")
+              }
+            >
+              <FcGoogle size={20} />
+              Continue with Google
+            </button>
+          </form>
+        </div>
+        
+        <div className="form-right">
+          <img src={heroImage} alt="Yarika Fashion" className="auth-image" />
+        </div>
       </div>
-
-      <div className="auth-image" style={{ backgroundImage: `url(${heroImage})` }}></div>
     </div>
   );
 }

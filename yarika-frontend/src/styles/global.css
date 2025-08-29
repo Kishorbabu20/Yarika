@@ -155,35 +155,37 @@ html, body {
    FEATURED & HERO SECTIONS
    ======================================== */
 
-/* Featured section styling */
+/* Featured section styling - Updated to match bridal collection */
 .signature-section { 
-  padding: 40px 0; 
+  padding: 60px 0;
   max-width: 1280px; 
   margin: 0 auto; 
-  padding-left: 16px;
-  padding-right: 16px;
 }
 .signature-heading { 
   color: #deb33f; 
-  font-size: 24px; 
+  font-size: 30px; 
   font-weight: 600; 
+  font-style: "Delight";
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 24px; 
-  text-align: left; 
-  padding: 0; 
+  padding: 0 16px;
+  
 }
 .signature-row { 
   display: grid; 
   grid-template-columns: repeat(2, 1fr); 
-  gap: 24px; 
-  max-width: 1280px; 
-  margin: 0 auto; 
+  gap: 30px; 
   padding: 0 16px; 
+  margin-bottom: 5px;
 }
 .signature-simple-card { 
   position: relative; 
   border-radius: 12px; 
   overflow: hidden; 
-  background: #f8f8f8; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s;
   width: 100%;
   max-width: 640px;
   height: 500px;
@@ -191,43 +193,41 @@ html, body {
 .signature-simple-img { 
   width: 100%; 
   height: 100%; 
-  object-fit: contain; 
+  object-fit: cover; 
+}
+
+.signature-simple-card:hover {
+  transform: translateY(-5px);
 }
 .signature-overlay { 
   position: absolute; 
   bottom: 0; 
   left: 0; 
   right: 0; 
-  background: linear-gradient(transparent, rgba(0,0,0,0.7)); 
+  background: linear-gradient(transparent, rgba(0,0,0,0.8)); 
   color: white; 
-  padding: 20px; 
+  padding: 30px; 
   text-align: left; 
 }
 .overlay-subtitle { 
   font-size: 14px; 
   opacity: 0.9; 
   margin-bottom: 8px; 
-  text-align: left;
 }
 .overlay-title { 
-  font-size: 20px; 
+  font-size: 24px; 
   font-weight: 700; 
   margin-bottom: 16px; 
-  text-align: left;
 }
 .signature-section .featured.shop-now-btn { 
-  background: white !important; 
-  color: #111 !important; 
-  border: none !important; 
-  padding: 10px 20px !important; 
-  border-radius: 6px !important; 
-  font-weight: 600 !important; 
-  cursor: pointer !important; 
-  text-align: left !important;
-  transition: all 0.2s !important; 
-  display: inline-block !important;
-  text-decoration: none !important;
-  font-family: inherit !important;
+  display: inline-block;
+  background: white; 
+  color: #000000;
+  padding: 12px 24px;
+  border-radius: 6px; 
+  text-decoration: none;
+  font-weight: 600; 
+  transition: all 0.2s; 
 }
 .shop-now-btn:hover { 
   background: #f0f0f0; 
@@ -244,33 +244,101 @@ html, body {
   .signature-simple-img { height: 380px; object-fit: cover; }
   .signature-overlay { padding: 12px; }
   .overlay-title { font-size: 16px; }
+  .signature-section .featured.shop-now-btn {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
 }
 
 @media (max-width: 480px) {
+  .signature-heading {
+    font-size: 18px;
+  }
+  .signature-section {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
   .signature-row { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 10px; 
+    gap: 12px; 
     padding: 0 10px; 
   }
-  .signature-simple-card { height: auto; }
-  .signature-simple-img { height: 260px; object-fit: cover; }
+  .signature-simple-card { 
+    height: 200px;
+    min-height: 200px;
+  }
+  .signature-overlay { 
+    padding: 12px; 
+  }
+  .overlay-title { 
+    font-size: 16px; 
+  }
+  .overlay-subtitle { 
+    font-size: 11px; 
+  }
+  .signature-section .featured.shop-now-btn {
+    padding: 8px 8px;
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 360px) {
+  .signature-section {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
   .signature-row { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 8px; 
+    gap: 10px; 
     padding: 0 8px; 
   }
-  .signature-simple-card { height: auto; }
-  .signature-simple-img { height: 200px; object-fit: cover; }
+  .signature-simple-card { 
+    height: 200px;
+    min-height: 200px;
+  }
+  .signature-overlay { 
+    padding: 10px; 
+  }
+  .overlay-title { 
+    font-size: 14px; 
+  }
+  .overlay-subtitle { 
+    font-size: 10px; 
+  }
+  .signature-section .featured.shop-now-btn {
+    padding: 6px 6px;
+    font-size: 10px;
+  }
 }
 
 /* Mobile responsive adjustments for signature section */
 @media (max-width: 768px) {
   .signature-section {
+    padding: 40px 0;
     padding-left: 12px;
     padding-right: 12px;
+  }
+  .signature-row { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 16px; 
+    padding: 0 12px; 
+  }
+  .signature-simple-card { 
+    height: 200px;
+    min-height: 200px;
+  }
+  .signature-overlay { 
+    padding: 16px; 
+  }
+  .overlay-title { 
+    font-size: 18px; 
+  }
+  .overlay-subtitle { 
+    font-size: 12px; 
+  }
+  .signature-section .featured.shop-now-btn {
+    padding: 10px 10px;
+    font-size: 12px;
   }
 }
 
@@ -377,7 +445,7 @@ html, body {
 
 @media (max-width: 768px) {
   .shop-by-category-section {
-    padding: 24px 0;
+    padding: 24px 0 16px 0;
   }
   
   .category-section-header {
@@ -410,7 +478,7 @@ html, body {
 
 /* Shop By Occasion Section - HeroLanding */
 .shop-by-occasion-section {
-  padding: 40px 0;
+  padding: 40px 0 24px 0;
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -532,12 +600,12 @@ html, body {
   display: flex !important;
   gap: 20px !important;
   overflow-x: auto;
-  padding: 0 0 20px 0;
+  padding: 0 16px 12px 16px;
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
   position: relative;
   max-width: 100%;
-  height: 402px;
+  height: auto;
   margin: 0 !important;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -729,7 +797,7 @@ html, body {
 
 @media (max-width: 768px) {
   .new-arrivals-section {
-    padding: 24px 0;
+    padding: 24px 0 16px 0;
   }
   
   .arrivals-section-header {
@@ -1055,25 +1123,43 @@ html, body {
   .category-section,
   .shop-by-category-section,
   .new-arrivals-section {
-    padding: 24px 0;
+    padding: 24px 0 16px 0;
   }
   
   .shop-by-occasion-section {
-    padding: 24px 0;
+    padding: 24px 0 16px 0;
     /* match smaller cards and gaps on mobile */
     --occasion-card-width: 250px;
     --occasion-gap: 16px;
+    /* prevent page-wide horizontal scroll; inner row handles scrolling */
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
   }
   
   .shop-by-occasion-section .occasion-cards {
     gap: var(--occasion-gap);
-    padding: 0 var(--occasion-mask);
-    margin-left: calc(-1 * var(--occasion-mask));
-    margin-right: calc(-1 * var(--occasion-mask));
+    /* remove negative margins that can cause page scroll */
+    padding: 0 12px;
+    margin-left: 0;
+    margin-right: 0;
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    /* disable snap to ensure free scrolling on all devices */
+    scroll-snap-type: none;
+    scrollbar-width: thin;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    width: 100%;
+    white-space: nowrap; /* ensure one-line flow on mobile */
   }
   
   .shop-by-occasion-section .occasion-card {
     min-width: 250px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
   }
   
   .shop-by-occasion-section .occasion-image-container {
@@ -1120,6 +1206,30 @@ html, body {
   }
 }
 
+/* Force horizontal scroll sizing on small phones */
+@media (max-width: 480px) {
+  .shop-by-occasion-section .occasion-cards {
+    padding: 0 12px;
+    /* Match category scroller behavior */
+    display: flex !important;
+    flex-direction: row;
+    gap: var(--occasion-gap);
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+  .shop-by-occasion-section .occasion-card {
+    min-width: 250px; /* same as mobile category cards */
+    width: 250px;
+    flex: 0 0 auto;
+  }
+  .shop-by-occasion-section .occasion-image-container {
+    width: 250px;
+    height: 300px;
+  }
+}
+
 /* Bridal Collections Section */
 .bridal-collections-section {
   padding: 60px 0;
@@ -1129,7 +1239,7 @@ html, body {
 
 .bridal-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .bridal-brand {
@@ -1215,36 +1325,184 @@ html, body {
   transform: translateY(-1px);
 }
 
+/* Mobile responsive styles for bridal collections section */
 @media (max-width: 768px) {
+  .bridal-collections-section {
+    padding: 40px 0 24px 0;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .bridal-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 0 12px;
+  }
+  .bridal-card {
+    height: 200px;
+    min-height: 200px;
+  }
+  .bridal-overlay {
+    padding: 16px;
+  }
+  .bridal-category {
+    font-size: 18px;
+  }
+  .bridal-subtitle {
+    font-size: 12px;
+  }
+  .bridal-shop-btn {
+    padding: 10px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bridal-collections-section {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .bridal-cards {
+    gap: 12px;
+    padding: 0 10px;
+  }
+  .bridal-card {
+    height: 200px;
+    min-height: 200px;
+  }
+  .bridal-overlay {
+    padding: 12px;
+  }
+  .bridal-category {
+    font-size: 16px;
+  }
+  .bridal-subtitle {
+    font-size: 11px;
+  }
+  .bridal-shop-btn {
+    padding: 8px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .bridal-collections-section {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .bridal-cards {
+    gap: 10px;
+    padding: 0 8px;
+  }
+  .bridal-card {
+    height: 200px;
+    min-height: 200px;
+  }
+  .bridal-overlay {
+    padding: 10px;
+  }
+  .bridal-category {
+    font-size: 14px;
+  }
+  .bridal-subtitle {
+    font-size: 10px;
+  }
+  .bridal-shop-btn {
+    padding: 6px 6px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .signature-heading {
+    font-size: 20px;
+  }
   .signature-row { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 12px; 
+    gap: 16px; 
     padding: 0 12px; 
   }
-  .signature-simple-card { height: auto; }
-  .signature-simple-img { height: 380px; object-fit: cover; }
-  .signature-overlay { padding: 12px; }
-  .overlay-title { font-size: 16px; }
+  .signature-simple-card { 
+    height: 200px; 
+    min-height: 200px; 
+  }
+  .signature-simple-img { 
+    height: 200px; 
+    object-fit: cover; 
+  }
+  .signature-overlay { 
+    padding: 16px; 
+  }
+  .overlay-title { 
+    font-size: 18px; 
+  }
+  .overlay-subtitle {
+    font-size: 12px;
+  }
+  .signature-section .featured.shop-now-btn {
+    padding: 10px 10px;
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 480px) {
   .signature-row { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 10px; 
+    gap: 12px; 
     padding: 0 10px; 
   }
-  .signature-simple-card { height: auto; }
-  .signature-simple-img { height: 260px; object-fit: cover; }
+  .signature-simple-card { 
+    height: 200px; 
+    min-height: 200px; 
+  }
+  .signature-simple-img { 
+    height: 200px; 
+    object-fit: cover; 
+  }
+  .signature-overlay { 
+    padding: 12px; 
+  }
+  .overlay-title { 
+    font-size: 16px; 
+  }
+  .overlay-subtitle {
+    font-size: 11px;
+  }
+  .signature-section .featured.shop-now-btn {
+    padding: 8px 8px;
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 360px) {
+  .signature-heading {
+    font-size: 16px;
+  }
   .signature-row { 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 8px; 
+    gap: 10px; 
     padding: 0 8px; 
   }
-  .signature-simple-card { height: auto; }
-  .signature-simple-img { height: 200px; object-fit: cover; }
+  .signature-simple-card { 
+    height: 200px; 
+    min-height: 200px; 
+  }
+  .signature-simple-img { 
+    height: 200px; 
+    object-fit: cover; 
+  }
+  .signature-overlay { 
+    padding: 10px; 
+  }
+  .overlay-title { 
+    font-size: 14px; 
+  }
+  .overlay-subtitle {
+    font-size: 10px;
+  }
+  .signature-section .featured.shop-now-btn {
+    padding: 6px 6px;
+    font-size: 10px;
+  }
 }
 
 
@@ -2531,6 +2789,30 @@ button.nav-arrow:focus {
   color: #000000 !important;
 }
 
+/* Hide navigation arrows on mobile for all sections except Client Diaries */
+@media (max-width: 768px) {
+  /* Hide navigation arrows for all sections except Client Diaries */
+  .category-navigation,
+  .arrivals-navigation,
+  .occasion-navigation {
+    display: none !important;
+  }
+  
+  /* Keep Client Diaries navigation visible */
+  .diaries-navigation {
+    display: flex !important;
+  }
+  
+  /* Global mobile: icon-only filter button left, sort control right */
+  .top-controls { display: flex !important; }
+  .controls-group { width: 100% !important; display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 12px !important; }
+  .toggle-filters-btn { display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 0 !important; padding: 8px !important; }
+  .toggle-filters-btn .btn-text { display: none !important; }
+  .filters-hamburger { display: none !important; }
+  .toggle-filters-btn .filter-icon, .toggle-filters-btn svg { width: 16px !important; height: 16px !important; }
+  .sort-control { margin-left: auto !important; display: inline-flex !important; align-items: center !important; gap: 8px !important; }
+}
+
 /* Mobile spacing for HeroLanding page - except slide banner */
 @media (max-width: 600px) {
   .hero-landing-container {
@@ -2540,13 +2822,14 @@ button.nav-arrow:focus {
   .signature-section {
     padding-left: 1rem;
     padding-right: 1rem;
-    margin-bottom: 0 !important;
-    padding-bottom: 0;
+    margin-bottom: 1rem !important;
+    padding-bottom: 1rem;
   }
   .signature-heading {
     padding-left: 1rem;
     padding-right: 1rem;
-    margin-bottom: 0;
+    margin-bottom: 2rem;
+    font-size: 24px;
   }
   .about-section {
     padding-left: 1rem;
@@ -2734,6 +3017,219 @@ button.nav-arrow:focus {
   .category-section .product-grid {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+  }
+}
+
+/* Search Results Page - match HeroLanding product card sizing */
+.search-results-page .product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 55px;
+  padding: 0 16px 20px 16px;
+  align-items: flex-start;
+}
+
+.search-results-page .product-card {
+  min-width: 400px;
+  width: 400px;
+  height: 600px;
+}
+
+.search-results-page .product-image-container {
+  width: 400px !important;
+  height: 500px !important;
+}
+
+@media (max-width: 768px) {
+  .search-results-page .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 12px !important;
+  }
+  .search-results-page .product-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 260px !important;
+    margin: 0 !important;
+  }
+  .search-results-page .product-image-container,
+  .search-results-page .product-image {
+    width: 180px !important;
+    height: 220px !important;
+    justify-self: center !important;
+  }
+}
+
+/* Search Results Page - match HeroLanding product card sizing (strong specificity) */
+.search-results-page .content-section .product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)) !important;
+  gap: 55px !important;
+  padding: 0 16px 20px 16px !important;
+  align-items: flex-start !important;
+}
+
+.search-results-page .content-section .product-card {
+  min-width: 400px !important;
+  width: 400px !important;
+  height: 600px !important;
+}
+
+.search-results-page .content-section .product-image-container {
+  width: 400px !important;
+  height: 500px !important;
+}
+
+@media (max-width: 768px) {
+  .search-results-page .content-section .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 12px !important;
+    justify-items: center !important;
+  }
+  .search-results-page .content-section .product-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 260px !important;
+    margin: 0 !important;
+  }
+  .search-results-page .content-section .product-image-container {
+    width: 180px !important;
+    height: 220px !important;
+  }
+  .search-results-page .content-section .product-image {
+    width: 180px !important;
+    height: 220px !important;
+    object-fit: cover !important;
+  }
+}
+
+/* Search Results dedicated grid sizing (strong override) */
+.search-results-page .content-section .search-results-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)) !important;
+  gap: 55px !important;
+  padding: 0 16px 20px 16px !important;
+  align-items: flex-start !important;
+}
+
+.search-results-page .content-section .search-results-grid .product-card {
+  min-width: 400px !important;
+  width: 400px !important;
+  height: 600px !important;
+}
+
+.search-results-page .content-section .search-results-grid .product-image-container {
+  width: 400px !important;
+  height: 500px !important;
+}
+
+@media (max-width: 768px) {
+  .search-results-page .content-section .search-results-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 12px !important;
+    justify-items: center !important;
+  }
+  .search-results-page .content-section .search-results-grid .product-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 260px !important;
+    margin: 0 !important;
+  }
+  .search-results-page .content-section .search-results-grid .product-image-container,
+  .search-results-page .content-section .search-results-grid .product-image {
+    width: 180px !important;
+    height: 220px !important;
+    object-fit: cover !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Centered 3-column grid with reduced gap and fixed narrower columns */
+  .hero-landing-container .blouse-cards,
+  .hero-landing-container .leggings-cards,
+  .hero-landing-container .materials-cards,
+  .hero-landing-container .new-arrivals-cards,
+  .hero-landing-container .lehengas-cards,
+  .hero-landing-container .gowns-cards,
+  .hero-landing-container .bridal-all-cards {
+    display: grid !important;
+    grid-template-columns: repeat(3, 240px) !important; /* narrower columns */
+    gap: 8px !important; /* reduced gap */
+    padding: 0 8px !important;
+    overflow: visible !important;
+    justify-content: center !important; /* center the grid */
+    justify-items: center !important;
+  }
+
+  /* Show exactly 6 items (3x2) on tablet */
+  .hero-landing-container .blouse-cards .product-card:nth-child(n+7),
+  .hero-landing-container .leggings-cards .product-card:nth-child(n+7),
+  .hero-landing-container .materials-cards .product-card:nth-child(n+7),
+  .hero-landing-container .new-arrivals-cards .product-card:nth-child(n+7),
+  .hero-landing-container .lehengas-cards .product-card:nth-child(n+7),
+  .hero-landing-container .gowns-cards .product-card:nth-child(n+7),
+  .hero-landing-container .bridal-all-cards .product-card:nth-child(n+7) {
+    display: none !important;
+  }
+
+  /* Narrower width, increased height for cards */
+  .hero-landing-container .blouse-cards .product-card,
+  .hero-landing-container .leggings-cards .product-card,
+  .hero-landing-container .materials-cards .product-card,
+  .hero-landing-container .new-arrivals-cards .product-card,
+  .hero-landing-container .lehengas-cards .product-card,
+  .hero-landing-container .gowns-cards .product-card,
+  .hero-landing-container .bridal-all-cards .product-card {
+    width: 240px !important;   /* reduced width */
+    max-width: 240px !important;
+    min-width: 240px !important;
+    height: 500px !important;  /* increased height */
+    margin: 0 !important;
+  }
+
+  /* Image container scaled to new card width/height */
+  .hero-landing-container .blouse-cards .product-image-container,
+  .hero-landing-container .leggings-cards .product-image-container,
+  .hero-landing-container .materials-cards .product-image-container,
+  .hero-landing-container .new-arrivals-cards .product-image-container,
+  .hero-landing-container .lehengas-cards .product-image-container,
+  .hero-landing-container .gowns-cards .product-image-container,
+  .hero-landing-container .bridal-all-cards .product-image-container {
+    width: 240px !important;
+    height: 400px !important; /* taller images */
+    justify-self: center !important;
+  }
+
+  .hero-landing-container .blouse-cards .product-image,
+  .hero-landing-container .leggings-cards .product-image,
+  .hero-landing-container .materials-cards .product-image,
+  .hero-landing-container .new-arrivals-cards .product-image,
+  .hero-landing-container .lehengas-cards .product-image,
+  .hero-landing-container .gowns-cards .product-image,
+  .hero-landing-container .bridal-all-cards .product-image {
+    width: 240px !important;
+    height: 400px !important;
+    object-fit: cover !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Ensure items 1-6 are visible on tablet */
+  .hero-landing-container .blouse-cards .product-card:nth-child(-n+6),
+  .hero-landing-container .leggings-cards .product-card:nth-child(-n+6),
+  .hero-landing-container .materials-cards .product-card:nth-child(-n+6),
+  .hero-landing-container .new-arrivals-cards .product-card:nth-child(-n+6),
+  .hero-landing-container .lehengas-cards .product-card:nth-child(-n+6),
+  .hero-landing-container .gowns-cards .product-card:nth-child(-n+6),
+  .hero-landing-container .bridal-all-cards .product-card:nth-child(-n+6) {
+    display: block !important;
   }
 }
 

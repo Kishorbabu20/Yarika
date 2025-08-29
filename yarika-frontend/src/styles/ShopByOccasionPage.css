@@ -82,12 +82,14 @@
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
   position: relative;
+  width: 100%;
   max-width: 100%;
-  height: 402px;
+  height: auto; /* allow natural height; avoid clipping */
   margin: 0;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  min-width: max-content;
+  /* keep row scrollable without stretching page width */
+  flex-wrap: nowrap;
 }
 
 .occasion-cards::-webkit-scrollbar {
@@ -119,10 +121,11 @@
   transform: none;
 }
 
+/* Keep fixed-size cards (match HeroLanding) even when active */
 .occasion-card.active {
-  width: 270px;
-  height: 377px;
-  flex: 0 0 270px;
+  width: 238px !important;
+  height: 322px !important;
+  flex: 0 0 238px !important;
   z-index: 5;
 }
 
@@ -136,9 +139,34 @@
   transition: all 0.3s ease;
 }
 
+/* Mobile scrolling behavior */
+@media (max-width: 768px) {
+  .shop-by-occasion-section { width: 100%; max-width: 100%; overflow-x: hidden; }
+  .occasion-cards {
+    gap: 16px !important;
+    padding: 0 12px 20px 12px !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
+    min-width: 100% !important;
+    white-space: nowrap !important;
+  }
+  .occasion-card { min-width: 250px !important; width: 250px !important; height: 322px !important; flex: 0 0 250px !important; display: inline-block !important; }
+  .occasion-image-container { width: 250px; height: 300px; }
+}
+
+@media (max-width: 480px) {
+  .occasion-cards { gap: 12px !important; padding: 0 10px 16px 10px !important; overflow-x: auto !important; }
+  .occasion-card { min-width: 220px !important; width: 220px !important; flex: 0 0 220px !important; height: 300px !important; display: inline-block !important; }
+  .occasion-image-container { width: 220px !important; height: 280px !important; }
+}
+
 .occasion-card.active .occasion-image-container {
-  width: 250px;
-  height: 300px;
+  width: 218px !important;
+  height: 259px !important;
 }
 
 .occasion-image {
@@ -345,6 +373,7 @@
   display: flex;
   align-items: center;
   gap: 30px;
+  margin-left: auto; /* push group to the right */
 }
 
 .toggle-filters-btn {
@@ -414,6 +443,104 @@
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s ease;
+}
+/* Filter icon button container */
+.filters-hamburger {
+  display: none;
+  width: 40px;
+  height: 36px;
+  border: none;
+  background: #deb33f;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3000;
+}
+
+/* Filter icon */
+.filters-hamburger::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4h18v2.172a2 2 0 0 1-.586 1.414l-4.702 4.702a2 2 0 0 0-.586 1.414V20l-4-2v-6.172a2 2 0 0 0-.586-1.414L4.586 7.586A2 2 0 0 1 4 6.172V4z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: block;
+}
+
+/* Base transition for sidebar */
+.filters-sidebar { transition: transform 0.25s ease, opacity 0.25s ease; }
+
+/* Mobile drawer behavior */
+@media (max-width: 768px) {
+  .toggle-filters-btn { display: none; }
+  .filters-hamburger { display: inline-flex; }
+
+  .filters-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    z-index: 2000 !important;
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+  }
+
+  .filters-sidebar.show { 
+    transform: translateX(0) !important; 
+    opacity: 1 !important; 
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+  }
+  .main-content { position: relative; z-index: 1; }
+
+  .close-filters-mobile {
+    position: fixed !important;
+    top: 16px !important;
+    right: 16px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: #deb33f !important;
+    border: none !important;
+    border-radius: 50% !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    color: white !important;
+    cursor: pointer !important;
+    z-index: 2001 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Hide close button on web view with maximum specificity */
+  @media (min-width: 769px) {
+    .close-filters-mobile,
+    .filters-sidebar .close-filters-mobile,
+    .product-listing-container .close-filters-mobile {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
+
+  .filters-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1500;
+  }
 }
 
 .toggle-filters-btn:hover {
@@ -665,10 +792,10 @@ html::-webkit-scrollbar {
   }
   
   .filters-sidebar {
-    flex: 0 0 180px;
+    flex: 0 0 140px;
     position: sticky;
-    top: 20px;
-    padding: 12px;
+    top: 12px;
+    padding: 10px;
   }
   
   .occasion-cards {
@@ -755,16 +882,20 @@ html::-webkit-scrollbar {
   
   .top-controls {
     flex-direction: column;
-    gap: 15px;
+    gap: 10px; /* Reduce gap between filter and sort */
     align-items: stretch;
+    justify-content: space-between; /* Distribute space evenly */
   }
   
   .toggle-filters-btn {
     order: 1;
+    flex-shrink: 0; /* Ensure filter button doesn't take too much space */
   }
   
   .sort-dropdown {
     order: 2;
+    flex-shrink: 0; /* Ensure sort control doesn't take too much space */
+    margin-left: 0; /* Remove any auto margin to bring closer */
   }
 }
 

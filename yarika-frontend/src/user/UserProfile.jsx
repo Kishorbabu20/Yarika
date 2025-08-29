@@ -484,7 +484,7 @@ const UserProfile = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <MapPin size={24} color="#deb33f" />
-                                Shipping Addresses
+                                Shipping Address
                             </h2>
                             <button 
                                 className="profile-edit-button"
