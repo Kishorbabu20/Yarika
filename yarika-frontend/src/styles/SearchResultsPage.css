@@ -1,0 +1,102 @@
+/* SearchResultsPage - desktop/tablet sizing (>=768px) copied from LeggingsPage */
+@media (min-width: 768px) {
+  .search-results-page .content-section .search-results-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 230px) !important;
+    gap: 20px !important;
+    padding: 0 !important;
+    margin: 0 auto 120px auto !important; /* center container */
+    width: 100% !important;
+    overflow-x: visible !important; /* no horizontal scroll on desktop */
+    overflow-y: hidden !important;
+    justify-content: center !important; /* center the 3-column grid */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  .search-results-page .content-section .search-results-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .search-results-page .content-section .search-results-grid > * {
+    width: 230px !important;
+    min-width: 230px !important;
+    max-width: 230px !important;
+  }
+
+  .search-results-page .content-section .search-results-grid .product-card {
+    width: 230px !important;
+    height: 445px !important;
+    min-width: 230px !important;
+    max-width: 230px !important;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .search-results-page .content-section .search-results-grid .product-image-container {
+    width: 230px !important;
+    height: 360px !important;
+  }
+
+  .search-results-page .content-section .search-results-grid .product-image {
+    width: 230px !important;
+    height: 360px !important;
+    object-fit: cover !important;
+  }
+}
+
+/* Explicitly restate for >=1024 to avoid upstream overrides */
+@media (min-width: 1024px) {
+  .search-results-page .content-section .search-results-grid {
+    grid-template-columns: repeat(3, 280px) !important;
+    gap: 20px !important;
+    justify-content: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Keep same sizing for <=480px and <=360px as HeroLanding */
+@media (max-width: 480px) {
+  .search-results-page .content-section .search-results-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 12px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .search-results-page .content-section .search-results-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 12px !important;
+  }
+}
+
+/* Responsive sizing for the New tag on SearchResultsPage */
+.search-results-page .new-tag {
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+}
+
+@media (max-width: 768px) {
+  .search-results-page .new-tag {
+    font-size: 11px !important;
+    padding: 3px 6px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-results-page .new-tag {
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .search-results-page .new-tag {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+}

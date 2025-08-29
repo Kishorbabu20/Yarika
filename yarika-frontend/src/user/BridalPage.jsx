@@ -18,7 +18,7 @@ const BridalPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -275,6 +275,14 @@ const BridalPage = () => {
         <div className="product-listing-container">
           {/* Left Sidebar - Filters */}
           <div className={`filters-sidebar ${showFilters ? 'show' : 'hide'}`}>
+            {/* Mobile close button */}
+            <button
+              className="close-filters-mobile"
+              aria-label="Close filters"
+              onClick={() => setShowFilters(false)}
+            >
+              ×
+            </button>
             {/* Filter Status - At the top of filters */}
             <div className="filter-status">
               {hasActiveFilters ? (
@@ -331,19 +339,20 @@ const BridalPage = () => {
               </div>
               <div className="filter-options">
                 {allColors.map(color => (
-                  <label key={color} className="filter-option">
+                  <label key={(typeof color === 'object' ? color.code : color)} className="filter-option">
                     <input
                       type="checkbox"
-                      checked={selectedColors.includes(color)}
+                      checked={selectedColors.includes(typeof color === 'object' ? color.code : color)}
                       onChange={(e) => {
+                        const code = (typeof color === 'object' ? color.code : color);
                         if (e.target.checked) {
-                          setSelectedColors([...selectedColors, color]);
+                          setSelectedColors([...selectedColors, code]);
                         } else {
-                          setSelectedColors(selectedColors.filter(c => c !== color));
+                          setSelectedColors(selectedColors.filter(c => c !== code));
                         }
                       }}
                     />
-                    <span>{color}</span>
+                    <span>{typeof color === 'object' ? (color.name || color.code) : color}</span>
                   </label>
                 ))}
               </div>

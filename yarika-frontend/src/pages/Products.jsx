@@ -347,17 +347,17 @@ export default function Products() {
                               size="icon"
                               variant="ghost"
                               onClick={() => handleEditProduct(product._id)}
-                              style={{ color: '#b19049' }}
+                              style={{ minWidth: 32, width: 32, height: 32, padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                             >
-                              <Edit size={16} />
+                              <Edit size={16} color="#b19049" style={{ width: 16, height: 16, display: 'inline-block', visibility: 'visible', opacity: 1 }} />
                             </Button>
                             <Button
                               size="icon"
                               variant="ghost"
                               onClick={() => handleDelete(product._id)}
-                              style={{ color: '#dc2626' }}
+                              style={{ minWidth: 32, width: 32, height: 32, padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={16} color="#dc2626" style={{ width: 16, height: 16, display: 'inline-block', visibility: 'visible', opacity: 1 }} />
                             </Button>
                           </div>
                       </td>

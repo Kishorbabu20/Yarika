@@ -537,16 +537,20 @@ html::-webkit-scrollbar {
   
   .top-controls {
     flex-direction: column;
-    gap: 15px;
+    gap: 10px; /* Reduce gap between filter and sort */
     align-items: stretch;
+    justify-content: space-between; /* Distribute space evenly */
   }
   
   .toggle-filters-btn {
     order: 1;
+    flex-shrink: 0; /* Ensure filter button doesn't take too much space */
   }
   
   .sort-dropdown {
     order: 2;
+    flex-shrink: 0; /* Ensure sort control doesn't take too much space */
+    margin-left: 0; /* Remove any auto margin to bring closer */
   }
 }
 
@@ -571,5 +575,74 @@ html::-webkit-scrollbar {
   
   .category-title {
     font-size: 1.5rem;
+  }
+}
+
+/* Mobile filter sidebar */
+@media (max-width: 768px) {
+  .toggle-filters-btn { display: none; }
+  .filters-hamburger { display: inline-flex; }
+
+  .filters-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    z-index: 2000 !important;
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+  }
+
+  .filters-sidebar.show { 
+    transform: translateX(0) !important; 
+    opacity: 1 !important; 
+    position: fixed !important;
+    top: 0 !important;
+    height: 100vh !important;
+  }
+  
+  .main-content { position: relative; z-index: 1; }
+
+  .close-filters-mobile {
+    position: fixed !important;
+    top: 16px !important;
+    right: 16px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: #deb33f !important;
+    border: none !important;
+    border-radius: 50% !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    color: white !important;
+    cursor: pointer !important;
+    z-index: 2001 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Hide close button on web view with maximum specificity */
+  @media (min-width: 769px) {
+    .close-filters-mobile,
+    .filters-sidebar .close-filters-mobile,
+    .product-listing-container .close-filters-mobile {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
+
+  .filters-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1500;
   }
 }

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import api from "../config/axios";
 // import "../styles/ProductPage.css";
 import { useScrollFade } from "../hooks/useScrollFade";
+import "../styles/SearchResultsPage.css";
 
 const ProductCard = lazy(() => import("./ProductCard"));
 
@@ -56,7 +57,7 @@ const SearchResultsPage = () => {
           <div className="error-state">{error}</div>
         ) : results.length > 0 ? (
           <Suspense fallback={<div className="loading-state">Loading products...</div>}>
-            <div className="product-grid">
+            <div className="product-grid search-results-grid">
               {results.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}

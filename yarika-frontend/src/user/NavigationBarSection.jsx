@@ -27,6 +27,9 @@ const NavigationBarSection = () => {
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
   const [selectedCategory, setSelectedCategory] = useState('women');
   const [mobileActiveDropdown, setMobileActiveDropdown] = useState(null);
+  // Mobile drawer specific open states
+  const [mobileOpenGroup, setMobileOpenGroup] = useState(null); // e.g., 'women', 'kids', 'bridal'
+  const [mobileOpenSub, setMobileOpenSub] = useState(null); // e.g., 'women-readymade'
 
   const announcements = [
     "New Styles On Sale: Up To 40% Off",
@@ -67,6 +70,15 @@ const NavigationBarSection = () => {
     }
   };
 
+  // Mobile drawer: toggle helpers
+  const toggleMobileGroup = (groupName) => {
+    setMobileOpenGroup(prev => (prev === groupName ? null : groupName));
+    setMobileOpenSub(null);
+  };
+  const toggleMobileSub = (subName) => {
+    setMobileOpenSub(prev => (prev === subName ? null : subName));
+  };
+
   const handleDropdownLinkClick = () => {
     // Close all dropdowns when a link is clicked
     setActiveDropdown(null);
@@ -80,9 +92,10 @@ const NavigationBarSection = () => {
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setMobileSearchOpen(false);
     }
   };
 
@@ -115,8 +128,12 @@ const NavigationBarSection = () => {
     }, 100);
   };
 
-  const handleSearchClick = () => {
-    setMobileSearchOpen(true);
+  const handleSearchIconClick = () => {
+    if (isMobile()) {
+      setMobileSearchOpen(prev => !prev);
+    } else {
+      handleSearch();
+    }
   };
 
   const handleMobileSearchClose = () => {
@@ -250,7 +267,7 @@ const NavigationBarSection = () => {
       
       <nav className="navigation-bar">
         {/* Left: Categories */}
-        <div className="nav-left">
+        <div className="nav-left" onClick={() => setMobileMenuOpen(true)}>
           <div className="nav-categories">
             <div
               className={`nav-item${selectedCategory === 'women' ? ' active' : ''}`}
@@ -292,9 +309,9 @@ const NavigationBarSection = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
-              <div className="search-icon" onClick={handleSearch}>
-                <Search size={16} />
-        </div>
+              <button type="button" className="search-icon-btn" onClick={handleSearchIconClick} aria-label="Open search">
+                <span className="search-icon"><Search size={16} /></span>
+              </button>
       </div>
 
             <div className="user-actions">
@@ -316,7 +333,136 @@ const NavigationBarSection = () => {
         </div>
       </nav>
 
+      {/* Mobile inline search bar (appears under navbar) */}
+      {mobileSearchOpen && (
+        <form className="mobile-inline-search-bar" onSubmit={handleSearch}>
+          <span className="mobile-search-icon"><Search size={16} /></span>
+          <input
+            type="text"
+            placeholder="Search products"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="button" className="mobile-search-close" aria-label="Close" onClick={handleMobileSearchClose}>×</button>
+        </form>
+      )}
 
+      {/* Mobile full-screen menu drawer */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <div className="mobile-menu-panel">
+            <button className="mobile-menu-close" aria-label="Close" onClick={() => setMobileMenuOpen(false)}>×</button>
+            <div className="mobile-menu-header">
+              <Link to="/" className="logo" onClick={() => setMobileMenuOpen(false)}>
+                <img src={YarikaLogo} alt="Yarika Logo" />
+              </Link>
+            </div>
+
+            <div className="mobile-menu-content">
+              <button className="mobile-section-title" style={{ color: '#deb33f' }} onClick={() => { setMobileMenuOpen(false); handleFeaturedClick(); }}>FEATURED</button>
+              <a className="mobile-section-title" href="https://www.google.com/maps/place/Zillion+Threads/@11.011062,76.8626941,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba75d912d3d1dd9:0xdfd0242d8a996267!8m2!3d11.011062!4d76.865269!16s%2Fg%2F11ybt6v8jq?entry=ttu&g_ep=EgoyMDI1MDcyMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">STORE LOCATOR</a>
+
+              {/* WOMEN */}
+              <div className="mobile-group">
+                <button className="mobile-group-header" onClick={() => toggleMobileGroup('women')}>
+                  <span>WOMEN</span>
+                  <span className={`chevron ${mobileOpenGroup === 'women' ? 'up' : ''}`}>▾</span>
+                </button>
+                {mobileOpenGroup === 'women' && (
+                  <div className="mobile-subgroup">
+                    {/* Readymade Blouse */}
+                    <button className="mobile-sub-header" onClick={() => toggleMobileSub('women-readymade')}>
+                      <span>Readymade Blouse</span>
+                      <span className={`chevron ${mobileOpenSub === 'women-readymade' ? 'up' : ''}`}>▾</span>
+                    </button>
+                    {mobileOpenSub === 'women-readymade' && (
+                      <div className="mobile-links" onClick={() => { handleDropdownLinkClick(); setMobileMenuOpen(false); }}>
+                        {categoryTypes.women["readymade-blouse"].items.map((item, idx) => (
+                          <Link key={`m-w-rb-${idx}`} to={getCategoryLink('women','readymade-blouse', item)} className="mobile-link">{item.name}</Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Leggings */}
+                    <button className="mobile-sub-header" onClick={() => toggleMobileSub('women-leggings')}>
+                      <span>Leggings</span>
+                      <span className={`chevron ${mobileOpenSub === 'women-leggings' ? 'up' : ''}`}>▾</span>
+                    </button>
+                    {mobileOpenSub === 'women-leggings' && (
+                      <div className="mobile-links" onClick={() => { handleDropdownLinkClick(); setMobileMenuOpen(false); }}>
+                        {categoryTypes.women.leggings.items.map((item, idx) => (
+                          <Link key={`m-w-leg-${idx}`} to={getCategoryLink('women','leggings', item)} className="mobile-link">{item.name}</Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Materials */}
+                    <button className="mobile-sub-header" onClick={() => toggleMobileSub('women-materials')}>
+                      <span>Readymade Blouse Cloth</span>
+                      <span className={`chevron ${mobileOpenSub === 'women-materials' ? 'up' : ''}`}>▾</span>
+                    </button>
+                    {mobileOpenSub === 'women-materials' && (
+                      <div className="mobile-links" onClick={() => { handleDropdownLinkClick(); setMobileMenuOpen(false); }}>
+                        {categoryTypes.women["readymade-blouse-cloth"].items.map((item, idx) => (
+                          <Link key={`m-w-mat-${idx}`} to={getCategoryLink('women','readymade-blouse-cloth', item)} className="mobile-link">{item.name}{item.highlight ? ` (${item.highlight})` : ''}</Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* KIDS */}
+              <div className="mobile-group">
+                <button className="mobile-group-header" onClick={() => toggleMobileGroup('kids')}>
+                  <span>KIDS</span>
+                  <span className={`chevron ${mobileOpenGroup === 'kids' ? 'up' : ''}`}>▾</span>
+                </button>
+                {mobileOpenGroup === 'kids' && (
+                  <div className="mobile-subgroup">
+                    <button className="mobile-sub-header" onClick={() => toggleMobileSub('kids-leggings')}>
+                      <span>Leggings</span>
+                      <span className={`chevron ${mobileOpenSub === 'kids-leggings' ? 'up' : ''}`}>▾</span>
+                    </button>
+                    {mobileOpenSub === 'kids-leggings' && (
+                      <div className="mobile-links" onClick={() => { handleDropdownLinkClick(); setMobileMenuOpen(false); }}>
+                        {categoryTypes.girls.leggings.items.map((item, idx) => (
+                          <Link key={`m-k-leg-${idx}`} to={getCategoryLink('girls','leggings', item)} className="mobile-link">{item.name}</Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* BRIDAL */}
+              <div className="mobile-group">
+                <button className="mobile-group-header" onClick={() => toggleMobileGroup('bridal')}>
+                  <span>BRIDAL</span>
+                  <span className={`chevron ${mobileOpenGroup === 'bridal' ? 'up' : ''}`}>▾</span>
+                </button>
+                {mobileOpenGroup === 'bridal' && (
+                  <div className="mobile-links" onClick={() => { setMobileMenuOpen(false); }}>
+                    <Link to={getCategoryLink('women','bridal',{slug:'bridal-lehenga'})} className="mobile-link">Bridal Lehenga</Link>
+                    <Link to={getCategoryLink('women','bridal',{slug:'bridal-gown'})} className="mobile-link">Bridal Gown</Link>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <form className="mobile-search-bar" onSubmit={handleSearch}>
+              <span className="mobile-search-icon"><Search size={16} /></span>
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="mobile-search-submit" aria-label="Search" />
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Sub-navigation bar with dropdowns */}
       <div className={`subnav-bar hide-on-mobile ${selectedCategory ? 'has-content' : ''}`}>

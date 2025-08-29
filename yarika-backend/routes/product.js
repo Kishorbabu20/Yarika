@@ -67,7 +67,7 @@ router.post(
 
       // Validate required fields based on category type
       if (!brand || !categoryType || !category || !code || !name ||
-          !mrp || !sellingPrice || !sizes || !colors || !totalStock) {
+          !mrp || !sellingPrice || !colors || !totalStock) {
         return res.status(400).json({ 
           error: "Missing required fields",
           message: "Please fill in all required fields"
@@ -117,7 +117,7 @@ router.post(
       // Parse arrays and objects from JSON strings
       let parsedSizes, parsedColors, parsedSizeStocks, parsedTotalStock;
       try {
-        parsedSizes = JSON.parse(sizes);
+        parsedSizes = sizes ? JSON.parse(sizes) : [];
         parsedColors = JSON.parse(colors);
         const sizeStocksObj = JSON.parse(sizeStocks || "{}");
         
@@ -135,13 +135,15 @@ router.post(
           }
         }
 
-        // Validate that total stock matches sum of size stocks
-        const totalFromSizes = Array.from(parsedSizeStocks.values()).reduce((sum, stock) => sum + stock, 0);
-        if (totalFromSizes !== parsedTotalStock) {
-          return res.status(400).json({
-            error: "Stock mismatch",
-            message: "Total stock must match sum of size stocks"
-          });
+        // For non-bridal, ensure total equals sum of size stocks
+        if (categoryType !== 'bridal') {
+          const totalFromSizes = Array.from(parsedSizeStocks.values()).reduce((sum, stock) => sum + stock, 0);
+          if (totalFromSizes !== parsedTotalStock) {
+            return res.status(400).json({
+              error: "Stock mismatch",
+              message: "Total stock must match sum of size stocks"
+            });
+          }
         }
 
       } catch (err) {
@@ -171,7 +173,7 @@ router.post(
         sellingPrice: Number(sellingPrice),
         totalStock: parsedTotalStock,
         sizeStocks: parsedSizeStocks,
-        sizes: parsedSizes,
+        sizes: Array.isArray(parsedSizes) ? parsedSizes : [],
         colors: parsedColors,
         mainImage: mainImageUrl,
         mainImageAlt: mainImageAlt,
@@ -761,10 +763,10 @@ router.get("/:id/check-stock", validateObjectId, async (req, res, next) => {
   try {
     const { quantity, size } = req.query;
     
-    if (!quantity || !size) {
+    if (!quantity) {
       return res.status(400).json({
         error: "Missing parameters",
-        message: "Quantity and size are required"
+        message: "Quantity is required"
       });
     }
 
@@ -774,6 +776,27 @@ router.get("/:id/check-stock", validateObjectId, async (req, res, next) => {
       return res.status(404).json({
         error: "Not Found",
         message: "Product not found"
+      });
+    }
+
+    // If product has no sizes (e.g., bridal), validate against totalStock
+    if (!Array.isArray(product.sizes) || product.sizes.length === 0) {
+      const available = (product.totalStock || 0) >= parseInt(quantity);
+      return res.json({
+        productId: product._id,
+        productName: product.name,
+        size: null,
+        requestedQuantity: parseInt(quantity),
+        available,
+        currentStock: product.totalStock || 0,
+        canProceed: available
+      });
+    }
+    
+    if (!size) {
+      return res.status(400).json({
+        error: "Missing parameters",
+        message: "Size is required for this product"
       });
     }
 

@@ -58,7 +58,7 @@ const ShopByOccasionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -589,6 +589,18 @@ const ShopByOccasionPage = () => {
             {/* Top Controls */}
             <div className="top-controls">
               <div className="controls-group">
+                {/* Mobile: hamburger to open filters drawer; Desktop: keep hidden via CSS */}
+                <button
+                  className="filters-hamburger"
+                  aria-label="Open filters"
+                  onClick={() => setShowFilters(true)}
+                >
+                  <span className="hamburger-bar" />
+                  <span className="hamburger-bar" />
+                  <span className="hamburger-bar" />
+                </button>
+
+                {/* Desktop: optional text toggle (hidden on mobile via CSS) */}
                 <button 
                   className="toggle-filters-btn"
                   onClick={() => setShowFilters(!showFilters)}
@@ -687,3 +699,4 @@ const ShopByOccasionPage = () => {
 };
 
 export default ShopByOccasionPage;
+

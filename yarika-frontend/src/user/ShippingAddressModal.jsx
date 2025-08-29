@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Plus, Edit, Trash2, Check } from 'lucide-react';
 import api from '../config/axios';
 import { toast } from 'react-hot-toast';
+import '../styles/ShippingAddressModal.css';
 
 const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddressId }) => {
     const [addresses, setAddresses] = useState([]);
@@ -151,55 +152,27 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay" style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000
-        }}>
-            <div className="modal-content" style={{
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                padding: '24px',
-                maxWidth: '600px',
-                width: '90%',
-                maxHeight: '80vh',
-                overflow: 'auto'
-            }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <MapPin size={24} color="#deb33f" />
-                        Select Shipping Address
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h2 className="modal-title">
+                        <MapPin size={28} color="#deb33f" />
+                        Ship To
                     </h2>
-                    <button
-                        onClick={onClose}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            fontSize: '24px',
-                            cursor: 'pointer',
-                            color: '#666'
-                        }}
-                    >
+                    <button className="modal-close-btn" onClick={onClose}>
                         ×
                     </button>
                 </div>
 
                 {showAddressForm ? (
-                    <div>
-                        <h3 style={{ marginBottom: '20px' }}>
+                    <div className="address-form">
+                        <h3 className="form-title">
                             {editingAddress ? 'Edit Address' : 'Add New Address'}
                         </h3>
                         <form onSubmit={handleAddressSubmit}>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
-                                    Street Address *
+                            <div className="form-group">
+                                <label className="form-label required">
+                                    Street Address
                                 </label>
                                 <input
                                     type="text"
@@ -208,38 +181,44 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                     onChange={handleAddressChange}
                                     required
                                     placeholder="123 Main Street"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px',
-                                        border: '1px solid #ddd',
-                                        borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}
+                                    className="form-input"
                                 />
                             </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
-                                    City *
-                                </label>
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={addressForm.city}
-                                    onChange={handleAddressChange}
-                                    required
-                                    placeholder="Mumbai"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px',
-                                        border: '1px solid #ddd',
-                                        borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}
-                                />
+                            
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label required">
+                                        Zip Code
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="pincode"
+                                        value={addressForm.pincode}
+                                        onChange={handleAddressChange}
+                                        required
+                                        placeholder="400001"
+                                        className="form-input"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label required">
+                                        City
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={addressForm.city}
+                                        onChange={handleAddressChange}
+                                        required
+                                        placeholder="Mumbai"
+                                        className="form-input"
+                                    />
+                                </div>
                             </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
-                                    State *
+                            
+                            <div className="form-group">
+                                <label className="form-label required">
+                                    State
                                 </label>
                                 <input
                                     type="text"
@@ -248,73 +227,36 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                     onChange={handleAddressChange}
                                     required
                                     placeholder="Maharashtra"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px',
-                                        border: '1px solid #ddd',
-                                        borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}
+                                    className="form-input"
                                 />
                             </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
-                                    Pincode *
-                                </label>
-                                <input
-                                    type="text"
-                                    name="pincode"
-                                    value={addressForm.pincode}
-                                    onChange={handleAddressChange}
-                                    required
-                                    placeholder="400001"
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px',
-                                        border: '1px solid #ddd',
-                                        borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}
-                                />
-                            </div>
-                            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            
+                            <div className="checkbox-group">
                                 <input
                                     type="checkbox"
                                     id="isDefault"
                                     name="isDefault"
                                     checked={addressForm.isDefault}
                                     onChange={handleAddressChange}
+                                    className="custom-checkbox"
                                 />
-                                <label htmlFor="isDefault" style={{ margin: 0 }}>Set as default address</label>
+                                <label htmlFor="isDefault" className="checkbox-label">
+                                    Use as billing address
+                                </label>
                             </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                            
+                            <div className="form-actions">
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    style={{
-                                        padding: '10px 20px',
-                                        backgroundColor: '#deb33f',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: loading ? 'not-allowed' : 'pointer',
-                                        fontSize: '14px'
-                                    }}
+                                    className="btn-primary"
                                 >
-                                    {loading ? 'Saving...' : (editingAddress ? 'Update' : 'Add')} Address
+                                    {loading ? 'Saving...' : (editingAddress ? 'Update Address' : 'Add Address')}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={closeAddressForm}
-                                    style={{
-                                        padding: '10px 20px',
-                                        backgroundColor: 'transparent',
-                                        color: '#666',
-                                        border: '1px solid #ddd',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontSize: '14px'
-                                    }}
+                                    className="btn-secondary"
                                 >
                                     Cancel
                                 </button>
@@ -329,18 +271,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                             </p>
                             <button
                                 onClick={() => openAddressForm()}
-                                style={{
-                                    padding: '8px 16px',
-                                    backgroundColor: '#deb33f',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '5px',
-                                    fontSize: '14px'
-                                }}
+                                className="btn-add-new"
                             >
                                 <Plus size={16} />
                                 Add New
@@ -348,127 +279,61 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                         </div>
 
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '40px' }}>
-                                <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    border: '4px solid #f3f3f3',
-                                    borderTop: '4px solid #deb33f',
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite',
-                                    margin: '0 auto 20px'
-                                }}></div>
+                            <div className="loading-container">
+                                <div className="loading-spinner"></div>
                                 <p>Loading addresses...</p>
                             </div>
                         ) : addresses.length === 0 ? (
-                            <div style={{
-                                textAlign: 'center',
-                                padding: '40px',
-                                backgroundColor: '#f9f9f9',
-                                borderRadius: '8px',
-                                color: '#666'
-                            }}>
-                                <MapPin size={48} color="#ccc" style={{ marginBottom: '16px' }} />
-                                <p>No shipping addresses found.</p>
+                            <div className="empty-state">
+                                <MapPin size={48} color="#ccc" className="empty-state-icon" />
+                                <h3>No shipping addresses found.</h3>
                                 <p>Add your first address to continue with checkout.</p>
                             </div>
                         ) : (
-                            <div style={{ display: 'grid', gap: '15px' }}>
+                            <div className="address-list">
                                 {addresses.map((address) => (
                                     <div
                                         key={address._id}
-                                        style={{
-                                            border: '2px solid',
-                                            borderColor: currentSelectedAddressId === address._id ? '#deb33f' : '#e0e0e0',
-                                            borderRadius: '8px',
-                                            padding: '15px',
-                                            backgroundColor: currentSelectedAddressId === address._id ? '#f0f8ff' : '#fff',
-                                            cursor: 'pointer',
-                                            position: 'relative'
-                                        }}
+                                        className={`address-item ${currentSelectedAddressId === address._id ? 'selected' : ''}`}
                                         onClick={() => handleAddressSelect(address)}
                                     >
                                         {currentSelectedAddressId === address._id && (
-                                            <div style={{
-                                                position: 'absolute',
-                                                top: '10px',
-                                                right: '10px',
-                                                backgroundColor: '#deb33f',
-                                                color: 'white',
-                                                borderRadius: '50%',
-                                                width: '24px',
-                                                height: '24px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center'
-                                            }}>
+                                            <div className="selection-indicator">
                                                 <Check size={16} />
                                             </div>
                                         )}
                                         
                                         {address.isDefault && (
-                                            <div style={{
-                                                position: 'absolute',
-                                                top: '10px',
-                                                left: '10px',
-                                                backgroundColor: '#28a745',
-                                                color: 'white',
-                                                padding: '2px 6px',
-                                                borderRadius: '4px',
-                                                fontSize: '10px',
-                                                fontWeight: '500'
-                                            }}>
+                                            <div className="default-badge">
                                                 Default
                                             </div>
                                         )}
                                         
-                                        <div style={{ marginBottom: '10px' }}>
-                                            <p style={{ margin: '0 0 5px 0', fontWeight: '500' }}>
+                                        <div className="address-content">
+                                            <p className="address-street">
                                                 {address.street}
                                             </p>
-                                            <p style={{ margin: '0', color: '#666' }}>
+                                            <p className="address-details">
                                                 {address.city}, {address.state} - {address.pincode}
                                             </p>
                                         </div>
                                         
-                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                        <div className="address-actions">
                                             <button
+                                                className="btn-edit"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     openAddressForm(address);
-                                                }}
-                                                style={{
-                                                    padding: '6px 10px',
-                                                    border: '1px solid #deb33f',
-                                                    backgroundColor: 'transparent',
-                                                    color: '#deb33f',
-                                                    borderRadius: '4px',
-                                                    cursor: 'pointer',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px',
-                                                    fontSize: '12px'
                                                 }}
                                             >
                                                 <Edit size={12} />
                                                 Edit
                                             </button>
                                             <button
+                                                className="btn-delete"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDeleteAddress(address._id);
-                                                }}
-                                                style={{
-                                                    padding: '6px 10px',
-                                                    border: '1px solid #dc3545',
-                                                    backgroundColor: 'transparent',
-                                                    color: '#dc3545',
-                                                    borderRadius: '4px',
-                                                    cursor: 'pointer',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px',
-                                                    fontSize: '12px'
                                                 }}
                                             >
                                                 <Trash2 size={12} />
@@ -481,19 +346,11 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                         )}
 
                         {addresses.length > 0 && (
-                            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                            <div className="continue-section">
                                 <button
                                     onClick={handleContinueWithAddress}
                                     disabled={!currentSelectedAddressId}
-                                    style={{
-                                        padding: '10px 20px',
-                                        backgroundColor: currentSelectedAddressId ? '#deb33f' : '#ccc',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: currentSelectedAddressId ? 'pointer' : 'not-allowed',
-                                        fontSize: '14px'
-                                    }}
+                                    className="btn-continue"
                                 >
                                     {currentSelectedAddressId ? 'Continue with Selected Address' : 'Please Select an Address'}
                                 </button>

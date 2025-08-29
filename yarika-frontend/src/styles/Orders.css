@@ -492,6 +492,7 @@
     text-align: left;
     width: 100%;
   }
+  
   .orders-navigation {
     display: flex !important;
     flex-direction: column !important;
@@ -500,11 +501,13 @@
     width: 100% !important;
     text-align: center !important;
   }
+  
   .orders-navigation .nav-button {
     text-align: center !important;
     width: 100% !important;
   }
 }
+
 @media (min-width: 769px) {
   .order-total-mobile {
     display: none !important;
@@ -516,18 +519,22 @@
   .order-total-price {
     display: none !important;
   }
-  .order-total-mobile {
-    display: block !important;
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-top: 8px;
-    color: #111;
-    text-align: left;
-    width: 100%;
+  
+  .order-summary {
+    flex-direction: column !important;
+    gap: 6px !important;
   }
-}
-@media (min-width: 769px) {
-  .order-total-mobile {
-    display: none !important;
+  
+  .order-date {
+    font-size: 0.9em !important;
+    color: #333333 !important;
+  }
+  
+  .order-id {
+    font-size: 0.8em !important;
+    color: #777777 !important;
+    word-break: break-all !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
   }
 }

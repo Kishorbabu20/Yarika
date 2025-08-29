@@ -16,15 +16,18 @@ import QRCode from "qrcode";
 import { useQueryClient } from '@tanstack/react-query';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "../ui/Breadcrumb";
 
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10MB
+
 const categoryOptions = {
   bridal: [
     { label: "Bridal Lehenga", slug: "bridal-lehenga" },
     { label: "Bridal Gown", slug: "bridal-gown" }
   ],
-  trending: [
-    { label: "Best Sellers", slug: "best-sellers" },
-    { label: "Signature Styles", slug: "signature-styles" }
-  ],
+  // trending removed per request; use bridal instead
+  // trending: [
+  //   { label: "Best Sellers", slug: "best-sellers" },
+  //   { label: "Signature Styles", slug: "signature-styles" }
+  // ],
   "readymade-blouse": [
     { label: "Aari Blouse", slug: "aari-blouse" },
     { label: "Designer Blouse", slug: "designer-blouse" },
@@ -402,15 +405,25 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   // Get available sizes based on category type
   const getAvailableSizes = () => {
-    // Map categoryType to group name
-    let groupName = categoryType;
-    if (categoryType === "readymade-blouse") groupName = "Blouse";
-    if (categoryType === "leggings") groupName = "Leggings";
-    // Add more mappings if needed
+    if (categoryType === 'bridal') return [];
+    
+    // Determine desired group based on category type
+    let desired = categoryType;
+    if (categoryType === "readymade-blouse") desired = "blouse";
+    if (categoryType === "leggings") desired = "leggings";
 
-    const group = sizeGroups.find(g => g.name.toLowerCase() === groupName.toLowerCase());
-    if (group) {
-      return group.sizes.map(s => s.name);
+    // Try exact match first (case-insensitive)
+    let matched = sizeGroups.find(g => g.name && g.name.toLowerCase() === desired.toLowerCase());
+
+    // Fallback: try partial includes match (case-insensitive)
+    if (!matched) {
+      matched = sizeGroups.find(g => g.name && g.name.toLowerCase().includes(desired.toLowerCase()));
+    }
+
+    // Final fallback: if nothing matched, use the first available size group
+    const groupToUse = matched || sizeGroups[0];
+    if (groupToUse && Array.isArray(groupToUse.sizes)) {
+      return groupToUse.sizes.map(s => s.name);
     }
     return [];
   };
@@ -598,6 +611,16 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       return false;
     }
 
+    // For bridal, allow manual total stock without size breakdown
+    if (categoryType === 'bridal') {
+      const manualTotal = parseInt(manualTotalStock) || 0;
+      if (manualTotal < 0) {
+        toast.error("Total stock cannot be negative");
+        return false;
+      }
+      return true;
+    }
+
     // Check if total stock matches size stocks
     const totalFromSizes = Object.values(sizeStocks).reduce((sum, stock) => sum + stock, 0);
     const manualTotal = parseInt(manualTotalStock) || 0;
@@ -611,11 +634,15 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   const handleMainImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setMainImage(file);
-      setMainImagePreview(URL.createObjectURL(file));
-      toast.success("Main image uploaded successfully!");
+    if (!file) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      toast.error("Main image is too large. Max 10MB.");
+      e.target.value = "";
+      return;
     }
+    setMainImage(file);
+    setMainImagePreview(URL.createObjectURL(file));
+    toast.success("Main image uploaded successfully!");
   };
 
   const handleAdditionalImages = (e) => {
@@ -627,9 +654,18 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       return;
     }
     
-    const newFiles = files.slice(0, remainingSlots);
+    // Filter out files exceeding 10MB
+    const validFiles = files.filter(f => {
+      if (f.size > MAX_IMAGE_BYTES) {
+        toast.error(`${f.name} is larger than 10MB and was skipped.`);
+        return false;
+      }
+      return true;
+    });
     
-    if (files.length > remainingSlots) {
+    const newFiles = validFiles.slice(0, remainingSlots);
+    
+    if (validFiles.length > remainingSlots) {
       toast.warning(`Only ${remainingSlots} image(s) added. Maximum limit reached.`);
     }
     
@@ -761,8 +797,8 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       return;
     }
 
-    if (selectedSizes.length === 0) {
-      toast.error("Please select at least one size");
+      if (categoryType !== 'bridal' && selectedSizes.length === 0) {
+    toast.error("Please select at least one size");
       return;
     }
 
@@ -868,11 +904,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     formData.append("name", productName.trim());
     formData.append("mrp", mrp);
     formData.append("sellingPrice", sellingPrice);
-    formData.append("sizes", JSON.stringify(selectedSizes));
+    formData.append("sizes", JSON.stringify(categoryType === 'bridal' ? [] : selectedSizes));
 
     // Handle size stocks for all products
     const sizeStocksMap = new Map();
-    selectedSizes.forEach(size => {
+    (categoryType === 'bridal' ? [] : selectedSizes).forEach(size => {
       const stockValue = parseInt(sizeStocks[size]) || 0;
       sizeStocksMap.set(size, stockValue);
     });
@@ -1193,7 +1229,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                 <option value="readymade-blouse">Readymade Blouse</option>
                 <option value="leggings">Leggings</option>
                 <option value="readymade-blouse-cloth">Blouse Cloth</option>
-                <option value="trending">Trending</option>
+                <option value="bridal">Bridal</option>
                 <option value="occasion">Occasion</option>
               </select>
             </div>
@@ -1378,19 +1414,32 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
             <div className="basic-info-group">
               <Label>Stock Quantity by size *</Label>
               <div className="stock-grid">
-                    {selectedSizes.map(size => (
-                  <div key={size} className="stock-size-row">
-                    <span className="stock-size-label">{size}</span>
+                {categoryType === 'bridal' ? (
+                  <div className="stock-size-row" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span className="stock-size-label">Total Stock</span>
                     <Input
-                          type="number"
+                      type="number"
                       min={0}
-                      value={sizeStocks[size] || ''}
-                      onChange={e => handleSizeStockChange(size, e.target.value)}
-                      style={{ width: 80 }}
-                        />
+                      value={manualTotalStock}
+                      onChange={e => handleManualTotalStockChange(e.target.value)}
+                      style={{ width: 120 }}
+                    />
+                  </div>
+                ) : (
+                  selectedSizes.map(size => (
+                    <div key={size} className="stock-size-row">
+                      <span className="stock-size-label">{size}</span>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={sizeStocks[size] || ''}
+                        onChange={e => handleSizeStockChange(size, e.target.value)}
+                        style={{ width: 80 }}
+                      />
                     </div>
-                  ))}
-                </div>
+                  ))
+                )}
+              </div>
             </div>
 
             {/* Pricing & Information Section */}
