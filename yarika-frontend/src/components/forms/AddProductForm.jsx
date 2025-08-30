@@ -904,21 +904,29 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     formData.append("name", productName.trim());
     formData.append("mrp", mrp);
     formData.append("sellingPrice", sellingPrice);
-    formData.append("sizes", JSON.stringify(categoryType === 'bridal' ? [] : selectedSizes));
+    // For bridal products, send a default size to satisfy old server validation
+    if (categoryType === 'bridal') {
+      formData.append("sizes", JSON.stringify(['Free Size']));
+      
+      // Send empty size stocks for bridal
+      formData.append("sizeStocks", JSON.stringify({}));
+    } else {
+      formData.append("sizes", JSON.stringify(selectedSizes));
+      
+      // Handle size stocks for non-bridal products
+      const sizeStocksMap = new Map();
+      selectedSizes.forEach(size => {
+        const stockValue = parseInt(sizeStocks[size]) || 0;
+        sizeStocksMap.set(size, stockValue);
+      });
 
-    // Handle size stocks for all products
-    const sizeStocksMap = new Map();
-    (categoryType === 'bridal' ? [] : selectedSizes).forEach(size => {
-      const stockValue = parseInt(sizeStocks[size]) || 0;
-      sizeStocksMap.set(size, stockValue);
-    });
+      const sizeStocksObj = {};
+      sizeStocksMap.forEach((value, key) => {
+        sizeStocksObj[key] = value;
+      });
 
-    const sizeStocksObj = {};
-    sizeStocksMap.forEach((value, key) => {
-      sizeStocksObj[key] = value;
-    });
-
-    formData.append("sizeStocks", JSON.stringify(sizeStocksObj));
+      formData.append("sizeStocks", JSON.stringify(sizeStocksObj));
+    }
     formData.append("totalStock", manualTotalStock.toString());
     formData.append("colors", JSON.stringify(selectedColors));
 
@@ -945,6 +953,12 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     formData.append("netWeight", netWeight ? netWeight.trim() : "");
     formData.append("grossWeight", grossWeight ? grossWeight.trim() : "");
     formData.append("maxOrderQuantity", maxOrderQuantity ? maxOrderQuantity.trim() : "");
+    
+    // Add status field (required by backend)
+    formData.append("status", "active");
+    
+    // Add fabric field (might be required)
+    formData.append("fabric", fabric ? fabric.trim() : "");
     
     // Add Key Highlights fields
     formData.append("fabric", fabric ? fabric.trim() : "");
@@ -982,10 +996,18 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     }
 
     // Log the form data to check what's being sent
-    // console.log("Form Data Contents:");
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(key, ":", typeof value === 'string' ? value : 'File or Blob');
-    // }
+    console.log("Form Data Contents:");
+    console.log("Category Type:", categoryType);
+    console.log("Is Bridal:", categoryType === 'bridal');
+    console.log("Selected Sizes:", selectedSizes);
+    console.log("Size Stocks:", sizeStocks);
+    console.log("Manual Total Stock:", manualTotalStock);
+    console.log("Size Stocks Object:", sizeStocksObj);
+    console.log("Selected Colors:", selectedColors);
+    
+    for (let [key, value] of formData.entries()) {
+      console.log(key, ":", typeof value === 'string' ? value : 'File or Blob');
+    }
 
     try {
       let res;
@@ -1014,8 +1036,15 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       // ...rest of the code is now unreachable after navigate
     } catch (error) {
       console.error("Upload failed:", error.response?.data || error.message);
+      console.error("Full error object:", error);
+      console.error("Error response:", error.response);
+      console.error("Error status:", error.response?.status);
+      console.error("Error data:", error.response?.data);
+      
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
       } else {
         toast.error(id ? "Failed to update product." : "Failed to upload product.");
       }

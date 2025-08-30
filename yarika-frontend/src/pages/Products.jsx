@@ -146,115 +146,115 @@ export default function Products() {
 
   return (
     <>
-      <div className="dashboard-container">
-        <Sidebar />
-        <div className="main-content">
-          <Header title="Products" />
-          <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
+    <div className="dashboard-container">
+      <Sidebar />
+      <div className="main-content">
+        <Header title="Products" />
+        <ChangePasswordModal isOpen={showChangePassword} onRequestClose={() => setShowChangePassword(false)} />
 
-          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 32px' }}>
-            <div className="products-section-row" style={{ margin: '32px 0 0 0' }}>
-              <div className="products-section-title">Product Inventory</div>
-              <Button
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 32px' }}>
+        <div className="products-section-row" style={{ margin: '32px 0 0 0' }}>
+          <div className="products-section-title">Product Inventory</div>
+          <Button
                 onClick={() => navigate('/admin/add-product')}
-                className="add-product-btn"
-              >
-                + Add New Product
-              </Button>
-            </div>
+            className="add-product-btn"
+          >
+            + Add New Product
+          </Button>
+        </div>
 
-            {/* Stat Cards */}
-            <div className="products-stats-row" style={{ margin: '32px 0 0 0' }}>
-              <div className="stat-card">
-                <div className="stat-value">{String(stats?.totalProducts || 0)}</div>
-                <div className="stat-label">Total Products</div>
+          {/* Stat Cards */}
+        <div className="products-stats-row" style={{ margin: '32px 0 0 0' }}>
+          <div className="stat-card">
+              <div className="stat-value">{String(stats?.totalProducts || 0)}</div>
+            <div className="stat-label">Total Products</div>
+          </div>
+          <div className="stat-card">
+              <div className="stat-value stat-green">{String(stats?.activeProducts || 0)}</div>
+            <div className="stat-label">Active Products</div>
+          </div>
+          <div className="stat-card">
+              <div className="stat-value stat-yellow">{String(stats?.lowStock || 0)}</div>
+              <div className="stat-label">Low Stock</div>
+          </div>
+          <div className="stat-card">
+              <div className="stat-value stat-red">{String(stats?.outOfStock || 0)}</div>
+              <div className="stat-label">Out of Stock</div>
+          </div>
+          <div className="stat-card">
+              <div className="stat-value stat-gold">
+                ₹{String(stats?.inventoryValue?.toLocaleString() || 0)}
               </div>
-              <div className="stat-card">
-                <div className="stat-value stat-green">{String(stats?.activeProducts || 0)}</div>
-                <div className="stat-label">Active Products</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value stat-yellow">{String(stats?.lowStock || 0)}</div>
-                <div className="stat-label">Low Stock</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value stat-red">{String(stats?.outOfStock || 0)}</div>
-                <div className="stat-label">Out of Stock</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value stat-gold">
-                  ₹{String(stats?.inventoryValue?.toLocaleString() || 0)}
-                </div>
-                <div className="stat-label">Inventory Value</div>
-              </div>
+              <div className="stat-label">Inventory Value</div>
             </div>
+          </div>
 
-            {/* Add Product Form (for editing only) */}
-            {editProduct && (
-              <div className="mb-10" style={{ margin: '32px 0 0 0' }}>
-                <AddProductForm
-                  product={editProduct}
-                  onClose={() => { setEditProduct(null); }}
-                  onProductAdded={() => {
+          {/* Add Product Form (for editing only) */}
+          {editProduct && (
+          <div className="mb-10" style={{ margin: '32px 0 0 0' }}>
+            <AddProductForm
+              product={editProduct}
+                onClose={() => { setEditProduct(null); }}
+              onProductAdded={() => {
                     // console.log('onProductAdded called');
-                    fetchProducts();
-                    refetch();
-                    setEditProduct(null);
-                    window.dispatchEvent(new Event('product-added'));
-                  }}
-                />
-              </div>
-            )}
+                fetchProducts();
+                refetch();
+                setEditProduct(null);
+                window.dispatchEvent(new Event('product-added'));
+              }}
+            />
+          </div>
+        )}
 
-            {/* Filters */}
-            <div className="products-filters-row" style={{ margin: '32px 0 0 0' }}>
-              <div className="filter-group">
-                <label className="filter-label">Status</label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="rounded-2xl border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="all">All</option>
-                  <option value="active">In Stock</option>
-                  <option value="out-of-stock">Out of Stock</option>
-                </select>
-              </div>
-              <div className="filter-group">
-                <label className="filter-label">Category</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="rounded-2xl border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="all">All</option>
+        {/* Filters */}
+        <div className="products-filters-row" style={{ margin: '32px 0 0 0' }}>
+          <div className="filter-group">
+            <label className="filter-label">Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="rounded-2xl border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="all">All</option>
+                <option value="active">In Stock</option>
+                <option value="out-of-stock">Out of Stock</option>
+              </select>
+          </div>
+          <div className="filter-group">
+            <label className="filter-label">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="rounded-2xl border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="all">All</option>
                   <option value="readymade-blouse">Blouse</option>
                   <option value="leggings">Leggings</option>
                   <option value="readymade-blouse-cloth">Blouse Cloth</option>
                   <option value="trending">Trending</option>
-                </select>
-              </div>
-            </div>
+              </select>
+          </div>
+        </div>
 
-            {/* Manage Products Table */}
+          {/* Manage Products Table */}
             <div
               className="products-table-section"
               style={{
-                background: '#fff',
-                borderRadius: '12px',
-                border: '1.5px solid #e5e5e5',
-                boxShadow: '0 2px 8px rgba(198,170,98,0.04)',
-                margin: '32px 0 0 0',
+          background: '#fff', 
+          borderRadius: '12px',
+          border: '1.5px solid #e5e5e5',
+          boxShadow: '0 2px 8px rgba(198,170,98,0.04)',
+          margin: '32px 0 0 0',
                 overflow: 'hidden',
               }}
             >
               <div className="products-table-title" style={{ padding: '24px 24px 16px 24px', borderBottom: '1.5px solid #e5e5e5' }}>
                 Manage Products
               </div>
-              <div style={{ overflowX: 'auto' }}>
-                <table className="products-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr style={{ background: '#faf9f6' }}>
+            <div style={{ overflowX: 'auto' }}>
+              <table className="products-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                  <tr style={{ background: '#faf9f6' }}>
                       <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>
                         DATE
                       </th>
@@ -288,18 +288,18 @@ export default function Products() {
                       <th style={{ padding: '12px 16px', color: '#666', fontSize: '14px', fontWeight: '600', textAlign: 'left', whiteSpace: 'nowrap' }}>
                         ACTION
                       </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products.length === 0 ? (
-                      <tr>
+                </tr>
+              </thead>
+              <tbody>
+                {products.length === 0 ? (
+                    <tr>
                         <td colSpan="11" style={{ textAlign: 'center', padding: '24px', color: '#666' }}>
-                          No products found.
-                        </td>
-                      </tr>
-                    ) : (
-                      products.map((product) => (
-                        <tr key={product._id} style={{ borderBottom: '1px solid #e5e5e5' }}>
+                        No products found.
+                      </td>
+                    </tr>
+                  ) : (
+                    products.map((product) => (
+                      <tr key={product._id} style={{ borderBottom: '1px solid #e5e5e5' }}>
                           <td style={{ padding: '16px', color: '#444', whiteSpace: 'nowrap' }}>
                             {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : '-'}
                           </td>
@@ -309,30 +309,30 @@ export default function Products() {
                           <td style={{ padding: '16px', color: '#444' }}>
                             {Array.isArray(product.sizes) ? product.sizes.join(', ') : '-'}
                           </td>
-                          <td style={{ padding: '16px', color: '#444' }}>
+                        <td style={{ padding: '16px', color: '#444' }}>
                             <div
                               style={{
-                                display: 'flex',
-                                alignItems: 'center',
+                            display: 'flex', 
+                            alignItems: 'center', 
                                 gap: '8px',
                               }}
                             >
-                              {product.totalStock || 0}
-                              {product.sizeStocks && (
+                            {product.totalStock || 0}
+                            {product.sizeStocks && (
                                 <span
                                   title={Object.entries(product.sizeStocks)
-                                    .map(([size, stock]) => `${size}: ${stock}`)
-                                    .join('\n')}
+                                .map(([size, stock]) => `${size}: ${stock}`)
+                                .join('\n')}
                                   style={{ cursor: 'help', color: '#666', fontSize: '12px' }}
                                 >
-                                  (i)
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                          <td style={{ padding: '16px', color: '#444' }}>₹{product.sellingPrice}</td>
-                          <td style={{ padding: '16px', color: '#444' }}>₹{product.mrp}</td>
-                          <td style={{ padding: '16px', color: '#444' }}>
+                                (i)
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td style={{ padding: '16px', color: '#444' }}>₹{product.sellingPrice}</td>
+                        <td style={{ padding: '16px', color: '#444' }}>₹{product.mrp}</td>
+                        <td style={{ padding: '16px', color: '#444' }}>
                             {getProductColors(product).length > 0 ? (
                               getProductColors(product).map((color, idx) => {
                                 const validColorCode =
@@ -347,8 +347,8 @@ export default function Products() {
                                        minWidth: 'fit-content'
                                      }}
                                    >
-                                     <span
-                                       style={{
+                                  <span
+                                    style={{
                                          display: 'inline-block',
                                          width: '16px',
                                          height: '16px',
@@ -358,7 +358,7 @@ export default function Products() {
                                          maxHeight: '16px',
                                          borderRadius: '50%',
                                          backgroundColor: validColorCode,
-                                         marginRight: 4,
+                                      marginRight: 4,
                                          border: '1px solid #ccc',
                                          boxShadow: '0 0 4px rgba(0,0,0,0.15)',
                                          flexShrink: 0,
@@ -375,16 +375,16 @@ export default function Products() {
                                          textOverflow: 'ellipsis',
                                        }}
                                      >
-                                       {color.name}
-                                     </span>
+                                  {color.name}
+                                </span>
                                    </span>
                                  );
                               })
                             ) : (
                               '-'
                             )}
-                          </td>
-                          <td style={{ padding: '16px' }}>
+                        </td>
+                        <td style={{ padding: '16px' }}>
                             <span
                               className={`status-badge ${
                                 product.totalStock > 0 && product.status === 'active'
@@ -411,13 +411,13 @@ export default function Products() {
                               {product.totalStock > 0 && product.status === 'active'
                                 ? 'In Stock'
                                 : 'Out Of Stock'}
-                            </span>
-                          </td>
+                          </span>
+                        </td>
                           <td style={{ padding: '8px' }}>
-                            <div style={{ display: 'flex', gap: '8px' }}>
+                          <div style={{ display: 'flex', gap: '8px' }}>
                               <button
                                 aria-label="Edit product"
-                                onClick={() => handleEditProduct(product._id)}
+                              onClick={() => handleEditProduct(product._id)}
                                 style={{
                                   minWidth: 32,
                                   width: 32,
@@ -438,7 +438,7 @@ export default function Products() {
                               </button>
                               <button
                                 aria-label="Delete product"
-                                onClick={() => handleDelete(product._id)}
+                              onClick={() => handleDelete(product._id)}
                                 style={{
                                   minWidth: 32,
                                   width: 32,
@@ -457,16 +457,16 @@ export default function Products() {
                               >
                                 🗑
                               </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                          </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
               </div>
-            </div>
           </div>
+        </div>
         </div>
       </div>
     </>
