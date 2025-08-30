@@ -129,7 +129,7 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
     };
 
     const handleAddressSelect = (address) => {
-        console.log('Address selected in modal:', address);
+        // console.log('Address selected in modal:', address);
         setCurrentSelectedAddressId(address._id);
         // Don't close modal yet, let user click "Continue" button
     };
@@ -140,11 +140,11 @@ const ShippingAddressModal = ({ isOpen, onClose, onAddressSelect, selectedAddres
                                addresses[0];
         
         if (selectedAddress) {
-            console.log('Continuing with address:', selectedAddress);
+            // console.log('Continuing with address:', selectedAddress);
             onAddressSelect(selectedAddress);
             onClose();
         } else {
-            console.error('No address selected or available');
+            // console.error('No address selected or available');
             toast.error('Please select an address to continue');
         }
     };

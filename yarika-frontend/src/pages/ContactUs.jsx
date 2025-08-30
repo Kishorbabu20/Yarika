@@ -22,7 +22,7 @@ const ContactUs = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
-    console.log("Contact form submitted:", formData);
+    // console.log("Contact form submitted:", formData);
     alert("Thank you for your message! We'll get back to you soon.");
   };
 

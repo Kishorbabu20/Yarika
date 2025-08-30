@@ -14,8 +14,9 @@ const CartItemSchema = new mongoose.Schema(
     },
     size: {
       type: String,
-      required: true,
+      required: false, // Make size optional to handle bridal products
       trim: true,
+      default: '', // Default to empty string for bridal products
     },
     color: {
       type: String,

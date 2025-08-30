@@ -374,9 +374,16 @@
 }
 
 .size-btn.selected {
-  background: #C5A56F;
-  color: white;
-  border-color: #C5A56F;
+  background: #C5A56F !important;
+  color: white !important;
+  border-color: #C5A56F !important;
+}
+
+/* Ensure selected state is visible even with mobile CSS overrides */
+.select-product-page .size-btn.selected {
+  background: #C5A56F !important;
+  color: white !important;
+  border-color: #C5A56F !important;
 }
 
 .size-btn.disabled {

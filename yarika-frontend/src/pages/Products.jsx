@@ -62,7 +62,7 @@ export default function Products() {
   const fetchStats = async () => {
     try {
       const res = await api.get("/products/stats");
-      console.log("Fetched stats:", res.data);
+      // console.log("Fetched stats:", res.data);
       return res.data;
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -76,17 +76,17 @@ export default function Products() {
       if (status !== "all") query.append("status", status);
       if (category !== "all") query.append("categoryType", category); // <-- use categoryType
       const res = await api.get(`/products?${query.toString()}`);
-      console.log('Fetched products:', res.data);
+      // console.log('Fetched products:', res.data);
       
       // Debug: Check color data for first few products
-      res.data.slice(0, 3).forEach((product, index) => {
-        console.log(`Product ${index + 1} (${product.name}):`, {
-          colors: product.colors,
-          colorsType: typeof product.colors,
-          isArray: Array.isArray(product.colors),
-          colorsLength: product.colors ? product.colors.length : 0
-        });
-      });
+      // res.data.slice(0, 3).forEach((product, index) => {
+      //   console.log(`Product ${index + 1} (${product.name}):`, {
+      //     colors: product.colors,
+      //     colorsType: typeof product.colors,
+      //     isArray: Array.isArray(product.colors),
+      //     colorsLength: product.colors ? product.colors.length : 0
+      //   });
+      // });
       
       setProducts(res.data);
     } catch (error) {
@@ -127,7 +127,7 @@ export default function Products() {
   const getProductColors = (product) => {
     // The backend already populates colors as an array of objects with name and code
     if (product.colors && Array.isArray(product.colors)) {
-      console.log('Product colors:', product.colors);
+      // console.log('Product colors:', product.colors);
       
       // Handle both object format (from backend population) and string format (fallback)
       return product.colors.map(color => {
@@ -143,12 +143,12 @@ export default function Products() {
           // Unknown format, return as is
           return {
             name: String(color),
-            code: String(color)
+            code: color
           };
         }
       });
     }
-    console.log('No colors found for product:', product.name);
+    // console.log('No colors found for product:', product.name);
     return [];
   };
 
@@ -215,7 +215,7 @@ export default function Products() {
               product={editProduct}
                 onClose={() => { setEditProduct(null); }}
               onProductAdded={() => {
-                console.log('onProductAdded called');
+                // console.log('onProductAdded called');
                 fetchProducts();
                 refetch();
                 setEditProduct(null);

@@ -47,7 +47,7 @@ export default function Members() {
         ...newMember,
         username: newMember.email // Use email as username
       });
-      console.log("Add member response:", res.data);
+      // console.log("Add member response:", res.data);
       setMembers(prev => [...prev, res.data]); // Only runs if successful
       setShowForm(false);
       setNewMember({ name: "", email: "", password: "", role: "Admin" });

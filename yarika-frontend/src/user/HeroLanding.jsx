@@ -483,7 +483,7 @@ const HeroLanding = () => {
               {products.length > 0 ? (
                 products.map((product, index) => {
                   // Debug: log product data
-                  console.log('Product in New Arrivals:', product);
+                  // console.log('Product in New Arrivals:', product);
                   
                   // Use correct field names from Product model
                   const productImage = product.mainImage || product.additionalImages?.[0] || product.images?.[0] || product.image || product.imageUrl || product.photo;
@@ -506,7 +506,7 @@ const HeroLanding = () => {
                           alt={productName} 
                           className="product-image"
                           onError={(e) => {
-                            console.log('Image failed to load for:', productName, 'falling back to default');
+                            // console.log('Image failed to load for:', productName, 'falling back to default');
                             e.target.src = BlouseBanner;
                           }}
                         />
@@ -686,7 +686,7 @@ const HeroLanding = () => {
                           alt={productName} 
                           className="product-image"
                           onError={(e) => {
-                            console.log('Image failed to load for:', productName, 'falling back to default');
+                            // console.log('Image failed to load for:', productName, 'falling back to default');
                             e.target.src = BlouseBanner;
                           }}
                         />
@@ -768,7 +768,7 @@ const HeroLanding = () => {
                           alt={productName} 
                           className="product-image"
                           onError={(e) => {
-                            console.log('Image failed to load for:', productName, 'falling back to default');
+                            // console.log('Image failed to load for:', productName, 'falling back to default');
                             e.target.src = LeggingsBanner;
                           }}
                         />
@@ -850,7 +850,7 @@ const HeroLanding = () => {
                           alt={productName} 
                           className="product-image"
                           onError={(e) => {
-                            console.log('Image failed to load for:', productName, 'falling back to default');
+                            // console.log('Image failed to load for:', productName, 'falling back to default');
                             e.target.src = BlouseBanner;
                           }}
                         />

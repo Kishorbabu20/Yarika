@@ -5,35 +5,35 @@ const protect = require("../middleware/auth");
 const Product = require("../models/Product");
 
 // Debug middleware for cart routes
-router.use((req, res, next) => {
-  console.log('Cart Route Debug ==================');
-  console.log('Method:', req.method);
-  console.log('Path:', req.path);
-  console.log('Full URL:', req.originalUrl);
-  console.log('Headers:', JSON.stringify(req.headers, null, 2));
-  console.log('Body:', req.body);
-  console.log('Query:', req.query);
-  console.log('Auth Token:', req.headers.authorization);
-  console.log('====================================');
-  next();
-});
+// router.use((req, res, next) => {
+//   console.log('Cart Route Debug ==================');
+//   console.log('Method:', req.method);
+//   console.log('Path:', req.path);
+//   console.log('Full URL:', req.originalUrl);
+//   console.log('Headers:', JSON.stringify(req.headers, null, 2));
+//   console.log('Body:', req.body);
+//   console.log('Query:', req.query);
+//   console.log('Auth Token:', req.headers.authorization);
+//   console.log('====================================');
+//   next();
+// });
 
 // GET /api/cart - Get all cart items (populated)
 router.get("/", protect({ model: "client" }), async (req, res) => {
   try {
-    console.log('GET /api/cart - Auth check passed');
+    // console.log('GET /api/cart - Auth check passed');
     const userId = req.client._id;
-    console.log('Fetching cart for user:', userId);
+    // console.log('Fetching cart for user:', userId);
     
     const cart = await CartItem.find({ userId }).populate("productId");
-    console.log('Cart found:', cart ? 'yes' : 'no');
+    // console.log('Cart found:', cart ? 'yes' : 'no');
 
     if (!cart || cart.length === 0) {
-      console.log('No cart items found, returning empty array');
+      // console.log('No cart items found, returning empty array');
       return res.json([]);
     }
 
-    console.log('Returning cart with', cart.length, 'items');
+    // console.log('Returning cart with', cart.length, 'items');
     res.json(cart);
   } catch (err) {
     console.error("Failed to load cart:", err);
@@ -52,21 +52,55 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
     const { productId, size, color, qty = 1 } = req.body;
 
     // Enhanced logging for debugging
-    console.log("[Add to Cart] userId:", userId);
-    console.log("[Add to Cart] Request body:", req.body);
+    // console.log("[Add to Cart] userId:", userId);
+    // console.log("[Add to Cart] Request body:", req.body);
 
-    if (!productId || !size) {
-      console.error("[Add to Cart] Missing productId or size", { productId, size });
-      return res.status(400).json({ error: "Product ID and size are required" });
+    if (!productId) {
+      console.error("[Add to Cart] Missing productId", { productId });
+      return res.status(400).json({ error: "Product ID is required" });
     }
 
-    let item = await CartItem.findOne({ userId, productId, size });
+    // For bridal products or products without sizes, size can be empty string
+    // For products with sizes, size is required
+    const product = await Product.findById(productId);
+    if (!product) {
+      console.error("[Add to Cart] Product not found", { productId });
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const isBridal = product.categoryType === 'bridal';
+    const noSizes = !product.sizes || product.sizes.length === 0;
+    
+    if (!isBridal && !noSizes && (!size || size === '')) {
+      console.error("[Add to Cart] Size required for this product", { productId, size, categoryType: product.categoryType });
+      return res.status(400).json({ error: "Size is required for this product" });
+    }
+
+    // For bridal products or products without sizes, use empty string for size
+    const normalizedSize = (isBridal || noSizes) ? '' : (size || '');
+    
+    // console.log('[Add to Cart] Normalized size:', normalizedSize);
+    // console.log('[Add to Cart] Product details:', {
+    //   categoryType: product.categoryType,
+    //   hasSizes: !noSizes,
+    //   isBridal
+    // });
+    
+    let item = await CartItem.findOne({ userId, productId, size: normalizedSize });
 
     if (item) {
+      // console.log('[Add to Cart] Updating existing item');
       item.qty = Math.min(25, item.qty + qty);
       await item.save();
     } else {
-      item = new CartItem({ userId, productId, size, color, qty });
+      // console.log('[Add to Cart] Creating new item with data:', {
+      //   userId,
+      //   productId,
+      //   size: normalizedSize,
+      //   color,
+      //   qty
+      // });
+      item = new CartItem({ userId, productId, size: normalizedSize, color, qty });
       await item.save();
     }
 
@@ -85,11 +119,14 @@ router.delete("/remove/:id", protect({ model: "client" }), async (req, res) => {
     const { id } = req.params;
     const { size } = req.query;
 
-    if (!id || !size) {
-      return res.status(400).json({ error: "Product ID and size are required" });
+    if (!id) {
+      return res.status(400).json({ error: "Product ID is required" });
     }
 
-    const result = await CartItem.deleteOne({ userId, productId: id, size });
+    // For bridal products, size might be empty string
+    const normalizedSize = size || '';
+    
+    const result = await CartItem.deleteOne({ userId, productId: id, size: normalizedSize });
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Item not found in cart" });
@@ -109,11 +146,14 @@ router.put("/update", protect({ model: "client" }), async (req, res) => {
     const userId = req.client._id;
     const { productId, size, qty } = req.body;
 
-    if (!productId || !size || typeof qty !== 'number') {
-      return res.status(400).json({ error: "Product ID, size, and quantity are required" });
+    if (!productId || typeof qty !== 'number') {
+      return res.status(400).json({ error: "Product ID and quantity are required" });
     }
 
-    const item = await CartItem.findOne({ userId, productId, size });
+    // For bridal products, size might be empty string
+    const normalizedSize = size || '';
+    
+    const item = await CartItem.findOne({ userId, productId, size: normalizedSize });
 
     if (!item) {
       return res.status(404).json({ error: "Item not found in cart" });

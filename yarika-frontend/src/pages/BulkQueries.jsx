@@ -24,7 +24,7 @@ const BulkQueries = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
-    console.log("Bulk query submitted:", formData);
+    // console.log("Bulk query submitted:", formData);
     alert("Thank you for your bulk query! We'll get back to you soon.");
   };
 

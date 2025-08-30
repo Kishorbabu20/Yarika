@@ -52,28 +52,28 @@ const WishlistPage = () => {
     // Use productId for navigation if available, fallback to _id
     const handleBuyNow = async (item) => {
         let product = item.productId || item;
-        console.log("Initial product in wishlist:", product);
+        // console.log("Initial product in wishlist:", product);
         // If SEO fields are missing, fetch full product details
         if (!product.seoUrl || !product.categoryType || !product.category) {
             try {
                 const res = await api.get(`/products/${product._id}`);
                 product = res.data;
-                console.log("Fetched product by ID:", product);
+                // console.log("Fetched product by ID:", product);
             } catch (err) {
-                console.log("Fetch by ID failed, navigating to /product/:id");
+                // console.log("Fetch by ID failed, navigating to /product/:id");
                 navigate(`/product/${product._id}`);
                 return;
             }
         }
         // Use generateProductUrl for consistent SEO-friendly navigation
         const url = generateProductUrl(product, 'home');
-        console.log("Navigating to:", url);
+        // console.log("Navigating to:", url);
         navigate(url);
     };
 
     // Use _id for removal (wishlist item id)
     const handleRemove = async (itemId) => {
-        console.log('Removing wishlist item with _id:', itemId);
+        // console.log('Removing wishlist item with _id:', itemId);
         await api.delete(`/wishlist/remove-item/${itemId}`);
         setWishlistItems(prev => prev.filter(item => item._id !== itemId));
             toast.success("Item removed from wishlist");

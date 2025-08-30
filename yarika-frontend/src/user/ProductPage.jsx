@@ -64,8 +64,8 @@ const ProductPage = () => {
       setLoading(true);
       // Only fetch readymade-blouse products
       const res = await api.get("/products?categoryType=readymade-blouse");
-      console.log('ProductPage - API Response:', res.data);
-      console.log('ProductPage - First product sample:', res.data[0]);
+              // console.log('ProductPage - API Response:', res.data);
+        // console.log('ProductPage - First product sample:', res.data[0]);
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to fetch products", err);

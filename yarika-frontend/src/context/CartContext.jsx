@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
-    console.log('Initial auth state:', !!token);
+    // console.log('Initial auth state:', !!token);
   }, []);
 
   // Load cart items from backend on mount and when token changes
@@ -24,13 +24,13 @@ export const CartProvider = ({ children }) => {
       try {
         // Only fetch cart if user is logged in
         const token = localStorage.getItem("token");
-        console.log('Token exists:', !!token);
+        // console.log('Token exists:', !!token);
         if (token) {
           // Set authentication to true immediately when token exists
           setIsAuthenticated(true);
-          console.log('Making request to /api/cart');
+          // console.log('Making request to /api/cart');
           const { data } = await api.get("/cart");
-          console.log('Cart data received:', data);
+          // console.log('Cart data received:', data);
           // Transform the data to include product details
           const transformedData = data.map(item => {
             const product = item.productId || {};
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
           });
           setCartItems(transformedData);
         } else {
-          console.log('No token found, clearing cart');
+          // console.log('No token found, clearing cart');
           setIsAuthenticated(false);
           setCartItems([]);
         }
@@ -64,7 +64,7 @@ export const CartProvider = ({ children }) => {
         } else {
           // Don't set isAuthenticated to false on network errors
           // Only set to false if it's an authentication error
-          console.log('Network error occurred, but user remains authenticated');
+          // console.log('Network error occurred, but user remains authenticated');
         }
       } finally {
         setLoading(false);
@@ -88,7 +88,7 @@ export const CartProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         setIsAuthenticated(true);
-        console.log('Login event detected, updating auth state');
+        // console.log('Login event detected, updating auth state');
       }
     };
     window.addEventListener('userLoggedIn', handleLogin);
@@ -149,13 +149,13 @@ export const CartProvider = ({ children }) => {
   // Add to cart function
   const addToCart = async (productId, size, qty = 1, color) => { qty = Math.max(1, Number(qty) || 1);
     try {
-      console.log('=== ADD TO CART DEBUG ===');
-      console.log('productId:', productId);
-      console.log('size:', size);
-      console.log('qty:', qty);
-      console.log('color:', color);
-      console.log('isAuthenticated:', isAuthenticated);
-      console.log('token exists:', !!localStorage.getItem('token'));
+      // console.log('=== ADD TO CART DEBUG ===');
+      // console.log('productId:', productId);
+      // console.log('size:', size);
+      // console.log('qty:', qty);
+      // console.log('color:', color);
+      // console.log('isAuthenticated:', isAuthenticated);
+      // console.log('token exists:', !!localStorage.getItem('token'));
 
       if (!productId) {
         toast.error("Invalid product ID");
@@ -171,7 +171,7 @@ export const CartProvider = ({ children }) => {
       
       // If we have a token but state is wrong, update the state
       if (token && !isAuthenticated) {
-        console.log('Token exists but state is wrong, updating authentication state');
+        // console.log('Token exists but state is wrong, updating authentication state');
         setIsAuthenticated(true);
       }
 
@@ -192,7 +192,7 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      console.log('=== FETCHING PRODUCT DETAILS ===');
+      // console.log('=== FETCHING PRODUCT DETAILS ===');
       // Fetch product details and add to backend cart
       const { data: product } = await api.get(`/products/${productId}`);
       
@@ -201,31 +201,44 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      // Check stock availability for the specific size
-      const sizeStock = product.sizeStocks?.[size] || 0;
-      if (sizeStock < qty) {
-        toast.error(`Not enough stock available for size ${size}! Only ${sizeStock} items left.`);
-        return;
+      // Check stock availability
+      const isBridal = product.categoryType === 'bridal';
+      const noSizes = !product.sizes || product.sizes.length === 0;
+      
+      if (isBridal || noSizes) {
+        // For bridal products or products without sizes, check total stock
+        const totalStock = product.totalStock || 0;
+        if (totalStock < qty) {
+          toast.error(`Not enough stock available! Only ${totalStock} items left.`);
+          return;
+        }
+      } else {
+        // For products with sizes, check size-specific stock
+        const sizeStock = product.sizeStocks?.[size] || 0;
+        if (sizeStock < qty) {
+          toast.error(`Not enough stock available for size ${size}! Only ${sizeStock} items left.`);
+          return;
+        }
       }
 
-      console.log('=== MAKING CART ADD API CALL ===');
-      console.log('Request payload:', {
-        productId,
-        size,
-        qty,
-        color: typeof color === 'object' ? (color.name || color.code) : color || product.colors?.[0] || 'Default'
-      });
+      // console.log('=== MAKING CART ADD API CALL ===');
+      // console.log('Request payload:', {
+      //   productId,
+      //   size,
+      //   qty,
+      //   color: typeof color === 'object' ? (color.name || color.code) : color || product.colors?.[0] || 'Default'
+      // });
 
       // Add to backend cart
       const { data: updatedCart } = await api.post("/cart/add", {
         productId,
-        size,
+        size: size || '', // Ensure size is never undefined
         qty: Math.max(1, Number(qty) || 1),
         color: typeof color === 'object' ? (color.name || color.code) : color || product.colors?.[0] || 'Default'
       });
 
-      console.log('=== CART ADD SUCCESS ===');
-      console.log('Updated cart data:', updatedCart);
+      // console.log('=== CART ADD SUCCESS ===');
+      // console.log('Updated cart data:', updatedCart);
 
       // Transform the updated cart data
       const transformedCart = updatedCart
@@ -303,7 +316,7 @@ export const CartProvider = ({ children }) => {
       
       // If we have a token but state is wrong, update the state
       if (token && !isAuthenticated) {
-        console.log('Token exists but state is wrong, updating authentication state');
+        // console.log('Token exists but state is wrong, updating authentication state');
         setIsAuthenticated(true);
       }
 
@@ -371,7 +384,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     const shouldBeAuthenticated = !!token;
     if (isAuthenticated !== shouldBeAuthenticated) {
-      console.log('Refreshing auth state:', { current: isAuthenticated, shouldBe: shouldBeAuthenticated });
+      // console.log('Refreshing auth state:', { current: isAuthenticated, shouldBe: shouldBeAuthenticated });
       setIsAuthenticated(shouldBeAuthenticated);
     }
   };

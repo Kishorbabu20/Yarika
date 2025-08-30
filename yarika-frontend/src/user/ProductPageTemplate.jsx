@@ -61,7 +61,7 @@ const ProductPageTemplate = ({ title, filterType, filterValue }) => {
         url += `?${query.toString()}`;
         }
 
-      console.log('Fetching products:', url);
+      // console.log('Fetching products:', url);
       const res = await api.get(url);
         setProducts(res.data);
       } catch (err) {
