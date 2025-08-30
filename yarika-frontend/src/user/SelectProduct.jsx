@@ -220,30 +220,39 @@ const SelectProduct = () => {
 
   useEffect(() => {
     if (product) {
-      console.log('=== PRODUCT STATE CHANGED ===');
-      console.log('Timestamp:', new Date().toISOString());
-      console.log('Product stock data:', {
-        name: product.name,
-        totalStock: product.totalStock,
-        sizeStocks: product.sizeStocks,
-        status: product.status
-      });
+      // console.log('=== PRODUCT STATE CHANGED ===');
+      // console.log('Timestamp:', new Date().toISOString());
+      // console.log('Product stock data:', {
+      //   name: product.name,
+      //   totalStock: product.totalStock,
+      //   sizeStocks: product.sizeStocks,
+      //   status: product.status
+      // });
       if (isInPaymentFlow) {
-        console.warn('⚠️ PRODUCT STATE CHANGED DURING PAYMENT FLOW ⚠️');
-        console.warn('This might indicate an issue with stock management');
+        // console.warn('⚠️ PRODUCT STATE CHANGED DURING PAYMENT FLOW ⚠️');
+        // console.warn('This might indicate an issue with stock management');
       }
     }
   }, [product, isInPaymentFlow]);
 
   useEffect(() => {
-    console.log('=== PAYMENT FLOW STATE CHANGED ===');
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('Payment flow state:', {
-      isInPaymentFlow,
-      productName: product?.name,
-      productStock: product?.totalStock
-    });
+    // console.log('=== PAYMENT FLOW STATE CHANGED ===');
+    // console.log('Timestamp:', new Date().toISOString());
+    // console.log('Payment flow state:', {
+    //   isInPaymentFlow,
+    //   productName: product?.name,
+    //   productStock: product?.totalStock
+    // });
   }, [isInPaymentFlow, product]);
+
+  // Monitor selectedSize changes
+  useEffect(() => {
+    // console.log('=== SELECTED SIZE CHANGED ===');
+    // console.log('Timestamp:', new Date().toISOString());
+    // console.log('Selected size changed to:', selectedSize);
+    // console.log('Product:', product?.name);
+    // console.log('Product sizes:', product?.sizes);
+  }, [selectedSize, product?.name, product?.sizes]);
 
     const fetchProduct = async () => {
       try {
@@ -272,7 +281,7 @@ const SelectProduct = () => {
           
           if (hasColor) {
             setSelectedColor(colorFromUrl);
-            console.log('Pre-selected color from URL:', colorFromUrl);
+            // console.log('Pre-selected color from URL:', colorFromUrl);
           } else {
             // If product doesn't have this color, set the first available color
         if (productRes.data.colors?.length > 0) {
@@ -292,9 +301,22 @@ const SelectProduct = () => {
           }
         }
         
-        if (productRes.data.sizes?.length > 0) {
-          setSelectedSize(productRes.data.sizes[0]);
-        }
+        // Debug logging for sizes
+        // console.log('=== PRODUCT FETCHED - SIZES DEBUG ===');
+        // console.log('Product sizes:', productRes.data.sizes);
+        // console.log('Sizes type:', typeof productRes.data.sizes);
+        // console.log('Sizes is array:', Array.isArray(productRes.data.sizes));
+        // console.log('Sizes length:', productRes.data.sizes?.length);
+        // console.log('Category type:', productRes.data.categoryType);
+        
+                  if (productRes.data.sizes?.length > 0) {
+            // console.log('Setting selected size to:', productRes.data.sizes[0]);
+            setSelectedSize(productRes.data.sizes[0]);
+            // console.log('Selected size state set to:', productRes.data.sizes[0]);
+          } else {
+            // console.log('No sizes found, selectedSize will remain undefined');
+            setSelectedSize(''); // Explicitly set to empty string
+          }
         
         // Fetch available colors for this category
         if (productRes.data.categoryType && productRes.data.category) {
@@ -338,11 +360,11 @@ const SelectProduct = () => {
       }
     };
 
-  const fetchAvailableColors = async (categoryType, category) => {
+    const fetchAvailableColors = async (categoryType, category) => {
     try {
-      console.log('=== FETCHING AVAILABLE COLORS ===');
-      console.log('Category Type:', categoryType);
-      console.log('Category:', category);
+      // console.log('=== FETCHING AVAILABLE COLORS ===');
+      // console.log('Category Type:', categoryType);
+      // console.log('Category:', category);
       
       const query = new URLSearchParams();
       if (categoryType) {
@@ -357,18 +379,18 @@ const SelectProduct = () => {
       
       const response = await api.get(`/products?${query}`);
       
-      console.log('Products response:', response.data);
-      console.log('Number of products found:', response.data.length);
+      // console.log('Products response:', response.data);
+      // console.log('Number of products found:', response.data.length);
       
       // Extract unique colors from products in this category
       const colors = new Set();
       response.data.forEach((product, index) => {
-        console.log(`Product ${index + 1}:`, {
-          name: product.name,
-          colors: product.colors,
-          colorsType: typeof product.colors,
-          isArray: Array.isArray(product.colors)
-        });
+        // console.log(`Product ${index + 1}:`, {
+        //   name: product.name,
+        //   colors: product.colors,
+        //   colorsType: typeof product.colors,
+        //   isArray: Array.isArray(product.colors)
+        // });
         
         if (product.colors && Array.isArray(product.colors)) {
           product.colors.forEach(color => {
@@ -398,7 +420,7 @@ const SelectProduct = () => {
       console.error('Error fetching available colors:', error);
       setAvailableColors([]);
       }
-    };
+  };
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
@@ -469,16 +491,41 @@ const SelectProduct = () => {
   };
 
   const handleSizeSelect = (size) => {
+    // console.log('=== SIZE SELECTED ===');
+    // console.log('Previous selected size:', selectedSize);
+    // console.log('New selected size:', size);
+    // console.log('Product:', product?.name);
+    // console.log('Product category type:', product?.categoryType);
     setSelectedSize(size);
+    // console.log('Selected size state updated to:', size);
   };
 
   const handleAddToCart = () => {
     const noSizes = !product?.sizes || product.sizes.length === 0;
+    const isBridal = product?.categoryType === 'bridal';
+    
+    // console.log('=== ADD TO CART DEBUG ===');
+    // console.log('Product:', product?.name);
+    // console.log('Category type:', product?.categoryType);
+    // console.log('Has sizes:', !noSizes);
+    // console.log('Is bridal:', isBridal);
+    // console.log('Selected color:', selectedColor);
+    // console.log('Selected size:', selectedSize);
+    // console.log('Product sizes array:', product?.sizes);
+    // console.log('Product sizeStocks:', product?.sizeStocks);
+    
     if (!selectedColor) {
+      // console.log('ERROR: No color selected');
       toast.error("Please select a color");
       return;
     }
-    if (!noSizes && !selectedSize) {
+    
+    // For bridal products or products without sizes, skip size requirement
+    if (!isBridal && !noSizes && !selectedSize) {
+      // console.log('ERROR: Size required but not selected');
+      // console.log('isBridal:', isBridal);
+      // console.log('noSizes:', noSizes);
+      // console.log('selectedSize:', selectedSize);
       toast.error("Please select a size");
       return;
     }
@@ -488,16 +535,17 @@ const SelectProduct = () => {
       toast.error("This item is out of stock");
       return;
     }
-    if (!noSizes && !isSizeAvailable(selectedSize)) {
+    
+    // Only check size availability for non-bridal products with sizes
+    if (!isBridal && !noSizes && !isSizeAvailable(selectedSize)) {
       toast.error(`Size ${selectedSize} is out of stock`);
       return;
     }
  
     try {
       const safeQty = Math.max(1, Number(quantity) || 1);
-      const sizeToUse = noSizes ? '' : selectedSize;
+      const sizeToUse = (isBridal || noSizes) ? '' : selectedSize;
       addToCart(product._id, sizeToUse, safeQty, selectedColor);
-      toast.success("Added to cart successfully!");
     } catch (err) {
       console.error("Failed to add to cart:", err);
       toast.error("Failed to add to cart. Please try again.");
@@ -506,11 +554,23 @@ const SelectProduct = () => {
 
   const handleBuyNow = async () => {
     const noSizes = !product?.sizes || product.sizes.length === 0;
+    const isBridal = product?.categoryType === 'bridal';
+    
+    // console.log('=== BUY NOW DEBUG ===');
+    // console.log('Product:', product?.name);
+    // console.log('Category type:', product?.categoryType);
+    // console.log('Has sizes:', !noSizes);
+    // console.log('Is bridal:', isBridal);
+    // console.log('Selected color:', selectedColor);
+    // console.log('Selected size:', selectedSize);
+    
     if (!selectedColor) {
       toast.error("Please select a color");
       return;
     }
-    if (!noSizes && !selectedSize) {
+    
+    // For bridal products or products without sizes, skip size requirement
+    if (!isBridal && !noSizes && !selectedSize) {
       toast.error("Please select a size");
       return;
     }
@@ -520,7 +580,9 @@ const SelectProduct = () => {
       toast.error("This item is out of stock");
       return;
     }
-    if (!noSizes && !isSizeAvailable(selectedSize)) {
+    
+    // Only check size availability for non-bridal products with sizes
+    if (!isBridal && !noSizes && !isSizeAvailable(selectedSize)) {
       toast.error(`Size ${selectedSize} is out of stock`);
       return;
     }
@@ -541,131 +603,145 @@ const SelectProduct = () => {
   };
 
   const handleAddressSelect = (address) => {
-    console.log('=== ADDRESS SELECTED (SelectProduct) ===');
-    console.log('Selected address:', address);
-    console.log('Product:', product?.name);
-    console.log('Selected size:', selectedSize);
-    console.log('Selected color:', selectedColor);
-    console.log('Product price:', product?.sellingPrice);
+    // console.log('=== ADDRESS SELECTED (SelectProduct) ===');
+    // console.log('Selected address:', address);
+    // console.log('Product:', product?.name);
+    // console.log('Selected size:', selectedSize);
+    // console.log('Selected color:', selectedColor);
+    // console.log('Product price:', product?.sellingPrice);
     
     setSelectedAddress(address);
     setIsShippingAddressModalOpen(false);
     
-    console.log('Address modal closed, proceeding with payment...');
+    // console.log('Address modal closed, proceeding with payment...');
     // Proceed with payment after address selection
     proceedWithPayment(address);
   };
 
   const proceedWithPayment = async (shippingAddress) => {
     try {
-      console.log('=== STARTING PAYMENT FLOW (SelectProduct) ===');
-      console.log('Timestamp:', new Date().toISOString());
-      console.log('Product state before payment:', {
-        name: product.name,
-        totalStock: product.totalStock,
-        sizeStocks: product.sizeStocks,
-        selectedSize,
-        selectedColor,
-        quantity
-      });
+      // console.log('=== STARTING PAYMENT FLOW (SelectProduct) ===');
+      // console.log('Timestamp:', new Date().toISOString());
+      // console.log('Product state before payment:', {
+      //   name: product.name,
+      //   totalStock: product.totalStock,
+      //   sizeStocks: product.sizeStocks,
+      //   selectedSize,
+      //   selectedColor,
+      //   quantity
+      // });
 
       setLoading(true);
       setIsInPaymentFlow(true);
       
-      // Check stock availability before proceeding
-      try {
-        console.log('=== MAKING STOCK CHECK API CALL ===');
-        console.log('Timestamp:', new Date().toISOString());
-        console.log('Stock check parameters:', {
-          productId: product._id,
-          quantity: quantity,
-          size: selectedSize
-        });
-        
-        const stockCheck = await api.get(`/products/${product._id}/check-stock?quantity=${quantity}&size=${selectedSize}`);
-        
-        console.log('Stock check API response:', stockCheck.data);
-        
-        if (!stockCheck.data.canProceed) {
-          console.log('Stock check failed - insufficient stock');
-          toast.error(`Size ${selectedSize} is no longer available`);
-          setIsInPaymentFlow(false);
-          return;
-        }
-        
-        console.log('Stock check passed - proceeding with payment');
-      } catch (stockError) {
+              // Check stock availability before proceeding
+        try {
+          // console.log('=== MAKING STOCK CHECK API CALL ===');
+          // console.log('Timestamp:', new Date().toISOString());
+          // console.log('Stock check parameters:', {
+          //   productId: product._id,
+          //   quantity: quantity,
+          //   size: selectedSize
+          // });
+          
+          // For bridal products or products without sizes, don't include size parameter
+          const noSizes = !product?.sizes || product.sizes.length === 0;
+          const isBridal = product?.categoryType === 'bridal';
+          
+          let stockCheckUrl = `/products/${product._id}/check-stock?quantity=${quantity}`;
+          if (!isBridal && !noSizes && selectedSize) {
+            stockCheckUrl += `&size=${selectedSize}`;
+          }
+          
+          // console.log('Stock check URL:', stockCheckUrl);
+          const stockCheck = await api.get(stockCheckUrl);
+          
+          // console.log('Stock check API response:', stockCheck.data);
+          
+          if (!stockCheck.data.canProceed) {
+            // console.log('Stock check failed - insufficient stock');
+            toast.error(`Size ${selectedSize} is no longer available`);
+            setIsInPaymentFlow(false);
+            return;
+          }
+          
+          // console.log('Stock check passed - proceeding with payment');
+        } catch (stockError) {
         console.error('Stock check failed:', stockError);
         toast.error("Failed to check stock availability");
         setIsInPaymentFlow(false);
         return;
       }
 
-      console.log('Creating order with product:', {
-        productId: product._id,
-        size: selectedSize,
-        color: selectedColor,
-        price: product.sellingPrice,
-        quantity,
-        product: {
-          name: product.name,
-          code: product.code,
-          totalStock: product.totalStock,
-          sizeStocks: product.sizeStocks,
-          sizes: product.sizes,
-          colors: product.colors
+              // console.log('Creating order with product:', {
+        //   productId: product._id,
+        //   size: selectedSize,
+        //   color: selectedColor,
+        //   price: product.sellingPrice,
+        //   quantity,
+        //   product: {
+        //     name: product.name,
+        //     code: product.code,
+        //     totalStock: product.totalStock,
+        //     sizeStocks: product.sizeStocks,
+        //     sizes: product.sizes,
+        //     colors: product.colors
+        //   }
+        // });
+
+              // Validate that color and size are selected
+        if (!selectedColor) {
+          // console.error('No color selected');
+          toast.error("Please select a color before proceeding");
+          setIsInPaymentFlow(false);
+          return;
         }
-      });
 
-      // Validate that color and size are selected
-      if (!selectedColor) {
-        console.error('No color selected');
-        toast.error("Please select a color before proceeding");
-        setIsInPaymentFlow(false);
-        return;
-      }
+        const noSizes = !product?.sizes || product.sizes.length === 0;
+        const isBridal = product?.categoryType === 'bridal';
+        
+        // For bridal products or products without sizes, skip size requirement
+        if (!isBridal && !noSizes && !selectedSize) {
+          // console.error('No size selected');
+          toast.error("Please select a size before proceeding");
+          setIsInPaymentFlow(false);
+          return;
+        }
 
-      const noSizes = !product?.sizes || product.sizes.length === 0;
-      if (!noSizes && !selectedSize) {
-        console.error('No size selected');
-        toast.error("Please select a size before proceeding");
-        setIsInPaymentFlow(false);
-        return;
-      }
+        // Validate that selected color and size are available
+        if (!product.colors.some(c => (typeof c === 'string' ? c === selectedColor : c?.code === selectedColor))) {
+          // console.error('Selected color not available:', {
+          //   selectedColor,
+          //   availableColors: product.colors
+          // });
+          toast.error("Selected color is not available for this product");
+          setIsInPaymentFlow(false);
+          return;
+        }
 
-      // Validate that selected color and size are available
-      if (!product.colors.some(c => (typeof c === 'string' ? c === selectedColor : c?.code === selectedColor))) {
-        console.error('Selected color not available:', {
-          selectedColor,
-          availableColors: product.colors
-        });
-        toast.error("Selected color is not available for this product");
-        setIsInPaymentFlow(false);
-        return;
-      }
+        // Only check size availability for non-bridal products with sizes
+        if (!isBridal && !noSizes && !isSizeAvailable(selectedSize)) {
+          // console.error('Selected size not available:', {
+          //   selectedSize,
+          //   availableSizes: product.sizes,
+          //   sizeStocks: product.sizeStocks
+          // });
+          toast.error(`Selected size ${selectedSize} is not available`);
+          setIsInPaymentFlow(false);
+          return;
+        }
 
-      if (!noSizes && !isSizeAvailable(selectedSize)) {
-        console.error('Selected size not available:', {
-          selectedSize,
-          availableSizes: product.sizes,
-          sizeStocks: product.sizeStocks
-        });
-        toast.error(`Selected size ${selectedSize} is not available`);
-        setIsInPaymentFlow(false);
-        return;
-      }
-
-      console.log('Validation passed. Selected options:', {
-        color: selectedColor,
-        size: selectedSize,
-        price: product.sellingPrice
-      });
+        // console.log('Validation passed. Selected options:', {
+        //   color: selectedColor,
+        //   size: selectedSize,
+        //   price: product.sellingPrice
+        // });
 
       // Prepare order data with shipping address
       const orderData = {
         items: [{
           productId: product._id,
-          size: selectedSize,
+          size: (isBridal || noSizes) ? '' : selectedSize, // Empty string for bridal products
           color: selectedColor,
           quantity: quantity,
           price: product.sellingPrice,
@@ -679,29 +755,29 @@ const SelectProduct = () => {
         }
       };
 
-      console.log('Making API call to create Razorpay order...');
-      // Create Razorpay order first (no database order yet)
-      const razorpayRes = await api.post("/payment/create-order", {
-        amount: product.sellingPrice * quantity,
-        receipt: `order_${Date.now()}` // Use timestamp as receipt
-      });
+              // console.log('Making API call to create Razorpay order...');
+        // Create Razorpay order first (no database order yet)
+        const razorpayRes = await api.post("/payment/create-order", {
+          amount: product.sellingPrice * quantity,
+          receipt: `order_${Date.now()}` // Use timestamp as receipt
+        });
 
-      console.log('Razorpay order creation response:', razorpayRes.data);
+        // console.log('Razorpay order creation response:', razorpayRes.data);
 
         if (!razorpayRes.data.id) {
           throw new Error("Invalid Razorpay response: missing order ID");
         }
 
-      console.log('Getting Razorpay key...');
+        // console.log('Getting Razorpay key...');
         // Get Razorpay key from backend
         const keyRes = await api.get("/payment/key");
         if (!keyRes.data.key_id) {
           throw new Error("Failed to get Razorpay key");
         }
         const razorpayKeyId = keyRes.data.key_id;
-      console.log('Razorpay key received:', razorpayKeyId ? 'Present' : 'Missing');
+        // console.log('Razorpay key received:', razorpayKeyId ? 'Present' : 'Missing');
 
-      console.log('Setting up Razorpay options...');
+        // console.log('Setting up Razorpay options...');
       const options = {
           key: razorpayKeyId,
           amount: product.sellingPrice * quantity * 100, // Convert to paise
@@ -709,9 +785,9 @@ const SelectProduct = () => {
         name: "Yarika",
         description: "Purchase Payment",
         order_id: razorpayRes.data.id,
-        handler: async (response) => {
-          console.log("Razorpay handler fired", response);
-            try {
+                handler: async (response) => {
+          // console.log("Razorpay handler fired", response);
+          try {
             // 1. Verify payment with your backend
           const verifyRes = await api.post("/payment/verify-payment", {
             razorpay_order_id: response.razorpay_order_id,
@@ -740,38 +816,38 @@ const SelectProduct = () => {
           },
           modal: {
             ondismiss: function() {
-            console.log('=== PAYMENT MODAL DISMISSED ===');
-            console.log('Timestamp:', new Date().toISOString());
-            console.log('Product state on dismiss:', {
-              name: product.name,
-              totalStock: product.totalStock,
-              sizeStocks: product.sizeStocks,
-              isInPaymentFlow
-            });
+            // console.log('=== PAYMENT MODAL DISMISSED ===');
+            // console.log('Timestamp:', new Date().toISOString());
+            // console.log('Product state on dismiss:', {
+            //   name: product.name,
+            //   totalStock: product.totalStock,
+            //   sizeStocks: product.sizeStocks,
+            //   isInPaymentFlow
+            // });
             
               setLoading(false);
             setIsInPaymentFlow(false);
             
             // Re-fetch product data to reset any local state
-            console.log('Re-fetching product data after payment modal dismiss');
+            // console.log('Re-fetching product data after payment modal dismiss');
             fetchProduct();
           }
         }
       };
 
-      console.log('Razorpay options configured:', {
-        key: options.key ? 'Present' : 'Missing',
-        amount: options.amount,
-        order_id: options.order_id,
-        currency: options.currency
-      });
+      // console.log('Razorpay options configured:', {
+      //   key: options.key ? 'Present' : 'Missing',
+      //   amount: options.amount,
+      //   order_id: options.order_id,
+      //   currency: options.currency
+      // });
 
-      console.log('Checking if Razorpay is available...');
+      // console.log('Checking if Razorpay is available...');
       if (typeof window.Razorpay === 'undefined') {
         throw new Error("Razorpay is not loaded. Please refresh the page and try again.");
       }
 
-      console.log('Opening Razorpay payment modal...');
+      // console.log('Opening Razorpay payment modal...');
         const razorpayInstance = new window.Razorpay(options);
         razorpayInstance.open();
     } catch (error) {
@@ -950,23 +1026,34 @@ const SelectProduct = () => {
   };
 
   const isSizeAvailable = (size) => {
+    // Debug logging
+    // console.log(`=== STOCK AVAILABILITY CHECK ===`);
+    // console.log(`Timestamp: ${new Date().toISOString()}`);
+    // console.log(`Checking size availability for ${size}:`, {
+    //   productName: product?.name,
+    //   productId: product?._id,
+    //   productSizes: product?.sizes,
+    //   productSizeStocks: product?.sizeStocks,
+    //   totalStock: product?.totalStock,
+    //   categoryType: product?.categoryType
+    // });
+    
     // If no sizes (e.g., bridal), availability is based on total stock
     if (!product?.sizes || product.sizes.length === 0) {
+      // console.log('Product has no sizes, checking total stock:', product?.totalStock);
       return (product?.totalStock || 0) > 0;
     }
-    if (!product?.sizeStocks) return false;
+    
+    if (!product?.sizeStocks) {
+      // console.log('No size stocks data available');
+      return false;
+    }
+    
     const sizeStock = product.sizeStocks[size] || 0;
-    console.log(`=== STOCK AVAILABILITY CHECK ===`);
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log(`Checking size availability for ${size}:`, {
-      productName: product?.name,
-      productId: product?._id,
-      sizeStock,
-      isAvailable: sizeStock > 0,
-      allSizeStocks: product?.sizeStocks,
-      totalStock: product?.totalStock
-    });
-    return sizeStock > 0;
+    const isAvailable = sizeStock > 0;
+    
+    // console.log(`Size ${size} stock: ${sizeStock}, available: ${isAvailable}`);
+    return isAvailable;
   };
 
   const renderColorOptions = () => {
@@ -1052,10 +1139,26 @@ const SelectProduct = () => {
   };
     
   const renderSizeOptions = () => {
-    if (!product?.sizes?.length) {
+    // Debug logging
+    // console.log('=== RENDER SIZE OPTIONS ===');
+    // console.log('Product:', product?.name);
+    // console.log('Product sizes:', product?.sizes);
+    // console.log('Product categoryType:', product?.categoryType);
+    // console.log('Sizes length:', product?.sizes?.length);
+    
+    // For bridal products, don't show size selection
+    if (product?.categoryType === 'bridal') {
+      // console.log('Bridal product - no size selection needed');
+      return null;
+    }
+    
+    // For products without sizes, don't show size selection
+    if (!product?.sizes || product.sizes.length === 0) {
+      // console.log('Product has no sizes - no size selection needed');
       return null;
     }
 
+    // console.log('Rendering size options for:', product.sizes);
     return (
       <div className="size-section">
         <div className="size-section-header">
@@ -1072,6 +1175,15 @@ const SelectProduct = () => {
             const isAvailable = isSizeAvailable(size);
             const sizeStock = product.sizeStocks[size] || 0;
             
+            // Debug logging for each size button
+            // console.log(`Size button ${size}:`, {
+            //   isSelected,
+            //   selectedSize,
+            //   isAvailable,
+            //   sizeStock,
+            //   className: `size-btn ${isSelected ? 'selected' : ''} ${!isAvailable ? 'disabled' : ''}`
+            // });
+            
             return (
               <button
                 key={size}
@@ -1082,6 +1194,12 @@ const SelectProduct = () => {
                 aria-pressed={isSelected}
                 disabled={!isAvailable}
                 title={isAvailable ? `Size ${size} - ${sizeStock} in stock` : `Size ${size} - Out of stock`}
+                style={{
+                  // Force the selected styling with inline styles as backup
+                  backgroundColor: isSelected ? '#C5A56F' : 'white',
+                  color: isSelected ? 'white' : '#333',
+                  borderColor: isSelected ? '#C5A56F' : '#e0e0e0'
+                }}
               >
                 {size}
               </button>
@@ -1322,18 +1440,56 @@ const SelectProduct = () => {
           {renderSizeOptions()}
           {renderKeyHighlights()}
 
+          {/* Debug info for button state */}
+          {/* {(() => {
+            const noSizes = !product?.sizes || product.sizes.length === 0;
+            const isBridal = product?.categoryType === 'bridal';
+            const isSizeRequired = !isBridal && !noSizes;
+            const sizeValidation = isSizeRequired && (!selectedSize || !isSizeAvailable(selectedSize));
+            const buttonDisabled = !product.totalStock || sizeValidation || !selectedColor;
+            
+            // console.log('=== BUTTON STATE DEBUG ===', {
+            //   productName: product?.name,
+            //   productCategoryType: product?.categoryType,
+            //   productTotalStock: product?.totalStock,
+            //   productSizes: product?.sizes,
+            //   productSizesLength: product?.sizes?.length,
+            //   selectedSize,
+            //   selectedColor,
+            //   isBridal,
+            //   noSizes,
+            //   isSizeRequired,
+            //   sizeValidation,
+            //   buttonDisabled
+            // });
+            
+            return null;
+          })()} */}
+          
           <div className="purchase-row">
             <button 
               className="add-to-cart" 
               onClick={handleAddToCart}
-              disabled={!product.totalStock || (!(!product?.sizes || product.sizes.length === 0) && (!selectedSize || !isSizeAvailable(selectedSize))) || !selectedColor}
+              disabled={(() => {
+                const noSizes = !product?.sizes || product.sizes.length === 0;
+                const isBridal = product?.categoryType === 'bridal';
+                const isSizeRequired = !isBridal && !noSizes;
+                const sizeValidation = isSizeRequired && (!selectedSize || !isSizeAvailable(selectedSize));
+                return !product.totalStock || sizeValidation || !selectedColor;
+              })()}
             >
               Add To Bag
             </button>
             <button 
               className="buy-now" 
               onClick={handleBuyNow}
-              disabled={!product.totalStock || (!(!product?.sizes || product.sizes.length === 0) && (!selectedSize || !isSizeAvailable(selectedSize))) || !selectedColor}
+              disabled={(() => {
+                const noSizes = !product?.sizes || product.sizes.length === 0;
+                const isBridal = product?.categoryType === 'bridal';
+                const isSizeRequired = !isBridal && !noSizes;
+                const sizeValidation = isSizeRequired && (!selectedSize || !isSizeAvailable(selectedSize));
+                return !product.totalStock || sizeValidation || !selectedColor;
+              })()}
             >
               Buy Now
             </button>
@@ -1358,9 +1514,9 @@ const SelectProduct = () => {
       <Toaster position="bottom-center" />
 
       {/* Debug info */}
-      {console.log('Available colors state:', availableColors)}
+      {/* {console.log('Available colors state:', availableColors)}
       {console.log('Product category:', product?.category)}
-      {console.log('Product categoryType:', product?.categoryType)}
+      {console.log('Product categoryType:', product?.categoryType)} */}
 
       {/* You may like section */}
       {similarProducts && similarProducts.length > 0 && (

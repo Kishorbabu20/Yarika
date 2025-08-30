@@ -25,14 +25,14 @@ export default function LoginModal({ onClose }) {
 
         try {
             setLoading(true);
-            console.log('Attempting login with email:', email);
+            // console.log('Attempting login with email:', email);
             
             const res = await api.post("/client/login", {
                 email,
                 password,
             });
 
-            console.log('Login response:', res.data);
+            // console.log('Login response:', res.data);
             const { token, client } = res.data;
 
             // Save token and user data to localStorage
@@ -77,7 +77,7 @@ export default function LoginModal({ onClose }) {
             // If user was on home page, just update state without reload
             else if (currentPath === '/') {
                 // No need to reload, just update state
-                console.log('User logged in on home page, updating state...');
+                // console.log('User logged in on home page, updating state...');
             }
             // Default: go to home page
             else {

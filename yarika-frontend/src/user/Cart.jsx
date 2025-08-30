@@ -72,28 +72,28 @@ const CartPage = () => {
     };
 
     const handleAddressSelect = (address) => {
-        console.log('=== ADDRESS SELECTED ===');
-        console.log('Selected address:', address);
-        console.log('Cart items:', cartItems);
-        console.log('Total amount:', total);
+        // console.log('=== ADDRESS SELECTED ===');
+        // console.log('Selected address:', address);
+        // console.log('Cart items:', cartItems);
+        // console.log('Total amount:', total);
         
         setSelectedAddress(address);
         setShowAddressModal(false);
         
-        console.log('Address modal closed, proceeding with payment...');
+        // console.log('Address modal closed, proceeding with payment...');
         // Proceed with payment after address selection
         proceedWithPayment(address);
     };
 
     const proceedWithPayment = async (shippingAddress) => {
-        console.log('=== PROCEEDING WITH PAYMENT ===');
-        console.log('Shipping address:', shippingAddress);
-        console.log('Cart items:', cartItems);
-        console.log('Total amount:', total);
+        // console.log('=== PROCEEDING WITH PAYMENT ===');
+        // console.log('Shipping address:', shippingAddress);
+        // console.log('Cart items:', cartItems);
+        // console.log('Total amount:', total);
 
         // setCheckoutLoading(true); // This line was removed as per the edit hint
         try {
-            console.log('Checking stock availability...');
+            // console.log('Checking stock availability...');
             // Check stock availability for all items before proceeding
             for (const item of cartItems) {
                 try {
@@ -110,7 +110,7 @@ const CartPage = () => {
                 }
             }
 
-            console.log('Stock check passed, preparing order data...');
+            // console.log('Stock check passed, preparing order data...');
             // Prepare order data with shipping address
             const orderData = {
                 items: cartItems.map(item => ({
@@ -129,27 +129,27 @@ const CartPage = () => {
                 }
             };
 
-            console.log('Creating Razorpay order with data:', orderData);
+            // console.log('Creating Razorpay order with data:', orderData);
 
             // Create Razorpay order first (no database order yet)
-            console.log('Making API call to create Razorpay order...');
+            // console.log('Making API call to create Razorpay order...');
             const razorpayRes = await api.post("/payment/create-order", {
                 amount: total,
                 receipt: `order_${Date.now()}` // Use timestamp as receipt
             });
 
-            console.log('Razorpay order creation response:', razorpayRes.data);
+            // console.log('Razorpay order creation response:', razorpayRes.data);
 
             if (!razorpayRes.data.id) {
                 throw new Error("Failed to create Razorpay order: No order ID received");
             }
 
-            console.log('Getting Razorpay key...');
+            // console.log('Getting Razorpay key...');
             const keyRes = await api.get("/payment/key");
             const razorpayKeyId = keyRes.data.key_id;
-            console.log('Razorpay key received:', razorpayKeyId ? 'Present' : 'Missing');
+            // console.log('Razorpay key received:', razorpayKeyId ? 'Present' : 'Missing');
 
-            console.log('Setting up Razorpay options...');
+            // console.log('Setting up Razorpay options...');
             const options = {
                 key: razorpayKeyId,
                 amount: razorpayRes.data.amount,
@@ -159,7 +159,7 @@ const CartPage = () => {
                 order_id: razorpayRes.data.id,
                 handler: async (response) => {
                     try {
-                        console.log('Payment successful, verifying payment...');
+                        // console.log('Payment successful, verifying payment...');
                         
                         // Verify payment
                         const verifyRes = await api.post("/payment/verify-payment", {
@@ -169,28 +169,28 @@ const CartPage = () => {
                         });
 
                         if (verifyRes.data.success) {
-                            console.log('Payment verified, creating order...');
+                            // console.log('Payment verified, creating order...');
                             
                             // Only now create the order in the backend
                             try {
-                                console.log('=== ORDER CREATION ATTEMPT ===');
-                                console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
-                                console.log('User token:', localStorage.getItem('token') ? 'Present' : 'Missing');
+                                // console.log('=== ORDER CREATION ATTEMPT ===');
+                                // console.log('Order data being sent:', JSON.stringify(orderData, null, 2));
+                                // console.log('User token:', localStorage.getItem('token') ? 'Present' : 'Missing');
                                 
                                 const orderRes = await api.post("/orders/add", orderData);
                                 
-                                console.log('Order creation response:', {
-                                    status: orderRes.status,
-                                    data: orderRes.data,
-                                    hasOrderId: !!orderRes.data._id
-                                });
+                                // console.log('Order creation response:', {
+                                //   status: orderRes.status,
+                                //   data: orderRes.data,
+                                //   hasOrderId: !!orderRes.data._id
+                                // });
                                 
                                 if (!orderRes.data._id) {
                                     console.error('Order creation failed - no order ID in response:', orderRes.data);
                                     throw new Error("Order creation failed after payment - no order ID received");
                                 }
                                 
-                                console.log('Order created successfully:', orderRes.data._id);
+                                // console.log('Order created successfully:', orderRes.data._id);
                                 
                                 // Clear cart and show success message
                             await clearCart();
@@ -268,25 +268,25 @@ const CartPage = () => {
                 },
                 modal: {
                     ondismiss: function() {
-                        console.log('Razorpay modal dismissed');
+                        // console.log('Razorpay modal dismissed');
                         // setCheckoutLoading(false); // This line was removed as per the edit hint
                     }
                 }
             };
 
-            console.log('Razorpay options configured:', {
-                key: options.key ? 'Present' : 'Missing',
-                amount: options.amount,
-                order_id: options.order_id,
-                currency: options.currency
-            });
+            // console.log('Razorpay options configured:', {
+            //   key: options.key ? 'Present' : 'Missing',
+            //   amount: options.amount,
+            //   order_id: options.order_id,
+            //   currency: options.currency
+            // });
 
-            console.log('Checking if Razorpay is available...');
+            // console.log('Checking if Razorpay is available...');
             if (typeof window.Razorpay === 'undefined') {
                 throw new Error("Razorpay is not loaded. Please refresh the page and try again.");
             }
 
-            console.log('Opening Razorpay payment modal...');
+            // console.log('Opening Razorpay payment modal...');
             const razorpayInstance = new window.Razorpay(options);
             razorpayInstance.open();
             

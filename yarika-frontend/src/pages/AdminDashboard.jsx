@@ -29,7 +29,7 @@ const AdminDashboard = () => {
       return;
     }
 
-    console.log('Admin dashboard loaded with token:', adminToken ? 'Present' : 'Missing');
+    // console.log('Admin dashboard loaded with token:', adminToken ? 'Present' : 'Missing');
     
     fetchStats();
     fetchSales();
@@ -76,12 +76,12 @@ const AdminDashboard = () => {
         return;
       }
 
-      console.log('Fetching recent orders...');
+      // console.log('Fetching recent orders...');
       const res = await api.get("/orders/recent");
-      console.log('Recent orders response:', {
-        status: res.status,
-        dataLength: res.data?.length || 0
-      });
+      // console.log('Recent orders response:', {
+      //   status: res.status,
+      //   dataLength: res.data?.length || 0
+      // });
       
       if (!res.data || !Array.isArray(res.data)) {
         console.error('Invalid recent orders response data:', res.data);
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
       }
 
       setOrders(res.data);
-      console.log(`Loaded ${res.data.length} recent orders`);
+      // console.log(`Loaded ${res.data.length} recent orders`);
     } catch (err) {
       console.error("Error fetching recent orders:", {
         message: err.message,
@@ -124,12 +124,12 @@ const AdminDashboard = () => {
         return;
       }
 
-      console.log('Fetching all orders...');
+      // console.log('Fetching all orders...');
       const res = await api.get("/orders/all");
-      console.log('Orders response:', {
-        status: res.status,
-        dataLength: res.data?.length || 0
-      });
+      // console.log('Orders response:', {
+      //   status: res.status,
+      //   dataLength: res.data?.length || 0
+      // });
       
       if (!res.data || !Array.isArray(res.data)) {
         console.error('Invalid response data:', res.data);
@@ -199,7 +199,7 @@ const AdminDashboard = () => {
 
   // Add debug log for product stats updates
   useEffect(() => {
-    console.log('Product Stats Updated:', productStats);
+    // console.log('Product Stats Updated:', productStats);
   }, [productStats]);
 
   const fetchDashboardStats = async () => {
@@ -260,15 +260,15 @@ const AdminDashboard = () => {
   const debugAuth = async () => {
     try {
       const adminToken = localStorage.getItem("adminToken");
-      console.log('=== AUTH DEBUG ===');
-      console.log('Admin token exists:', !!adminToken);
-      console.log('Admin token length:', adminToken?.length);
-      console.log('Admin token preview:', adminToken ? `${adminToken.substring(0, 20)}...` : 'None');
+      // console.log('=== AUTH DEBUG ===');
+      // console.log('Admin token exists:', !!adminToken);
+      // console.log('Admin token length:', adminToken?.length);
+      // console.log('Admin token preview:', adminToken ? `${adminToken.substring(0, 20)}...` : 'None');
       
       if (adminToken) {
         // Test the token with a simple API call
         const testRes = await api.get("/admins/me");
-        console.log('Token test response:', testRes.data);
+        // console.log('Token test response:', testRes.data);
         toast.success('Authentication working!');
       } else {
         toast.error('No admin token found');

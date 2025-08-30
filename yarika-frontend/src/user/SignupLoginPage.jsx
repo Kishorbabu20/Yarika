@@ -56,15 +56,15 @@ export default function SignupLoginPage() {
     }
 
     try {
-      console.log('Attempting registration with:', { 
-        firstName: formData.firstName, 
-        lastName: formData.lastName, 
-        email: formData.email,
-        phoneNumber: formData.phoneNumber 
-      });
+      // console.log('Attempting registration with:', { 
+      //   firstName: formData.firstName, 
+      //   lastName: formData.lastName, 
+      //   email: formData.email,
+      //   phoneNumber: formData.phoneNumber 
+      // });
       
       const res = await api.post("/client/register", formData);
-      console.log('Registration response:', res.data);
+      // console.log('Registration response:', res.data);
       
       if (res.data.requiresVerification) {
         toast.success("Account created! Please verify your email.");

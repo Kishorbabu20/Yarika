@@ -8,17 +8,17 @@ const ProductListSection = ({ product, dropdown }) => {
 
   const handleClick = () => {
     // Debug: Log the product data
-    console.log('ProductListSection - Product data:', {
-      name: product?.name,
-      seoUrl: product?.seoUrl,
-      categoryType: product?.categoryType,
-      category: product?.category,
-      dropdown: dropdown,
-      _id: product?._id
-    });
+    // console.log('ProductListSection - Product data:', {
+    //   name: product?.name,
+    //   seoUrl: product?.seoUrl,
+    //   categoryType: product?.categoryType,
+    //   category: product?.category,
+    //   dropdown: dropdown,
+    //   _id: product?._id
+    // });
     
     const url = generateProductUrl(product, 'dropdown', dropdown);
-    console.log('ProductListSection - Generated URL:', url);
+    // console.log('ProductListSection - Generated URL:', url);
     navigate(url);
   };
 

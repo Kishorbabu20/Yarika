@@ -440,7 +440,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   useEffect(() => {
     axios.get("/color-groups")
       .then(res => {
-        console.log('Color groups loaded:', res.data);
+        // console.log('Color groups loaded:', res.data);
         setColorGroups(res.data);
       })
       .catch(err => {
@@ -472,33 +472,33 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   // Update available colors when group changes
   useEffect(() => {
-    console.log('Group changed:', {
-      group,
-      colorGroups: colorGroups.length,
-      availableColors: availableColors.length
-    });
+    // console.log('Group changed:', {
+    //   group,
+    //   colorGroups: colorGroups.length,
+    //   availableColors: availableColors.length
+    // });
     
-    console.log('Available color group names:', colorGroups.map(g => g.name));
-    console.log('Looking for group name:', group);
+    // console.log('Available color group names:', colorGroups.map(g => g.name));
+    // console.log('Looking for group name:', group);
     
     // If group is 'none' or doesn't match any available groups, set it to the first available group
     if (group === 'none' || group === '' || !colorGroups.find(g => g.name === group)) {
       if (colorGroups.length > 0) {
         const firstGroup = colorGroups[0].name;
-        console.log('Auto-setting group to first available group:', firstGroup);
+        // console.log('Auto-setting group to first available group:', firstGroup);
         setGroup(firstGroup);
         return; // Exit early, this will trigger the useEffect again
       }
     }
     
     const groupObj = colorGroups.find(g => g.name === group);
-    console.log('Found group object:', groupObj);
+    // console.log('Found group object:', groupObj);
     
     if (groupObj && groupObj.colors) {
-      console.log('Setting available colors:', groupObj.colors);
+      // console.log('Setting available colors:', groupObj.colors);
       setAvailableColors(groupObj.colors);
     } else {
-      console.log('No group found or no colors, clearing available colors');
+      // console.log('No group found or no colors, clearing available colors');
       setAvailableColors([]);
     }
     // Only reset selected colors if not editing or not loaded
@@ -534,11 +534,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
 
   // Debug: Log metaKeywords state changes
   useEffect(() => {
-    console.log('metaKeywords state changed:', {
-      value: metaKeywords,
-      type: typeof metaKeywords,
-      length: metaKeywords ? metaKeywords.length : 0
-    });
+    // console.log('metaKeywords state changed:', {
+    //   value: metaKeywords,
+    //   type: typeof metaKeywords,
+    //   length: metaKeywords ? metaKeywords.length : 0
+    // });
   }, [metaKeywords]);
 
   const toggleSize = (size) => {
@@ -561,7 +561,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
   };
 
   const handleSizeStockChange = (size, value) => {
-    console.log('Changing stock for size', size, 'to', value);
+    // console.log('Changing stock for size', size, 'to', value);
     
     // Parse the value and ensure it's not negative
     const newValue = Math.max(parseInt(value) || 0, 0);
@@ -571,7 +571,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       // Always set the value, even if it's 0
       newStocks[size] = newValue;
       
-      console.log('New stocks:', newStocks);
+      // console.log('New stocks:', newStocks);
       
       // Update total stock
       const newTotal = Object.values(newStocks).reduce((sum, stock) => sum + (parseInt(stock) || 0), 0);
@@ -922,11 +922,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     formData.append("totalStock", manualTotalStock.toString());
     formData.append("colors", JSON.stringify(selectedColors));
 
-    console.log("Product data:", {
-      sizeStocks: sizeStocksObj,
-      totalStock: manualTotalStock,
-      colors: selectedColors
-    });
+    // console.log("Product data:", {
+    //   sizeStocks: sizeStocksObj,
+    //   totalStock: manualTotalStock,
+    //   colors: selectedColors
+    // });
 
     formData.append("productDescriptionWeb", productDescriptionWeb ? productDescriptionWeb.trim() : "");
     formData.append("productDescriptionMobile", productDescriptionMobile ? productDescriptionMobile.trim() : "");
@@ -982,10 +982,10 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     }
 
     // Log the form data to check what's being sent
-    console.log("Form Data Contents:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, ":", typeof value === 'string' ? value : 'File or Blob');
-    }
+    // console.log("Form Data Contents:");
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(key, ":", typeof value === 'string' ? value : 'File or Blob');
+    // }
 
     try {
       let res;
@@ -1089,17 +1089,17 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         setBrand(data.brand || "");
         setCategoryType(data.categoryType || "");
         setCategory(data.category || "");
-        console.log('Group data from API:', {
-          colorGroup: data.colorGroup,
-          group: data.group,
-          finalGroup: data.colorGroup || data.group || ""
-        });
-        console.log('Full group data structure:', {
-          colorGroupType: typeof data.colorGroup,
-          groupType: typeof data.group,
-          colorGroupValue: data.colorGroup,
-          groupValue: data.group
-        });
+        // console.log('Group data from API:', {
+        //   colorGroup: data.colorGroup,
+        //   group: data.group,
+        //   finalGroup: data.colorGroup || data.group || ""
+        // });
+        // console.log('Full group data structure:', {
+        //   colorGroupType: typeof data.colorGroup,
+        //   groupType: typeof data.group,
+        //   colorGroupValue: data.colorGroup,
+        //   groupValue: data.group
+        // });
         setGroup(data.colorGroup || data.group || ""); // Use colorGroup ID if available
         setProductName(data.name || "");
         setMrp(data.mrp || "");
@@ -1122,14 +1122,14 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         setSeoUrl(data.seoUrl || "");
         setMetaTitle(data.metaTitle || "");
         setMetaDescription(data.metaDescription || "");
-        console.log('API Data - metaKeywords:', {
-          raw: data.metaKeywords,
-          type: typeof data.metaKeywords,
-          isArray: Array.isArray(data.metaKeywords),
-          processed: Array.isArray(data.metaKeywords)
-            ? data.metaKeywords.join(", ")
-            : (data.metaKeywords || "")
-        });
+        // console.log('API Data - metaKeywords:', {
+        //   raw: data.metaKeywords,
+        //   type: typeof data.metaKeywords,
+        //   isArray: Array.isArray(data.metaKeywords),
+        //   processed: Array.isArray(data.metaKeywords)
+        //     ? data.metaKeywords.join(", ")
+        //     : (data.metaKeywords || "")
+        // });
         setMetaKeywords(
           Array.isArray(data.metaKeywords)
             ? data.metaKeywords.join(", ")
@@ -1137,11 +1137,11 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                 ? data.metaKeywords 
                 : `${data.name}, ${data.category}, ${data.categoryType}, ethnic wear, Indian fashion`)
         );
-        console.log('Setting metaKeywords to:', Array.isArray(data.metaKeywords)
-          ? data.metaKeywords.join(", ")
-          : (data.metaKeywords && data.metaKeywords.trim() !== "" 
-              ? data.metaKeywords 
-              : `${data.name}, ${data.category}, ${data.categoryType}, ethnic wear, Indian fashion`));
+        // console.log('Setting metaKeywords to:', Array.isArray(data.metaKeywords)
+        //   ? data.metaKeywords.join(", ")
+        //   : (data.metaKeywords && data.metaKeywords.trim() !== "" 
+        //       ? data.metaKeywords 
+        //       : `${data.name}, ${data.category}, ${data.categoryType}, ethnic wear, Indian fashion`));
         setTaxClass(data.taxClass || "gst-5");
         setQrSize(data.qrSize || "small");
         setNetWeight(data.netWeight || "");

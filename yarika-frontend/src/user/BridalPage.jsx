@@ -34,31 +34,75 @@ const BridalPage = () => {
   );
 
   // Derive category from URL/state for breadcrumb label
-  const initialCategory = category || (location.state && location.state.category) || null;
+  let initialCategory = category || (location.state && location.state.category) || null;
+  
+  // If no category in params, try to extract from URL pathname
+  if (!initialCategory) {
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.length >= 4 && pathParts[1] === 'women' && pathParts[2] === 'bridal') {
+      initialCategory = pathParts[3];
+    }
+  }
   const formatCategoryLabel = (value) => {
     if (!value) return "";
+    
+    // Handle the specific category mappings
+    if (value === 'bridal-lehenga') return 'Bridal Lehenga';
+    if (value === 'bridal-gown') return 'Bridal Gown';
+    
+    // Fallback to capitalize first letter
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
 
   // Normalize category names from products to consistent slugs
   const normalizeBridalCategory = (rawCategory) => {
     const value = (rawCategory || "").toLowerCase();
-    if (value.includes("lehenga")) return "lehengas";
-    if (value.includes("gown")) return "gowns";
+    // console.log('Normalizing category:', rawCategory, 'to:', value);
+    
+    // Handle the actual category values from the database
+    if (value === "bridal-lehenga") return "bridal-lehenga";
+    if (value === "bridal-gown") return "bridal-gown";
+    
+    // Fallback for other variations
+    if (value.includes("lehenga")) return "bridal-lehenga";
+    if (value.includes("gown")) return "bridal-gown";
+    
     return value;
   };
-  const categoryLabelMap = { lehengas: "Lehenga", gowns: "Gown" };
+  
+  const categoryLabelMap = { 
+    "bridal-lehenga": "Bridal Lehenga", 
+    "bridal-gown": "Bridal Gown",
+    "lehengas": "Bridal Lehenga", 
+    "gowns": "Bridal Gown" 
+  };
 
 
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/products");
+      // console.log('=== FETCHING BRIDAL PRODUCTS ===');
+      const res = await api.get("/products", {
+        params: {
+          status: 'active',
+          t: Date.now() // Bust cache
+        }
+      });
+      
+      // console.log('All products fetched:', res.data.length);
+      // console.log('Sample products:', res.data.slice(0, 3).map(p => ({ 
+      //   name: p.name, 
+      //   categoryType: p.categoryType, 
+      //   category: p.category 
+      // })));
       
       let filtered = res.data.filter(product => 
         product.categoryType === 'bridal'
       );
+      
+      // console.log('Bridal products after filtering:', filtered.length);
+      // console.log('Bridal product categories:', [...new Set(filtered.map(p => p.category))]);
       
       // Apply sorting
       switch (sortOption) {
@@ -80,6 +124,7 @@ const BridalPage = () => {
 
       setProducts(filtered);
       setFilteredProducts(filtered);
+      // console.log('Products state set, filtered products:', filtered.length);
     } catch (err) {
       console.error("Failed to fetch products:", err);
       setProducts([]);
@@ -100,9 +145,24 @@ const BridalPage = () => {
 
     // Apply category filter
     if (selectedCategories.length > 0) {
-      filtered = filtered.filter(product => 
-        selectedCategories.includes(product.category)
-      );
+      // console.log('=== APPLYING CATEGORY FILTER ===');
+      // console.log('Selected categories:', selectedCategories);
+      // console.log('Available products:', products.map(p => ({ name: p.name, category: p.category })));
+      
+      filtered = filtered.filter(product => {
+        const normalizedProductCategory = normalizeBridalCategory(product.category);
+        const isIncluded = selectedCategories.some(selectedCat => {
+          const normalizedSelectedCat = normalizeBridalCategory(selectedCat);
+          const matches = normalizedProductCategory === normalizedSelectedCat;
+          // console.log(`Product: ${product.name}, Comparing: "${normalizedProductCategory}" with "${normalizedSelectedCat}" = ${matches}`);
+          return matches;
+        });
+        // console.log(`Product ${product.name} included: ${isIncluded}`);
+        return isIncluded;
+      });
+      
+      // console.log('Filtered products after category filter:', filtered.length);
+      // console.log('Remaining products:', filtered.map(p => p.name));
     }
 
     // Apply color filter
@@ -148,6 +208,14 @@ const BridalPage = () => {
         break;
     }
 
+    // console.log('=== FILTERING COMPLETE ===');
+    // console.log('Final filtered products:', filtered.length);
+    // console.log('Selected categories:', selectedCategories);
+    // console.log('Selected colors:', selectedColors);
+    // console.log('Selected fabrics:', selectedFabrics);
+    // console.log('Selected sizes:', selectedSizes);
+    // console.log('Sort option:', sortOption);
+    
     setFilteredProducts(filtered);
     setCurrentPage(1);
   }, [products, selectedCategories, selectedColors, selectedFabrics, selectedSizes, sortOption]);
@@ -178,8 +246,13 @@ const BridalPage = () => {
     products
       .map(p => normalizeBridalCategory(p.category))
       .filter(Boolean)
-      .filter(v => v === 'lehengas' || v === 'gowns')
+      .filter(v => v === 'bridal-lehenga' || v === 'bridal-gown')
   )];
+  
+  // console.log('=== AVAILABLE CATEGORIES ===');
+  // console.log('All categories from products:', [...new Set(products.map(p => p.category))]);
+  // console.log('Normalized categories:', allCategories);
+  // console.log('Category labels:', allCategories.map(cat => categoryLabelMap[cat] || formatCategoryLabel(cat)));
   const allColors = [...new Set(products.flatMap(p => p.colors || []).filter(Boolean))];
   const allFabrics = [...new Set(products.map(p => p.fabric).filter(Boolean))];
   const allSizes = [...new Set(products.flatMap(p => p.sizes || []).filter(Boolean))];
@@ -197,12 +270,36 @@ const BridalPage = () => {
 
   // Preselect category filter from URL or navigation state (e.g., from HeroLanding)
   useEffect(() => {
-    if (category) {
-      setSelectedCategories([category]);
-    } else if (location.state && location.state.category) {
-      setSelectedCategories([location.state.category]);
+    // console.log('=== CATEGORY SELECTION FROM URL ===');
+          // console.log('URL category param:', category);
+      // console.log('Location state:', location.state);
+      // console.log('Initial category:', initialCategory);
+      // console.log('Current URL pathname:', window.location.pathname);
+    
+    // Extract category from URL pathname if not in params
+    let categoryFromUrl = category;
+    if (!categoryFromUrl) {
+      const pathParts = window.location.pathname.split('/');
+      // console.log('URL path parts:', pathParts);
+      
+      // Handle URL structure like /women/bridal/bridal-lehenga
+      if (pathParts.length >= 4 && pathParts[1] === 'women' && pathParts[2] === 'bridal') {
+        categoryFromUrl = pathParts[3];
+        // console.log('Extracted category from URL path:', categoryFromUrl);
+      }
     }
-  }, [category, location.state]);
+    
+    if (categoryFromUrl) {
+      // console.log('Setting selected categories from URL:', [categoryFromUrl]);
+      setSelectedCategories([categoryFromUrl]);
+    } else if (location.state && location.state.category) {
+      // console.log('Setting selected categories from location state:', [location.state.category]);
+      setSelectedCategories([location.state.category]);
+    } else {
+      // console.log('No category selected from URL or state');
+      // Don't set any categories if none are specified - show all bridal products
+    }
+  }, [category, location.state, initialCategory]);
 
   return (
     <div className="bridal-page">
@@ -266,10 +363,10 @@ const BridalPage = () => {
         </h1>
         <h2 className="section-label" style={{marginBottom: '2rem'}}>
           {initialCategory
-            ? (initialCategory === 'lehengas'
+            ? (initialCategory === 'bridal-lehenga' || initialCategory === 'lehengas'
                 ? 'Traditional Bridal Lehengas for Your Special Day'
                 : 'Elegant Bridal Gowns for Your Special Day')
-            : 'Lehengas & Gowns for Your Special Day'}
+            : 'Bridal Lehengas & Gowns for Your Special Day'}
         </h2>
 
         <div className="product-listing-container">

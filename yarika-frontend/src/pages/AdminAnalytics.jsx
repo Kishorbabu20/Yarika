@@ -22,7 +22,7 @@ export default function AdminAnalytics() {
   
   // Debug admin activity state changes
   useEffect(() => {
-    console.log("Admin activity state updated:", adminActivity);
+    // console.log("Admin activity state updated:", adminActivity);
   }, [adminActivity]);
   const [stats, setStats] = useState({
     totalRevenue: 0,
@@ -82,9 +82,9 @@ export default function AdminAnalytics() {
   };
   const fetchAdminActivity = async () => {
     try {
-      console.log("Fetching admin activity...");
+      // console.log("Fetching admin activity...");
       const res = await api.get("/analytics/admin-activity");
-      console.log("Admin activity response:", res.data);
+      // console.log("Admin activity response:", res.data);
       setAdminActivity(res.data || []);
     } catch (err) {
       console.error("Error fetching admin activity:", err);
@@ -146,7 +146,7 @@ export default function AdminAnalytics() {
     ? filteredProductPerformance.filter(p => p.name === selectedProductName)
     : filteredProductPerformance;
 
-  console.log("Product Performance Row Example:", filteredProductPerformance[0]);
+  // console.log("Product Performance Row Example:", filteredProductPerformance[0]);
 
   return (
     <div className="dashboard-container">
@@ -342,7 +342,7 @@ export default function AdminAnalytics() {
           {/* Recent Admin Activity */}
           <div className="analytics-activity" style={{ margin: '32px 0 0 0' }}>
             <h3>Recent Admin Activity</h3>
-            {console.log("Rendering admin activity section, length:", adminActivity.length)}
+            {/* {console.log("Rendering admin activity section, length:", adminActivity.length)} */}
             {adminActivity.length > 0 ? (
               <>
             <ul>

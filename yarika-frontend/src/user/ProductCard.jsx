@@ -7,16 +7,16 @@ const ProductCard = ({ product }) => {
 
   const handleClick = () => {
     // Debug: Log the product data
-    console.log('ProductCard - Product data:', {
-      name: product?.name,
-      seoUrl: product?.seoUrl,
-      categoryType: product?.categoryType,
-      category: product?.category,
-      _id: product?._id
-    });
+    // console.log('ProductCard - Product data:', {
+    //   name: product?.name,
+    //   seoUrl: product?.seoUrl,
+    //   categoryType: product?.categoryType,
+    //   category: product?.category,
+    //   _id: product?._id
+    // });
     
     const url = generateProductUrl(product, 'home');
-    console.log('ProductCard - Generated URL:', url);
+    // console.log('ProductCard - Generated URL:', url);
     navigate(url);
   };
 
