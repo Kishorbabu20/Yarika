@@ -957,9 +957,6 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     // Add status field (required by backend)
     formData.append("status", "active");
     
-    // Add fabric field (might be required)
-    formData.append("fabric", fabric ? fabric.trim() : "");
-    
     // Add Key Highlights fields
     formData.append("fabric", fabric ? fabric.trim() : "");
     formData.append("neck", neck ? neck.trim() : "");
