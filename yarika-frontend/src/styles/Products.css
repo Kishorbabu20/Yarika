@@ -343,14 +343,6 @@
   border-bottom: 1px solid #f5f5f5;
 }
 
-.products-table td button svg {
-  color: #222 !important;
-  fill: none !important;
-  stroke: currentColor !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
 @media (max-width: 900px) {
   .products-stats-row {
     flex-direction: column;

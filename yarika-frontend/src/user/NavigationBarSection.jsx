@@ -30,6 +30,7 @@ const NavigationBarSection = () => {
   // Mobile drawer specific open states
   const [mobileOpenGroup, setMobileOpenGroup] = useState(null); // e.g., 'women', 'kids', 'bridal'
   const [mobileOpenSub, setMobileOpenSub] = useState(null); // e.g., 'women-readymade'
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
   const announcements = [
     "New Styles On Sale: Up To 40% Off",
@@ -50,6 +51,15 @@ const NavigationBarSection = () => {
       window.removeEventListener("userLoggedIn", updateLoginState);
       window.removeEventListener("storage", updateLoginState);
     };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleMouseEnter = (dropdownName) => {
@@ -301,18 +311,29 @@ const NavigationBarSection = () => {
 
         {/* Right: Search + Icons */}
         <div className="navbar-right">
-          <div className="search-container">
-              <input 
-                type="text" 
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
-              />
-              <button type="button" className="search-icon-btn" onClick={handleSearchIconClick} aria-label="Open search">
-                <span className="search-icon"><Search size={16} /></span>
-              </button>
-      </div>
+        {!isMobileView ? (
+  <div className="search-container">
+    <input 
+      type="text" 
+      placeholder="Search"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      onKeyPress={handleKeyPress}
+    />
+    <span className="search-icon" onClick={handleSearchIconClick} aria-label="Open search" style={{ cursor: 'pointer' }}>
+      <Search size={16} />
+    </span>
+  </div>
+) : (
+  <button 
+    className="mobile-search-btn"
+    onClick={handleSearchIconClick}
+    aria-label="Open search"
+    style={{ /* styling here */ }}
+  >
+    <Search size={20} />
+  </button>
+)}
 
             <div className="user-actions">
               <button className="icon-btn" onClick={handleLoginClick}>
@@ -336,14 +357,19 @@ const NavigationBarSection = () => {
       {/* Mobile inline search bar (appears under navbar) */}
       {mobileSearchOpen && (
         <form className="mobile-inline-search-bar" onSubmit={handleSearch}>
-          <span className="mobile-search-icon"><Search size={16} /></span>
-          <input
-            type="text"
-            placeholder="Search products"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="button" className="mobile-search-close" aria-label="Close" onClick={handleMobileSearchClose}>×</button>
+          <div className="mobile-search-container">
+            <input
+              type="text"
+              placeholder="Search products"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="mobile-search-input"
+            />
+            <button type="submit" className="mobile-search-submit">
+              <Search size={16} />
+            </button>
+            <button type="button" className="mobile-search-close" aria-label="Close" onClick={handleMobileSearchClose}>×</button>
+          </div>
         </form>
       )}
 

@@ -997,7 +997,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
         );
         toast.success("Product updated successfully!");
         queryClient.invalidateQueries(['products']);
-        navigate('/admin/products');
+        window.location.href = '/admin/dashboard';
         return;
       } else {
         // Add mode: create new product
@@ -1008,7 +1008,7 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
       });
         toast.success("Product added successfully! Redirecting to products list...");
         queryClient.invalidateQueries(['products']);
-        navigate('/admin/products');
+        window.location.href = '/admin/dashboard';
         return;
       }
       // ...rest of the code is now unreachable after navigate
@@ -2186,19 +2186,26 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
             {/* Add/Cancel Buttons - moved here to be below the image section */}
             <div className="form-row-full" style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 36, gridColumn: '1 / span 2' }}>
               <Button className="gold-btn" type="submit">{id ? "Update Product" : "Add Product"}</Button>
-              <Button 
+              {/* <Button 
                 className="gold-outline-btn" 
                 type="button" 
                 onClick={() => {
                   if (onClose) {
                     onClose();
                   } else {
-                    navigate('/admin/products');
+                    // Use window.location for navigation
+                    window.location.href = '/admin/dashboard';
                   }
                 }}
               >
                 Cancel
-              </Button>
+              </Button> */}
+              <Button
+              className="gold-outline-btn"
+              onClick={() => navigate('/admin/products')}
+            >
+              Cancel
+            </Button>
         </div>
       </form>
         </div>

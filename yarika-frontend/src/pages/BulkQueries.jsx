@@ -105,9 +105,9 @@ const BulkQueries = () => {
                 <h3>Bridal Collections</h3>
                 <ul>
                   <li>Bridal Lehengas</li>
-                  <li>Wedding Gowns</li>
-                  <li>Bridal Blouses</li>
-                  <li>Accessories</li>
+                  <li>Bridal Gowns</li>
+                  <li>Designer Sarees</li>
+                  <li>Wedding Accessories</li>
                 </ul>
               </div>
             </div>

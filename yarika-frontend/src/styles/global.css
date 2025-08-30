@@ -835,7 +835,7 @@ html, body {
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    height: 260px !important;
+    height: 280px !important;
     margin: 0 !important;
   }
   .hero-landing-container .blouse-cards .product-image-container,
@@ -845,8 +845,8 @@ html, body {
   .hero-landing-container .lehengas-cards .product-image-container,
   .hero-landing-container .gowns-cards .product-image-container,
   .hero-landing-container .bridal-all-cards .product-image-container {
-    width: 180px !important;
-    height: 220px !important;
+    width: 200px !important;
+    height: 200px !important;
     justify-self: center !important;
   }
   .hero-landing-container .blouse-cards .product-image,
@@ -857,7 +857,7 @@ html, body {
   .hero-landing-container .gowns-cards .product-image,
   .hero-landing-container .bridal-all-cards .product-image {
     width: 180px !important;
-    height: 220px !important;
+    height: 200px !important;
     object-fit: cover !important;
   }
   /* Show only first 4 to make 2x2 */
@@ -3200,10 +3200,10 @@ button.nav-arrow:focus {
   .hero-landing-container .lehengas-cards .product-card,
   .hero-landing-container .gowns-cards .product-card,
   .hero-landing-container .bridal-all-cards .product-card {
-    width: 240px !important;   /* reduced width */
-    max-width: 240px !important;
-    min-width: 240px !important;
-    height: 500px !important;  /* increased height */
+    width: 200px !important;   /* reduced width to 180px */
+    max-width: 200px !important;
+    min-width: 200px !important;
+    height: 360px !important;  /* reduced height to 280px */
     margin: 0 !important;
   }
 
@@ -3215,8 +3215,8 @@ button.nav-arrow:focus {
   .hero-landing-container .lehengas-cards .product-image-container,
   .hero-landing-container .gowns-cards .product-image-container,
   .hero-landing-container .bridal-all-cards .product-image-container {
-    width: 240px !important;
-    height: 400px !important; /* taller images */
+    width: 200px !important;
+    height: 200px !important; /* adjusted height for 280px total card height */
     justify-self: center !important;
   }
 
@@ -3227,8 +3227,8 @@ button.nav-arrow:focus {
   .hero-landing-container .lehengas-cards .product-image,
   .hero-landing-container .gowns-cards .product-image,
   .hero-landing-container .bridal-all-cards .product-image {
-    width: 240px !important;
-    height: 400px !important;
+    width: 180px !important;
+    height: 200px !important;
     object-fit: cover !important;
   }
 }
