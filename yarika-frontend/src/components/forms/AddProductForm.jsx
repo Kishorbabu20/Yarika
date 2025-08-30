@@ -1002,7 +1002,6 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
     console.log("Selected Sizes:", selectedSizes);
     console.log("Size Stocks:", sizeStocks);
     console.log("Manual Total Stock:", manualTotalStock);
-    console.log("Size Stocks Object:", sizeStocksObj);
     console.log("Selected Colors:", selectedColors);
     
     for (let [key, value] of formData.entries()) {
