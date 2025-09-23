@@ -187,6 +187,14 @@ const NavigationBarSection = () => {
           { name: "Shimmer Leggings", slug: "shimmer-leggings" }
         ]
       },
+      tops: {
+        title: "Tops",
+        items: [
+          { name: "Casual Tops", slug: "casual-tops" },
+          { name: "Kurtis", slug: "kurtis" },
+          { name: "Tunics", slug: "tunics" }
+        ]
+      },
       "readymade-blouse-cloth": {
         title: "Readymade Blouse Cloth",
         items: [
@@ -226,6 +234,15 @@ const NavigationBarSection = () => {
           { name: "Churidar Leggings", slug: "churidar-leggings" },
           { name: "Shimmer Leggings", slug: "shimmer-leggings" },
           { name: "Girls Leggings", slug: "girls-leggings" }
+        ]
+      },
+
+      tops: {
+        title: "Tops",
+        items: [
+          { name: "Casual Tops", slug: "casual-tops" },
+          { name: "Kurtis", slug: "kurtis" },
+          { name: "Tunics", slug: "tunics" }
         ]
       },
       "readymade-blouse-cloth": {
@@ -422,6 +439,19 @@ const NavigationBarSection = () => {
                       </div>
                     )}
 
+                    {/* Tops */}
+                    <button className="mobile-sub-header" onClick={() => toggleMobileSub('women-tops')}>
+                      <span>Tops</span>
+                      <span className={`chevron ${mobileOpenSub === 'women-tops' ? 'up' : ''}`}>▾</span>
+                    </button>
+                    {mobileOpenSub === 'women-tops' && (
+                      <div className="mobile-links" onClick={() => { handleDropdownLinkClick(); setMobileMenuOpen(false); }}>
+                        {categoryTypes.women.tops.items.map((item, idx) => (
+                          <Link key={`m-w-top-${idx}`} to={getCategoryLink('women','tops', item)} className="mobile-link">{item.name}</Link>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Materials */}
                     <button className="mobile-sub-header" onClick={() => toggleMobileSub('women-materials')}>
                       <span>Readymade Blouse Cloth</span>
@@ -445,18 +475,8 @@ const NavigationBarSection = () => {
                   <span className={`chevron ${mobileOpenGroup === 'kids' ? 'up' : ''}`}>▾</span>
                 </button>
                 {mobileOpenGroup === 'kids' && (
-                  <div className="mobile-subgroup">
-                    <button className="mobile-sub-header" onClick={() => toggleMobileSub('kids-leggings')}>
-                      <span>Leggings</span>
-                      <span className={`chevron ${mobileOpenSub === 'kids-leggings' ? 'up' : ''}`}>▾</span>
-                    </button>
-                    {mobileOpenSub === 'kids-leggings' && (
-                      <div className="mobile-links" onClick={() => { handleDropdownLinkClick(); setMobileMenuOpen(false); }}>
-                        {categoryTypes.girls.leggings.items.map((item, idx) => (
-                          <Link key={`m-k-leg-${idx}`} to={getCategoryLink('girls','leggings', item)} className="mobile-link">{item.name}</Link>
-                        ))}
-                      </div>
-                    )}
+                  <div className="mobile-links" onClick={() => { setMobileMenuOpen(false); }}>
+                    <Link to="/kids/gowns" className="mobile-link">Kids Gowns</Link>
                   </div>
                 )}
               </div>
@@ -580,6 +600,9 @@ const NavigationBarSection = () => {
               </div>
               <span className="subnav-sep" />
               
+              <Link to="/home/tops" className="subnav-link">TOPS</Link>
+              <span className="subnav-sep" />
+              
               <div 
                 className="subnav-dropdown"
                 onMouseEnter={() => handleMouseEnter('women-materials')}
@@ -612,23 +635,7 @@ const NavigationBarSection = () => {
           
           {selectedCategory === 'kids' && (
             <>
-              <div 
-                className="subnav-dropdown"
-                onMouseEnter={() => handleMouseEnter('kids-leggings')}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => handleMobileDropdownToggle('kids-leggings')}
-              >
-                <span className="subnav-link">LEGGINGS</span>
-                {(activeDropdown === 'kids-leggings' || mobileActiveDropdown === 'kids-leggings') && (
-                  <div className={`subnav-dropdown-menu ${mobileActiveDropdown === 'kids-leggings' ? 'active' : ''}`} onClick={handleDropdownLinkClick}>
-                    {categoryTypes.girls.leggings.items.map((item, idx) => (
-                      <Link key={idx} to={getCategoryLink('girls', 'leggings', item)} className="subnav-dropdown-item">
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Link to="/kids/gowns" className="subnav-link">GOWNS</Link>
               <span className="subnav-sep" />
             </>
           )}
