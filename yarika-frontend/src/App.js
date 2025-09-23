@@ -17,6 +17,8 @@ import CategoryProductsPage from "./user/CategoryProductsPage";
 import SearchResultsPage from "./user/SearchResultsPage";
 import TrendingPage from "./user/TrendingPage";
 import LeggingsPage from "./user/LeggingsPage";
+import TopsPage from "./user/TopsPage";
+import KidsGownsPage from "./user/KidsGownsPage";
 import MaterialsPage from "./user/MaterialsPage";
 import LoginModal from "./user/LoginModal";
 import LoginPage from "./user/LoginPage";
@@ -226,6 +228,16 @@ function App() {
               <Route path="/home/leggings" element={
                 <Suspense fallback={<PageLoader />}>
                   <><NavigationBarSection /><LeggingsPage /><ServiceHighlights /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/home/tops" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><TopsPage /><ServiceHighlights /><Footer /></>
+                </Suspense>
+              } />
+              <Route path="/kids/gowns" element={
+                <Suspense fallback={<PageLoader />}>
+                  <><NavigationBarSection /><KidsGownsPage /><ServiceHighlights /><Footer /></>
                 </Suspense>
               } />
               <Route path="/home/materials" element={

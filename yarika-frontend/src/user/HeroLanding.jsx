@@ -455,6 +455,10 @@ const HeroLanding = () => {
                 <img src={Blouse} alt="Readymade Blouse" className="category-image" />
                 <div className="category-label">Readymade Blouse</div>
               </div>
+              <div className="category-card" onClick={() => navigate('/home/tops')} style={{cursor:'pointer'}}>
+                <img src={Blouse} alt="Tops" className="category-image" />
+                <div className="category-label">Tops</div>
+              </div>
               <div className="category-card" onClick={() => navigate('/home/bridal/gowns')} style={{cursor:'pointer'}}>
                 <img src={gown} alt="Gown" className="category-image" />
                 <div className="category-label">Gown</div>

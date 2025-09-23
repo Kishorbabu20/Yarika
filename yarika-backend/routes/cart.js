@@ -69,15 +69,16 @@ router.post("/add", protect({ model: "client" }), async (req, res) => {
     }
 
     const isBridal = product.categoryType === 'bridal';
+    const isGown = product.categoryType === 'gown';
     const noSizes = !product.sizes || product.sizes.length === 0;
     
-    if (!isBridal && !noSizes && (!size || size === '')) {
+    if (!isBridal && !isGown && !noSizes && (!size || size === '')) {
       console.error("[Add to Cart] Size required for this product", { productId, size, categoryType: product.categoryType });
       return res.status(400).json({ error: "Size is required for this product" });
     }
 
-    // For bridal products or products without sizes, use empty string for size
-    const normalizedSize = (isBridal || noSizes) ? '' : (size || '');
+    // For bridal or gown products or products without sizes, use empty string for size
+    const normalizedSize = (isBridal || isGown || noSizes) ? '' : (size || '');
     
     // console.log('[Add to Cart] Normalized size:', normalizedSize);
     // console.log('[Add to Cart] Product details:', {
@@ -123,7 +124,7 @@ router.delete("/remove/:id", protect({ model: "client" }), async (req, res) => {
       return res.status(400).json({ error: "Product ID is required" });
     }
 
-    // For bridal products, size might be empty string
+    // For bridal or gown products, size might be empty string
     const normalizedSize = size || '';
     
     const result = await CartItem.deleteOne({ userId, productId: id, size: normalizedSize });
@@ -150,7 +151,7 @@ router.put("/update", protect({ model: "client" }), async (req, res) => {
       return res.status(400).json({ error: "Product ID and quantity are required" });
     }
 
-    // For bridal products, size might be empty string
+    // For bridal or gown products, size might be empty string
     const normalizedSize = size || '';
     
     const item = await CartItem.findOne({ userId, productId, size: normalizedSize });

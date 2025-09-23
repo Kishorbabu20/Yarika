@@ -135,8 +135,8 @@ router.post(
           }
         }
 
-        // For non-bridal, ensure total equals sum of size stocks
-        if (categoryType !== 'bridal') {
+        // For non-bridal and non-gown, ensure total equals sum of size stocks
+        if (categoryType !== 'bridal' && categoryType !== 'gown') {
           const totalFromSizes = Array.from(parsedSizeStocks.values()).reduce((sum, stock) => sum + stock, 0);
           if (totalFromSizes !== parsedTotalStock) {
             return res.status(400).json({

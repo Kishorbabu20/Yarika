@@ -70,11 +70,11 @@ const productSchema = new mongoose.Schema({
   },
   sizes: {
     type: [String],
-    required: function() { return this.categoryType !== 'bridal'; },
+    required: function() { return this.categoryType !== 'bridal' && this.categoryType !== 'gown'; },
     validate: {
       validator: function(arr) {
-        // Allow empty sizes for bridal products
-        if (this.categoryType === 'bridal') return true;
+        // Allow empty sizes for bridal and gown products
+        if (this.categoryType === 'bridal' || this.categoryType === 'gown') return true;
         return Array.isArray(arr) && arr.length > 0;
       },
       message: 'At least one size must be specified'

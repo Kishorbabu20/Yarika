@@ -43,6 +43,7 @@ const categoryOptions = {
     { label: "Shimmer Leggings", slug: "shimmer-leggings" },
     { label: "Girls Leggings", slug: "girls-leggings" }
   ],
+  tops: [],
   "readymade-blouse-cloth": [
     { label: "Aari Cloth", slug: "aari-cloth" },
     { label: "Embroidery Cloth", slug: "embroidery-cloth" },
@@ -57,7 +58,8 @@ const categoryOptions = {
     { label: "Everyday Ethnic", slug: "everyday-ethnic" },
     { label: "Workwear Staples", slug: "workwear-staples" },
     { label: "Party & Evening Out", slug: "party-evening-out" }
-  ]
+  ],
+  "kids-gown": []
 };
 
 const BLOUSE_SIZES = [32, 34, 36, 38, 40, 42, 44];
@@ -1253,7 +1255,9 @@ const AddProductForm = ({ product = null, onClose = () => {}, onProductAdded = (
                 <option value="">Select Category</option>
                 <option value="readymade-blouse">Readymade Blouse</option>
                 <option value="leggings">Leggings</option>
+                <option value="tops">Tops</option>
                 <option value="readymade-blouse-cloth">Blouse Cloth</option>
+                <option value="kids-gown">Kids Gown</option>
                 <option value="bridal">Bridal</option>
                 <option value="occasion">Occasion</option>
               </select>
